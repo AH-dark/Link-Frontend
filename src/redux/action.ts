@@ -7,7 +7,6 @@ export interface ActionSetTitle extends Action {
 }
 
 export const setTitle: (title: string) => ActionSetTitle = (title: string) => {
-    console.log("[Redux]", "Set Title:", title);
     return {
         type: SET_TITLE,
         title: title,
@@ -21,7 +20,6 @@ export interface ActionSetSidebarOpen extends Action {
 }
 
 export const setSidebarOpen: (open: boolean) => ActionSetSidebarOpen = (open: boolean) => {
-    console.log("[Redux]", "Set Sidebar Open:", open);
     return {
         type: SET_SIDEBAR_OPEN,
         open: open,
