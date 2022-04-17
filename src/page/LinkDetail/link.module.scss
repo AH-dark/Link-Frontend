@@ -10,6 +10,12 @@
     align-items: center;
     justify-content: center;
 
+    .preview {
+      width: 780px;
+      border-radius: 0.6rem 0.6rem 0 0;
+      margin-bottom: 0;
+    }
+
     .table {
       width: 780px;
     }
@@ -23,6 +29,11 @@
         * {
           word-break: break-all;
         }
+      }
+      .preview {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
       }
     }
   }
