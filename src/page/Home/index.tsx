@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import UI from "../../component/UI";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../redux/action";
 import { Grid, Input, message, Typography } from "antd";
 import { MyState } from "../../redux/reducer";
@@ -10,15 +10,15 @@ import ShortLink, { ShortLinkPost } from "../../model/data/ShortLink";
 import { ApiResponse } from "../../model/ApiResponse";
 import { useNavigate } from "react-router-dom";
 import stringRandom from "string-random";
+import User from "../../model/data/User";
 
 const { Title } = Typography;
 const { Search } = Input;
 const { useBreakpoint } = Grid;
 
 const Index: FC = () => {
-    const store = useStore<MyState>();
-    const state = store.getState();
-    const siteName = state.site.siteName;
+    const siteName = useSelector<MyState, string>((state) => state.site.siteName);
+    const user = useSelector<MyState, User | undefined>((state) => state.user);
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -28,7 +28,7 @@ const Index: FC = () => {
     const [data, setData] = useState<ShortLinkPost>({
         key: "",
         origin: "",
-        user_id: state.user?.id || 0,
+        user_id: user?.id || 0,
     });
 
     const navigate = useNavigate();

@@ -1,4 +1,4 @@
-export type ApiResponse<T = undefined> = {
+export type ApiResponse<T = any> = {
     code: number;
     message: string;
     data: T;

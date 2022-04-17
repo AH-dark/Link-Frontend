@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
-import { useStore } from "react-redux";
+import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
 import { HomeOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -12,12 +12,7 @@ const { Item } = Menu;
 const { useBreakpoint } = Grid;
 
 const SideBar: FC = () => {
-    const store = useStore<MyState>();
-    const [open, setOpen] = useState(store.getState().ui.sidebar.open);
-    store.subscribe(() => {
-        const state = store.getState();
-        setOpen(state.ui.sidebar.open);
-    });
+    const open = useSelector<MyState, boolean>((state) => state.ui.sidebar.open);
 
     const breakpoint = useBreakpoint();
     const isMobileSize = !breakpoint.md;
