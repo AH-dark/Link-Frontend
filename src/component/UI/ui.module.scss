@@ -52,6 +52,10 @@
       .main {
         height: calc(100vh - 64px - 70px);
         padding: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
 
       .footer {
