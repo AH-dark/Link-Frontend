@@ -1,0 +1,42 @@
+.root {
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .login {
+      width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+
+      .tools {
+        .rememberMe {
+          float: left;
+        }
+
+        .forgot {
+          float: right;
+        }
+      }
+
+      .buttonArea {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: nowrap;
+
+        .loginButton {
+          width: 100%;
+        }
+      }
+
+    }
+
+    @media screen and (max-width: 380px) {
+      .login {
+        width: 95vw;
+      }
+    }
+  }
+}

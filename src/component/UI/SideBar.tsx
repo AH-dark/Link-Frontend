@@ -3,9 +3,10 @@ import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, LoginOutlined, SettingOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MenuInfo } from "rc-menu/lib/interface";
+import User from "../../model/data/User";
 
 const { Sider } = Layout;
 const { Item } = Menu;
@@ -13,6 +14,7 @@ const { useBreakpoint } = Grid;
 
 const SideBar: FC = () => {
     const open = useSelector<MyState, boolean>((state) => state.ui.sidebar.open);
+    const userData = useSelector<MyState, User | undefined>((state) => state.user);
 
     const breakpoint = useBreakpoint();
     const isMobileSize = !breakpoint.md;
@@ -32,6 +34,15 @@ const SideBar: FC = () => {
                 <Item key="/" icon={<HomeOutlined />} className={styles.menuItem}>
                     {"Home"}
                 </Item>
+                {typeof userData === "undefined" ? (
+                    <Item key="/login" icon={<LoginOutlined />} className={styles.menuItem}>
+                        {"Login"}
+                    </Item>
+                ) : (
+                    <Item key="/settings" icon={<SettingOutlined />} className={styles.menuItem}>
+                        {"Settings"}
+                    </Item>
+                )}
             </Menu>
         </Sider>
     );

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import ShortLink from "../../model/data/ShortLink";
 import API from "../../middleware/API";
 import ApiResponse from "../../model/ApiResponse";
-import { Avatar, Image, Spin, Table, Typography } from "antd";
+import { Avatar, Button, Image, message, Spin, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import User from "../../model/data/User";
@@ -35,31 +35,38 @@ const LinkDetail: FC = () => {
                 key: key,
             },
             responseType: "json",
-        }).then((res) => {
-            if (res.status === 200) {
-                console.log("[API]", "Get short link data success:", res.data.data);
-                setLinkData(res.data.data);
-                if (res.data.data.user_id > 0) {
-                    API.get<ApiResponse<User>>("/user", {
-                        params: {
-                            id: res.data.data.user_id,
-                        },
-                        responseType: "json",
-                    })
-                        .then((res) => {
-                            if (res.status === 200) {
-                                console.log("[API]", "Get user data success:", res.data.data);
-                                setUserData(res.data.data);
-                            }
+        })
+            .then((res) => {
+                if (res.status === 200 && res.data.code === 200) {
+                    console.log("[API]", "Get short link data success:", res.data.data);
+                    setLinkData(res.data.data);
+                    if (res.data.data.user_id > 0) {
+                        API.get<ApiResponse<User>>("/user", {
+                            params: {
+                                id: res.data.data.user_id,
+                            },
+                            responseType: "json",
                         })
-                        .then(() => {
-                            setLoad(false);
-                        });
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    console.log("[API]", "Get user data success:", res.data.data);
+                                    setUserData(res.data.data);
+                                }
+                            })
+                            .then(() => {
+                                setLoad(false);
+                            });
+                    } else {
+                        setLoad(false);
+                    }
                 } else {
-                    setLoad(false);
+                    message.error(`Error ${res.data.code}: ${res.data.message}`);
                 }
-            }
-        });
+            })
+            .catch((err) => {
+                message.error(err.response.data.message || err.message);
+                console.log(err.message);
+            });
     }, [key]);
 
     const dispatch = useDispatch();
@@ -118,6 +125,16 @@ const LinkDetail: FC = () => {
                     <Column dataIndex="name" key="name" title={"Attributes"} />
                     <Column dataIndex="value" key="value" title={"Value"} />
                 </Table>
+                <Button
+                    type={"primary"}
+                    block
+                    style={{ marginTop: 12 }}
+                    href={"/go/" + linkData.key}
+                    rel={"noopener"}
+                    target={"_self"}
+                >
+                    {"Go"}
+                </Button>
             </div>
         </UI>
     );

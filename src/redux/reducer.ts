@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { SET_SIDEBAR_OPEN, SET_TITLE } from "./action";
+import { SET_SIDEBAR_OPEN, SET_TITLE, SET_USER_LOGIN } from "./action";
 import User from "../model/data/User";
 import SiteInfo from "../model/data/SiteInfo";
 
@@ -45,6 +45,11 @@ const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
                         open: action.open,
                     },
                 },
+            };
+        case SET_USER_LOGIN:
+            return {
+                ...state,
+                user: action.user,
             };
         default:
             return state;

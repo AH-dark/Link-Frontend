@@ -28,12 +28,12 @@ const Index: FC = () => {
     const [data, setData] = useState<ShortLinkPost>({
         key: "",
         origin: "",
-        user_id: user?.id || 0,
+        user_id: 0,
     });
 
     const navigate = useNavigate();
 
-    const handleSearch = () => {
+    const handleSubmit = () => {
         if (!RegExp("^https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$").test(data.origin)) {
             message.warning("Please enter a valid URL.");
             return;
@@ -41,6 +41,7 @@ const Index: FC = () => {
 
         let send = data;
         send.key = stringRandom(8); // Homepage creation does not allow custom Key
+        send.user_id = send.user_id === 0 && typeof user !== "undefined" ? user.id : send.user_id;
 
         API.post<ApiResponse<ShortLink>>("/shortLink", send, {
             responseType: "json",
@@ -66,7 +67,7 @@ const Index: FC = () => {
                     allowClear
                     enterButton="Shorten"
                     size="large"
-                    onSearch={handleSearch}
+                    onSearch={handleSubmit}
                     style={{ width: isSmallDevice ? 480 : "90%" }}
                     onChange={(e) => {
                         setData({

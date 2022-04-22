@@ -1,12 +1,13 @@
 import React, { FC } from "react";
 import styles from "./ui.module.scss";
-import { Avatar, Button, Image, Typography } from "antd";
+import { Avatar, Button, Typography } from "antd";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { MyState } from "../../redux/reducer";
 import { LoginOutlined, MenuOutlined } from "@ant-design/icons";
 import { setSidebarOpen } from "../../redux/action";
 import { GetAvatar } from "../../middleware/Avatar";
 import User from "../../model/data/User";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -20,6 +21,13 @@ const NavBar: FC = () => {
     const handleMenuClick = () => {
         const state = store.getState();
         dispatch(setSidebarOpen(!state.ui.sidebar.open));
+    };
+
+    const navigate = useNavigate();
+
+    const handleLoginClick: React.MouseEventHandler<HTMLElement> = (e) => {
+        e.preventDefault();
+        navigate("/login");
     };
 
     const isLogin = userData !== undefined;
@@ -39,7 +47,7 @@ const NavBar: FC = () => {
             </div>
             <div className={styles.rightArea}>
                 {isLogin ? (
-                    <Avatar src={<Image src={GetAvatar(userData.email, 32)} style={{ width: 32 }} />} />
+                    <Avatar src={GetAvatar(userData.email, 32)} />
                 ) : (
                     <Button
                         type={"text"}
@@ -47,6 +55,8 @@ const NavBar: FC = () => {
                         icon={<LoginOutlined />}
                         size={"large"}
                         className={styles.icon}
+                        onClick={handleLoginClick}
+                        href={"/login"}
                     />
                 )}
             </div>
