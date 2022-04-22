@@ -4,7 +4,7 @@ import styles from "./link.module.scss";
 import { useParams } from "react-router-dom";
 import ShortLink from "../../model/data/ShortLink";
 import API from "../../middleware/API";
-import { ApiResponse } from "../../model/ApiResponse";
+import ApiResponse from "../../model/ApiResponse";
 import { Avatar, Image, Spin, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
@@ -37,7 +37,7 @@ const LinkDetail: FC = () => {
             responseType: "json",
         }).then((res) => {
             if (res.status === 200) {
-                console.log("[API]", "Get data success:", res.data.data);
+                console.log("[API]", "Get short link data success:", res.data.data);
                 setLinkData(res.data.data);
                 if (res.data.data.user_id > 0) {
                     API.get<ApiResponse<User>>("/user", {
@@ -48,6 +48,7 @@ const LinkDetail: FC = () => {
                     })
                         .then((res) => {
                             if (res.status === 200) {
+                                console.log("[API]", "Get user data success:", res.data.data);
                                 setUserData(res.data.data);
                             }
                         })

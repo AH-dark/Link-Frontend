@@ -7,7 +7,7 @@ import { MyState } from "../../redux/reducer";
 import styles from "./home.module.scss";
 import API from "../../middleware/API";
 import ShortLink, { ShortLinkPost } from "../../model/data/ShortLink";
-import { ApiResponse } from "../../model/ApiResponse";
+import ApiResponse from "../../model/ApiResponse";
 import { useNavigate } from "react-router-dom";
 import stringRandom from "string-random";
 import User from "../../model/data/User";
