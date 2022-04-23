@@ -9,7 +9,7 @@ import { Avatar, Button, Image, message, Spin, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import User from "../../model/data/User";
-import { GetAvatar } from "../../middleware/Avatar";
+import { GetAvatar } from "../../utils/avatar";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../../redux/action";
 
