@@ -8,7 +8,7 @@ import LoginData from "../../model/data/LoginData";
 import ApiResponse from "../../model/ApiResponse";
 import User from "../../model/data/User";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserLogin } from "../../redux/action";
+import { setTitle, setUserLogin } from "../../redux/action";
 import { MyState } from "../../redux/reducer";
 import { useNavigate } from "react-router-dom";
 
@@ -24,6 +24,10 @@ const Login: FC = () => {
             message.warning("您已经登录");
             navigate("/");
         }
+    });
+
+    useEffect(() => {
+        dispatch(setTitle("Login"));
     });
 
     const [load, setLoad] = useState(false);
