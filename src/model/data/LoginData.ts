@@ -1,7 +1,5 @@
-type LoginData = {
+export default interface LoginData {
     email: string;
     password: string;
     remember: boolean;
-};
-
-export default LoginData;
+}

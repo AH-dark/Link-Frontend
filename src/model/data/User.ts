@@ -1,4 +1,4 @@
-type User = {
+export default interface User {
     id: number;
     name: string;
     email: string;
@@ -7,6 +7,4 @@ type User = {
     register_ip: string;
     login_time: Date;
     available: boolean;
-};
-
-export default User;
+}

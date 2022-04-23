@@ -1,6 +1,4 @@
-type SiteInfo = {
+export default interface SiteInfo {
     siteName: string;
     isPublic: boolean;
-};
-
-export default SiteInfo;
+}
