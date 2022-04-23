@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
-import { SET_SIDEBAR_OPEN, SET_TITLE, SET_USER_LOGIN } from "./action";
+import { SET_SIDEBAR_OPEN, SET_SITE_CONFIG, SET_TITLE, SET_USER_LOGIN } from "./action";
 import User from "../model/data/User";
-import SiteInfo from "../model/data/SiteInfo";
+import SiteConfig from "../model/data/SiteConfig";
 
 export interface MyState {
     title: string | null;
@@ -11,7 +11,7 @@ export interface MyState {
         };
     };
     user?: User;
-    site: SiteInfo;
+    site: SiteConfig;
 }
 
 const initState: MyState = {
@@ -23,7 +23,8 @@ const initState: MyState = {
     },
     site: {
         siteName: "Link",
-        isPublic: true,
+        siteUrl: "http://localhost:8080/",
+        enableTouristShorten: false,
     },
 };
 
@@ -50,6 +51,11 @@ const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
             return {
                 ...state,
                 user: action.user,
+            };
+        case SET_SITE_CONFIG:
+            return {
+                ...state,
+                site: action.site,
             };
         default:
             return state;

@@ -5,7 +5,7 @@ import { useDispatch, useSelector, useStore } from "react-redux";
 import { MyState } from "../../redux/reducer";
 import { LoginOutlined, MenuOutlined } from "@ant-design/icons";
 import { setSidebarOpen } from "../../redux/action";
-import { GetAvatar } from "../../middleware/Avatar";
+import { GetAvatar } from "../../utils/avatar";
 import User from "../../model/data/User";
 import { useNavigate } from "react-router-dom";
 

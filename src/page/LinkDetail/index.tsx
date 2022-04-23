@@ -9,9 +9,11 @@ import { Avatar, Button, Image, message, Spin, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import User from "../../model/data/User";
-import { GetAvatar } from "../../middleware/Avatar";
-import { useDispatch } from "react-redux";
+import { GetAvatar } from "../../utils/avatar";
+import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../redux/action";
+import { MyState } from "../../redux/reducer";
+import SiteConfig from "../../model/data/SiteConfig";
 
 const { Title, Text } = Typography;
 const { Column } = Table;
@@ -28,6 +30,8 @@ const LinkDetail: FC = () => {
     });
     const [userData, setUserData] = useState<User>();
     const [load, setLoad] = useState(true);
+
+    const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
 
     useEffect(() => {
         API.get<ApiResponse<ShortLink>>("/shortLink", {
@@ -85,10 +89,12 @@ const LinkDetail: FC = () => {
         );
     }
 
+    const url: URL = new URL(siteConfig.siteUrl);
+
     const dataSource: Array<{ name: string; value: React.ReactNode }> = [
         {
             name: "Shorten Url",
-            value: `${window.location.protocol}//${window.location.hostname}/go/${linkData.key}`,
+            value: `${url.origin}/go/${linkData.key}`,
         },
         {
             name: "Origin Url",
@@ -128,7 +134,7 @@ const LinkDetail: FC = () => {
                     type={"primary"}
                     block
                     style={{ marginTop: 12 }}
-                    href={"/go/" + linkData.key}
+                    href={url.origin + "/go/" + linkData.key}
                     rel={"noopener"}
                     target={"_self"}
                 >

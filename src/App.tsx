@@ -9,8 +9,9 @@ import API from "./middleware/API";
 import ApiResponse from "./model/ApiResponse";
 import User from "./model/data/User";
 import { useDispatch } from "react-redux";
-import { setUserLogin } from "./redux/action";
+import { setSiteConfig, setUserLogin } from "./redux/action";
 import { message } from "antd";
+import SiteConfig from "./model/data/SiteConfig";
 
 function App() {
     const dispatch = useDispatch();
@@ -38,6 +39,23 @@ function App() {
             .catch((err) => {
                 message.error(err.response.data.message || err.message);
                 console.log(err.message);
+            });
+
+        API.get<ApiResponse<SiteConfig>>("/siteConfig", {
+            responseType: "json",
+        })
+            .then((res) => {
+                if (res.status === 200 && res.data.code === 200) {
+                    dispatch(setSiteConfig(res.data.data));
+                } else {
+                    message.error(`Get site config error: ${res.data.message}`);
+                    console.log(`Get site config error: ${res.data.message}`);
+                }
+            })
+            .catch((err) => {
+                const message = err.response.data.message || err.message;
+                message.error(`Get site config error: ${message}`);
+                console.log(`Get site config error: ${message}`);
             });
     }, []);
 
