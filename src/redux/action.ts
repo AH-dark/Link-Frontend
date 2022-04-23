@@ -1,5 +1,6 @@
 import { Action } from "redux";
 import User from "../model/data/User";
+import SiteConfig from "../model/data/SiteConfig";
 
 export const SET_TITLE = "SEI_TITLE";
 
@@ -37,5 +38,18 @@ export const setUserLogin: (userData: User) => ActionSetUserLogin = (userData) =
     return {
         type: SET_USER_LOGIN,
         user: userData,
+    };
+};
+
+export const SET_SITE_CONFIG = "SET_SITE_CONFIG";
+
+export interface ActionSetSiteConfig extends Action {
+    site: SiteConfig;
+}
+
+export const setSiteConfig: (siteConfig: SiteConfig) => ActionSetSiteConfig = (siteConfig) => {
+    return {
+        type: SET_SITE_CONFIG,
+        site: siteConfig,
     };
 };
