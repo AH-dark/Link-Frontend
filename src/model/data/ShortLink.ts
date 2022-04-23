@@ -1,15 +1,10 @@
-type ShortLink = {
-    key: string;
-    origin: string;
-    user_id: number;
+export default interface ShortLink extends ShortLinkBasic {
     view: number;
     create_time: Date;
-};
+}
 
-export type ShortLinkPost = {
+export interface ShortLinkBasic {
     key: string;
     origin: string;
-    user_id: number;
-};
-
-export default ShortLink;
+    userId: number;
+}

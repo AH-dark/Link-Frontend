@@ -22,7 +22,7 @@ const LinkDetail: FC = () => {
     const [linkData, setLinkData] = useState<ShortLink>({
         key: key || "",
         origin: "",
-        user_id: 0,
+        userId: 0,
         view: 0,
         create_time: new Date(),
     });
@@ -40,10 +40,10 @@ const LinkDetail: FC = () => {
                 if (res.status === 200 && res.data.code === 200) {
                     console.log("[API]", "Get short link data success:", res.data.data);
                     setLinkData(res.data.data);
-                    if (res.data.data.user_id > 0) {
+                    if (res.data.data.userId > 0) {
                         API.get<ApiResponse<User>>("/user", {
                             params: {
-                                id: res.data.data.user_id,
+                                id: res.data.data.userId,
                             },
                             responseType: "json",
                         })

@@ -6,7 +6,7 @@ import { Grid, Input, message, Typography } from "antd";
 import { MyState } from "../../redux/reducer";
 import styles from "./home.module.scss";
 import API from "../../middleware/API";
-import ShortLink, { ShortLinkPost } from "../../model/data/ShortLink";
+import ShortLink, { ShortLinkBasic } from "../../model/data/ShortLink";
 import ApiResponse from "../../model/ApiResponse";
 import { useNavigate } from "react-router-dom";
 import stringRandom from "string-random";
@@ -25,10 +25,10 @@ const Index: FC = () => {
         dispatch(setTitle("Home"));
     }, []);
 
-    const [data, setData] = useState<ShortLinkPost>({
+    const [data, setData] = useState<ShortLinkBasic>({
         key: "",
         origin: "",
-        user_id: 0,
+        userId: 0,
     });
 
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ const Index: FC = () => {
 
         let send = data;
         send.key = stringRandom(8); // Homepage creation does not allow custom Key
-        send.user_id = send.user_id === 0 && typeof user !== "undefined" ? user.id : send.user_id;
+        send.userId = send.userId === 0 && typeof user !== "undefined" ? user.id : send.userId;
 
         API.post<ApiResponse<ShortLink>>("/shortLink", send, {
             responseType: "json",
