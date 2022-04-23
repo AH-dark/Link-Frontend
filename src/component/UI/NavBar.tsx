@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import styles from "./ui.module.scss";
 import { Avatar, Button, Typography } from "antd";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
 import { LoginOutlined, MenuOutlined } from "@ant-design/icons";
 import { setSidebarOpen } from "../../redux/action";
@@ -12,18 +12,20 @@ import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
 
 const NavBar: FC = () => {
-    const store = useStore<MyState>();
+    const open = useSelector<MyState, boolean>((state) => state.ui.sidebar.open);
     const title = useSelector<MyState, string | null>((state) => state.title);
     const userData = useSelector<MyState, User | undefined>((state) => state.user);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleMenuClick = () => {
-        const state = store.getState();
-        dispatch(setSidebarOpen(!state.ui.sidebar.open));
+        dispatch(setSidebarOpen(!open));
     };
 
-    const navigate = useNavigate();
+    const handleTitleClick = () => {
+        navigate("/");
+    };
 
     const handleLoginClick: React.MouseEventHandler<HTMLElement> = (e) => {
         e.preventDefault();
@@ -43,7 +45,9 @@ const NavBar: FC = () => {
                     className={styles.icon}
                     onClick={handleMenuClick}
                 />
-                <Title className={styles.title}>{title || "Link"}</Title>
+                <Title className={styles.title} onClick={handleTitleClick}>
+                    {title || "Link"}
+                </Title>
             </div>
             <div className={styles.rightArea}>
                 {isLogin ? (
