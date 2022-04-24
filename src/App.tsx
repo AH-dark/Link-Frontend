@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setSiteConfig, setUserLogin } from "./redux/action";
 import { message } from "antd";
 import SiteConfig from "./model/data/SiteConfig";
+import NoMatch from "./page/NoMatch";
 
 function App() {
     const dispatch = useDispatch();
@@ -65,6 +66,7 @@ function App() {
                 <Route path={"/"} element={<Home />} />
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/link/:key"} element={<LinkDetail />} />
+                <Route path={"*"} element={<NoMatch />} />
             </Routes>
         </BrowserRouter>
     );
