@@ -31,6 +31,8 @@ const Index: FC = () => {
         userId: 0,
     });
 
+    const [isLoad, setLoad] = useState(false);
+
     const navigate = useNavigate();
 
     const handleSubmit = () => {
@@ -38,21 +40,33 @@ const Index: FC = () => {
             message.warning("Please enter a valid URL.");
             return;
         }
-
+        setLoad(true);
         let send = data;
         send.key = stringRandom(8); // Homepage creation does not allow custom Key
         send.userId = send.userId === 0 && typeof user !== "undefined" ? user.id : send.userId;
 
         API.post<ApiResponse<ShortLink>>("/shortLink", send, {
             responseType: "json",
-        }).then((res) => {
-            if (res.status === 200 && res.data.data.key) {
-                message.success(
-                    `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${res.data.data.key}`
-                );
-                navigate("/link/" + res.data.data.key);
-            }
-        });
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    if (res.data.code === 200) {
+                        message.success(
+                            `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${res.data.data.key}`
+                        );
+                        navigate("/link/" + res.data.data.key);
+                    } else {
+                        message.error(`Error ${res.data.code}: ${res.data.message}`);
+                    }
+                }
+            })
+            .catch((err) => {
+                message.error(err.response.data.message || err.message);
+                console.log(err.message);
+            })
+            .then(() => {
+                setLoad(false);
+            });
     };
 
     const breakpoint = useBreakpoint();
@@ -76,6 +90,7 @@ const Index: FC = () => {
                         });
                     }}
                     value={data.origin}
+                    disabled={isLoad}
                 />
             </div>
         </UI>
