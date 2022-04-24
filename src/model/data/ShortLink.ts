@@ -1,10 +1,11 @@
-export default interface ShortLink extends ShortLinkBasic {
-    view: number;
-    create_time: Date;
-}
-
 export interface ShortLinkBasic {
-    key: string;
+    key?: string;
     origin: string;
     userId: number;
+}
+
+export default interface ShortLink extends ShortLinkBasic {
+    key: string;
+    view: number;
+    create_time: Date;
 }

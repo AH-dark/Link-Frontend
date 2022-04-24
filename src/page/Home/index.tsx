@@ -9,7 +9,6 @@ import API from "../../middleware/API";
 import ShortLink, { ShortLinkBasic } from "../../model/data/ShortLink";
 import ApiResponse from "../../model/ApiResponse";
 import { useNavigate } from "react-router-dom";
-import stringRandom from "string-random";
 import User from "../../model/data/User";
 
 const { Title } = Typography;
@@ -42,7 +41,6 @@ const Index: FC = () => {
         }
         setLoad(true);
         let send = data;
-        send.key = stringRandom(8); // Homepage creation does not allow custom Key
         send.userId = send.userId === 0 && typeof user !== "undefined" ? user.id : send.userId;
 
         API.post<ApiResponse<ShortLink>>("/shortLink", send, {
