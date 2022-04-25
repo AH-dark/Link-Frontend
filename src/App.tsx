@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./page/Home";
 import "antd/dist/antd.min.css";
@@ -8,17 +8,24 @@ import Login from "./page/Login";
 import API from "./middleware/API";
 import ApiResponse from "./model/ApiResponse";
 import User from "./model/data/User";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSiteConfig, setUserLogin } from "./redux/action";
 import { message } from "antd";
 import SiteConfig from "./model/data/SiteConfig";
 import NoMatch from "./page/NoMatch";
+import Generate from "./page/Generate";
+import { MyState } from "./redux/reducer";
 
 function App() {
     const dispatch = useDispatch();
 
+    const user = useSelector<MyState, User | undefined>((state) => state.user);
+    const siteConfig = useSelector<MyState, SiteConfig | undefined>((state) => state.site);
+
+    const [load, setLoad] = useState(true);
+
     useEffect(() => {
-        API.get<ApiResponse<User>>("/user", {
+        const getUser = API.get<ApiResponse<User>>("/user", {
             responseType: "json",
         })
             .then((res) => {
@@ -42,7 +49,7 @@ function App() {
                 console.log(err.message);
             });
 
-        API.get<ApiResponse<SiteConfig>>("/siteConfig", {
+        const getSiteConfig = API.get<ApiResponse<SiteConfig>>("/siteConfig", {
             responseType: "json",
         })
             .then((res) => {
@@ -58,13 +65,30 @@ function App() {
                 message.error(`Get site config error: ${message}`);
                 console.log(`Get site config error: ${message}`);
             });
+
+        let events = [];
+        if (typeof user === "undefined") {
+            events.push(getUser);
+        }
+        if (typeof siteConfig === "undefined") {
+            events.push(getSiteConfig);
+        }
+
+        Promise.all(events).then(() => {
+            setLoad(false);
+        });
     }, []);
+
+    if (load) {
+        return <>{"Loading..."}</>;
+    }
 
     return (
         <BrowserRouter>
             <Routes>
                 <Route path={"/"} element={<Home />} />
                 <Route path={"/login"} element={<Login />} />
+                <Route path={"/generate"} element={<Generate />} />
                 <Route path={"/link/:key"} element={<LinkDetail />} />
                 <Route path={"*"} element={<NoMatch />} />
             </Routes>
