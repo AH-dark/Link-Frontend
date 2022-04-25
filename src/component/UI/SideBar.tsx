@@ -3,7 +3,7 @@ import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
-import { HomeOutlined, LoginOutlined, SettingOutlined } from "@ant-design/icons";
+import { HomeOutlined, LinkOutlined, LoginOutlined, SettingOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MenuInfo } from "rc-menu/lib/interface";
 import User from "../../model/data/User";
@@ -21,6 +21,7 @@ const SideBar: FC = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+
     const [selected, setSelected] = useState([location.pathname]);
     const handleSelect = (e: MenuInfo) => {
         e.domEvent.preventDefault();
@@ -39,9 +40,14 @@ const SideBar: FC = () => {
                         {"Login"}
                     </Item>
                 ) : (
-                    <Item key="/settings" icon={<SettingOutlined />} className={styles.menuItem}>
-                        {"Settings"}
-                    </Item>
+                    <>
+                        <Item key="/generate" icon={<LinkOutlined />} className={styles.menuItem}>
+                            {"Generate"}
+                        </Item>
+                        <Item key="/settings" icon={<SettingOutlined />} className={styles.menuItem}>
+                            {"Settings"}
+                        </Item>
+                    </>
                 )}
             </Menu>
         </Sider>

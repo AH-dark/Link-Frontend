@@ -1,7 +1,16 @@
 {
   "name": "link-frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": {
+    "email": "ahdark@outlook.com",
+    "name": "AHdark",
+    "url": "https://ahdark.com"
+  },
+  "repository": {
+    "url": "https://github.com/AH-dark/Link-Frontend",
+    "type": "git"
+  },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -11,7 +20,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "antd": "^4.19.5",
+    "antd": "^4.20.0",
     "axios": "^0.26.1",
     "classnames": "^2.3.1",
     "crypto-js": "^4.1.1",
