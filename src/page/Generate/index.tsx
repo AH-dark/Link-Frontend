@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../redux/action";
 import styles from "./generate.module.scss";
 import { Alert, Avatar, Button, Col, Form, Input, message, Row, Typography } from "antd";
-import { InfoCircleOutlined, LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
+import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
 import { MyState } from "../../redux/reducer";
 import User from "../../model/data/User";
 import { GetAvatar } from "../../utils/avatar";
@@ -13,7 +13,6 @@ import ApiResponse from "../../model/ApiResponse";
 import ShortLink, { ShortLinkBasic } from "../../model/data/ShortLink";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
 
 const { Title } = Typography;
 
