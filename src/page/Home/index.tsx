@@ -39,6 +39,7 @@ const Index: FC = () => {
             message.warning("Please enter a valid URL.");
             return;
         }
+
         setLoad(true);
         let send = data;
         send.userId = send.userId === 0 && typeof user !== "undefined" ? user.id : send.userId;
@@ -88,7 +89,7 @@ const Index: FC = () => {
                         });
                     }}
                     value={data.origin}
-                    disabled={isLoad}
+                    loading={isLoad}
                 />
             </div>
         </UI>
