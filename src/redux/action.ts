@@ -1,6 +1,8 @@
 import { Action } from "redux";
 import User from "../model/data/User";
 import SiteConfig from "../model/data/SiteConfig";
+import Cookie from "js-cookie";
+import dayjs from "dayjs";
 
 export const SET_TITLE = "SEI_TITLE";
 
@@ -44,12 +46,21 @@ export const setUserLogin: (userData: User | undefined) => ActionSetUserLogin = 
 export const SET_SITE_CONFIG = "SET_SITE_CONFIG";
 
 export interface ActionSetSiteConfig extends Action {
-    site: SiteConfig;
+    site: SiteConfig & {
+        isSet: boolean;
+    };
 }
 
 export const setSiteConfig: (siteConfig: SiteConfig) => ActionSetSiteConfig = (siteConfig) => {
+    Cookie.set("siteConfig", JSON.stringify(siteConfig), {
+        expires: dayjs().add(2, "hour").toDate(),
+    });
+
     return {
         type: SET_SITE_CONFIG,
-        site: siteConfig,
+        site: {
+            ...siteConfig,
+            isSet: true,
+        },
     };
 };

@@ -2,6 +2,7 @@ import { Reducer } from "redux";
 import { SET_SIDEBAR_OPEN, SET_SITE_CONFIG, SET_TITLE, SET_USER_LOGIN } from "./action";
 import User from "../model/data/User";
 import SiteConfig from "../model/data/SiteConfig";
+import Cookie from "js-cookie";
 
 export interface MyState {
     title: string | null;
@@ -11,8 +12,12 @@ export interface MyState {
         };
     };
     user?: User;
-    site: SiteConfig;
+    site: SiteConfig & {
+        isSet: boolean;
+    };
 }
+
+const initSiteConfig = Cookie.get("siteConfig");
 
 const initState: MyState = {
     title: null,
@@ -21,11 +26,18 @@ const initState: MyState = {
             open: false,
         },
     },
-    site: {
-        siteName: "Link",
-        siteUrl: "http://localhost:8080/",
-        enableTouristShorten: false,
-    },
+    site:
+        typeof initSiteConfig !== "undefined"
+            ? {
+                  ...(JSON.parse(initSiteConfig) as SiteConfig),
+                  isSet: true,
+              }
+            : {
+                  siteName: "Link",
+                  siteUrl: "http://localhost/",
+                  enableTouristShorten: false,
+                  isSet: false,
+              },
 };
 
 const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
