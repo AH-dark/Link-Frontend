@@ -32,6 +32,13 @@
           cursor: default;
         }
       }
+
+      .rightArea {
+        display: inline-flex;
+
+        .popover {
+        }
+      }
     }
   }
 

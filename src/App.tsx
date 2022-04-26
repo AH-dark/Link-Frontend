@@ -33,20 +33,21 @@ function App() {
                     switch (res.data.code) {
                         case 200:
                             dispatch(setUserLogin(res.data.data));
-                            message.success("登录成功");
-                            console.log("Login success.");
-                            return;
+                            console.info("Login success.");
+                            break;
                         case 2001:
-                            message.warning("尚未登录");
-                            return;
-                        default:
-                            return;
+                            console.info("尚未登录");
+                            break;
                     }
+                    return true;
+                } else {
+                    return false;
                 }
             })
             .catch((err) => {
                 message.error(err.response.data.message || err.message);
                 console.log(err.message);
+                return false;
             });
 
         const getSiteConfig = API.get<ApiResponse<SiteConfig>>("/siteConfig", {
@@ -55,18 +56,21 @@ function App() {
             .then((res) => {
                 if (res.status === 200 && res.data.code === 200) {
                     dispatch(setSiteConfig(res.data.data));
+                    return true;
                 } else {
                     message.error(`Get site config error: ${res.data.message}`);
                     console.log(`Get site config error: ${res.data.message}`);
+                    return false;
                 }
             })
             .catch((err) => {
                 const message = err.response.data.message || err.message;
                 message.error(`Get site config error: ${message}`);
                 console.log(`Get site config error: ${message}`);
+                return false;
             });
 
-        let events = [];
+        let events: Promise<boolean>[] = [];
         if (typeof user === "undefined") {
             events.push(getUser);
         }
@@ -74,8 +78,14 @@ function App() {
             events.push(getSiteConfig);
         }
 
-        Promise.all(events).then(() => {
+        Promise.all(events).then((r) => {
+            for (let i = 0; i < r.length; i++) {
+                if (r[i] !== true) {
+                    return;
+                }
+            }
             setLoad(false);
+            return;
         });
     }, []);
 

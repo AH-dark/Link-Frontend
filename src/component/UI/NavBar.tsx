@@ -1,20 +1,18 @@
 import React, { FC } from "react";
 import styles from "./ui.module.scss";
-import { Avatar, Button, Typography } from "antd";
+import { Button, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
-import { LoginOutlined, MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined } from "@ant-design/icons";
 import { setSidebarOpen } from "../../redux/action";
-import { GetAvatar } from "../../utils/avatar";
-import User from "../../model/data/User";
 import { useNavigate } from "react-router-dom";
+import LoginMenu from "./LoginMenu";
 
 const { Title } = Typography;
 
 const NavBar: FC = () => {
     const open = useSelector<MyState, boolean>((state) => state.ui.sidebar.open);
     const title = useSelector<MyState, string | null>((state) => state.title);
-    const userData = useSelector<MyState, User | undefined>((state) => state.user);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -26,13 +24,6 @@ const NavBar: FC = () => {
     const handleTitleClick = () => {
         navigate("/");
     };
-
-    const handleLoginClick: React.MouseEventHandler<HTMLElement> = (e) => {
-        e.preventDefault();
-        navigate("/login");
-    };
-
-    const isLogin = userData !== undefined;
 
     return (
         <div className={styles.container}>
@@ -50,19 +41,7 @@ const NavBar: FC = () => {
                 </Title>
             </div>
             <div className={styles.rightArea}>
-                {isLogin ? (
-                    <Avatar src={GetAvatar(userData.email, 32)} />
-                ) : (
-                    <Button
-                        type={"text"}
-                        shape={"circle"}
-                        icon={<LoginOutlined />}
-                        size={"large"}
-                        className={styles.icon}
-                        onClick={handleLoginClick}
-                        href={"/login"}
-                    />
-                )}
+                <LoginMenu />
             </div>
         </div>
     );

@@ -25,10 +25,14 @@ const Generate: FC = () => {
     const user = useSelector<MyState, User | undefined>((state) => state.user);
     const isUserAvailable = typeof user !== "undefined" && user.available;
 
+    const [checked, setChecked] = useState(false);
+
     useEffect(() => {
         if (!isUserAvailable) {
             message.error("Permission Denied.");
             navigate("/");
+        } else {
+            setChecked(true);
         }
     }, []);
 
@@ -85,6 +89,10 @@ const Generate: FC = () => {
                 setLoad(false);
             });
     };
+
+    if (!checked) {
+        return <></>;
+    }
 
     return (
         <UI className={styles.root}>
