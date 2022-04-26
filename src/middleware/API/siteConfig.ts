@@ -3,7 +3,7 @@ import ApiResponse from "../../model/ApiResponse";
 import SiteConfig from "../../model/data/SiteConfig";
 import { message } from "antd";
 
-const getSiteConfig: () => Promise<SiteConfig | null> = async () => {
+export const getSiteConfig: () => Promise<SiteConfig | null> = async () => {
     const res = await API.get<ApiResponse<SiteConfig>>("/siteConfig", {
         responseType: "json",
     });
@@ -16,5 +16,3 @@ const getSiteConfig: () => Promise<SiteConfig | null> = async () => {
         return null;
     }
 };
-
-export default getSiteConfig;

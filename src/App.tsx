@@ -5,18 +5,16 @@ import "antd/dist/antd.min.css";
 import "./App.css";
 import LinkDetail from "./page/LinkDetail";
 import Login from "./page/Login";
-import API from "./middleware/API";
-import ApiResponse from "./model/ApiResponse";
 import User from "./model/data/User";
 import { useDispatch, useSelector } from "react-redux";
 import { setSiteConfig, setUserLogin } from "./redux/action";
-import { message } from "antd";
 import SiteConfig from "./model/data/SiteConfig";
 import NoMatch from "./page/NoMatch";
 import Generate from "./page/Generate";
 import { MyState } from "./redux/reducer";
 import Cookie from "js-cookie";
-import getSiteConfig from "./middleware/API/getSiteConfig";
+import { getSiteConfig } from "./middleware/API/siteConfig";
+import { getUser } from "./middleware/API/user";
 
 function App() {
     const dispatch = useDispatch();
@@ -37,30 +35,13 @@ function App() {
         let events: Promise<boolean>[] = [];
         if (typeof user === "undefined") {
             events.push(
-                API.get<ApiResponse<User>>("/user", {
-                    responseType: "json",
+                getUser().then((r) => {
+                    if (r !== null) {
+                        dispatch(setUserLogin(r));
+                        console.info("Login success.");
+                    }
+                    return true;
                 })
-                    .then((res) => {
-                        if (res.status === 200) {
-                            switch (res.data.code) {
-                                case 200:
-                                    dispatch(setUserLogin(res.data.data));
-                                    console.info("Login success.");
-                                    break;
-                                case 2001:
-                                    console.info("尚未登录");
-                                    break;
-                            }
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    })
-                    .catch((err) => {
-                        message.error(err.response.data.message || err.message);
-                        console.log(err.message);
-                        return false;
-                    })
             );
         }
         if (!siteConfig.isSet) {

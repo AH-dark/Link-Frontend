@@ -3,8 +3,6 @@ import UI from "../../component/UI";
 import styles from "./link.module.scss";
 import { useParams } from "react-router-dom";
 import ShortLink from "../../model/data/ShortLink";
-import API from "../../middleware/API";
-import ApiResponse from "../../model/ApiResponse";
 import { Avatar, Button, Image, message, Spin, Table, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
@@ -14,6 +12,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../redux/action";
 import { MyState } from "../../redux/reducer";
 import SiteConfig from "../../model/data/SiteConfig";
+import { getShortLink } from "../../middleware/API/shortLink";
+import { getUser } from "../../middleware/API/user";
 
 const { Title, Text } = Typography;
 const { Column } = Table;
@@ -34,27 +34,16 @@ const LinkDetail: FC = () => {
     const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
 
     useEffect(() => {
-        API.get<ApiResponse<ShortLink>>("/shortLink", {
-            params: {
-                key: key,
-            },
-            responseType: "json",
-        })
-            .then((res) => {
-                if (res.status === 200 && res.data.code === 200) {
-                    console.log("[API]", "Get short link data success:", res.data.data);
-                    setLinkData(res.data.data);
-                    if (res.data.data.userId > 0) {
-                        API.get<ApiResponse<User>>("/user", {
-                            params: {
-                                id: res.data.data.userId,
-                            },
-                            responseType: "json",
-                        })
-                            .then((res) => {
-                                if (res.status === 200) {
-                                    console.log("[API]", "Get user data success:", res.data.data);
-                                    setUserData(res.data.data);
+        if (typeof key !== "undefined") {
+            getShortLink(key).then((r) => {
+                if (r !== null) {
+                    console.log("[API]", "Get short link data success:", r);
+                    setLinkData(r);
+                    if (r.userId > 0) {
+                        getUser(r.userId)
+                            .then((r) => {
+                                if (r !== null) {
+                                    setUserData(r);
                                 }
                             })
                             .then(() => {
@@ -63,14 +52,11 @@ const LinkDetail: FC = () => {
                     } else {
                         setLoad(false);
                     }
-                } else {
-                    message.error(`Error ${res.data.code}: ${res.data.message}`);
                 }
-            })
-            .catch((err) => {
-                message.error(err.response.data.message || err.message);
-                console.log(err.message);
             });
+        } else {
+            message.error("Param Key missed.");
+        }
     }, [key]);
 
     const dispatch = useDispatch();

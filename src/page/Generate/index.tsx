@@ -8,11 +8,8 @@ import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
 import { MyState } from "../../redux/reducer";
 import User from "../../model/data/User";
 import { GetAvatar } from "../../utils/avatar";
-import API from "../../middleware/API";
-import ApiResponse from "../../model/ApiResponse";
-import ShortLink, { ShortLinkBasic } from "../../model/data/ShortLink";
-import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
+import { generateShortLink } from "../../middleware/API/shortLink";
 
 const { Title } = Typography;
 
@@ -56,34 +53,16 @@ const Generate: FC = () => {
         }
 
         setLoad(true);
-        API.post<ApiResponse<ShortLink>, AxiosResponse<ApiResponse<ShortLink>, ShortLinkBasic>, ShortLinkBasic>(
-            "/shortLink",
-            {
-                key: key,
-                origin: origin,
-                userId: user?.id || 0,
-            },
-            {
-                responseType: "json",
-            }
-        )
-            .then((res) => {
-                if (res.status === 200) {
-                    if (res.data.code === 200) {
-                        message.success(
-                            `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${res.data.data.key}`
-                        );
-                        setTimeout(() => {
-                            navigate("/link/" + res.data.data.key);
-                        }, 1500);
-                    } else {
-                        message.error(`Error ${res.data.code}: ${res.data.message}`);
-                    }
+        generateShortLink(origin, key, user?.id)
+            .then((r) => {
+                if (r !== null) {
+                    message.success(
+                        `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${r.key}`
+                    );
+                    setTimeout(() => {
+                        navigate("/link/" + r.key);
+                    }, 1500);
                 }
-            })
-            .catch((err) => {
-                message.error(err.response.data.message || err.message);
-                console.log(err.message);
             })
             .then(() => {
                 setLoad(false);

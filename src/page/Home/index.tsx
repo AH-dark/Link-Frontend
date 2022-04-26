@@ -5,11 +5,10 @@ import { setTitle } from "../../redux/action";
 import { Grid, Input, message, Typography } from "antd";
 import { MyState } from "../../redux/reducer";
 import styles from "./home.module.scss";
-import API from "../../middleware/API";
-import ShortLink, { ShortLinkBasic } from "../../model/data/ShortLink";
-import ApiResponse from "../../model/ApiResponse";
+import { ShortLinkBasic } from "../../model/data/ShortLink";
 import { useNavigate } from "react-router-dom";
 import User from "../../model/data/User";
+import { generateShortLink } from "../../middleware/API/shortLink";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -44,24 +43,14 @@ const Index: FC = () => {
         let send = data;
         send.userId = send.userId === 0 && typeof user !== "undefined" ? user.id : send.userId;
 
-        API.post<ApiResponse<ShortLink>>("/shortLink", send, {
-            responseType: "json",
-        })
-            .then((res) => {
-                if (res.status === 200) {
-                    if (res.data.code === 200) {
-                        message.success(
-                            `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${res.data.data.key}`
-                        );
-                        navigate("/link/" + res.data.data.key);
-                    } else {
-                        message.error(`Error ${res.data.code}: ${res.data.message}`);
-                    }
+        generateShortLink(data.origin, undefined, data.userId === 0 && typeof user !== "undefined" ? user.id : 0)
+            .then((r) => {
+                if (r !== null) {
+                    message.success(
+                        `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${r.key}`
+                    );
+                    navigate("/link/" + r.key);
                 }
-            })
-            .catch((err) => {
-                message.error(err.response.data.message || err.message);
-                console.log(err.message);
             })
             .then(() => {
                 setLoad(false);
