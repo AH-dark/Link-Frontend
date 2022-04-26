@@ -14,6 +14,8 @@ import { MyState } from "../../redux/reducer";
 import SiteConfig from "../../model/data/SiteConfig";
 import { getShortLink } from "../../middleware/API/shortLink";
 import { getUser } from "../../middleware/API/user";
+import { CopyOutlined } from "@ant-design/icons";
+import ClipboardJS from "clipboard";
 
 const { Title, Text } = Typography;
 const { Column } = Table;
@@ -77,17 +79,58 @@ const LinkDetail: FC = () => {
 
     const url: URL = new URL(siteConfig.siteUrl);
 
-    const dataSource: Array<{ name: string; value: React.ReactNode }> = [
+    const copyFromText = (text: string) => (e: React.MouseEvent) => {
+        const clipboard = new ClipboardJS(e.currentTarget, {
+            text: () => {
+                return text;
+            },
+        });
+
+        clipboard.on("success", () => {
+            message.success("内容已复制到剪贴板");
+        });
+        clipboard.on("error", (err) => {
+            console.error(err);
+            message.error("无法复制到剪贴板");
+        });
+    };
+
+    const dataSource: Array<{ name: string; key: string; value: React.ReactNode }> = [
         {
             name: "Shorten Url",
-            value: `${url.origin}/go/${linkData.key}`,
+            key: "url",
+            value: (
+                <>
+                    <Text>{`${url.origin}/go/${linkData.key}`}</Text>
+                    <Button
+                        icon={<CopyOutlined />}
+                        size={"small"}
+                        shape={"circle"}
+                        style={{ float: "right" }}
+                        onClick={copyFromText(`${url.origin}/go/${linkData.key}`)}
+                    />
+                </>
+            ),
         },
         {
             name: "Origin Url",
-            value: linkData.origin,
+            key: "origin",
+            value: (
+                <>
+                    <Text>{linkData.origin}</Text>
+                    <Button
+                        icon={<CopyOutlined />}
+                        size={"small"}
+                        shape={"circle"}
+                        style={{ float: "right" }}
+                        onClick={copyFromText(linkData.origin)}
+                    />
+                </>
+            ),
         },
         {
             name: "Creator",
+            key: "creator",
             value:
                 typeof userData !== "undefined" ? (
                     <span>
@@ -100,6 +143,7 @@ const LinkDetail: FC = () => {
         },
         {
             name: "Create Time",
+            key: "time",
             value: dayjs(linkData.create_time).locale("zh-cn").format("YYYY/MM/DD HH:mm:ss"),
         },
     ];
