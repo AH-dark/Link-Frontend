@@ -4,7 +4,7 @@ import { MyState } from "../../redux/reducer";
 import User from "../../model/data/User";
 import { Avatar, Button, Menu, message, Popover } from "antd";
 import { GetAvatar } from "../../utils/avatar";
-import { LoginOutlined, LogoutOutlined, ToolOutlined } from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./ui.module.scss";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./LoginMenu.scss";
@@ -19,6 +19,10 @@ const MenuContent: FC = () => {
 
     const handleSettings = () => {
         navigate("/settings");
+    };
+
+    const handleMe = () => {
+        navigate("/me");
     };
 
     const handleLogOut = () => {
@@ -42,6 +46,11 @@ const MenuContent: FC = () => {
 
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
+            {location.pathname !== "/me" && (
+                <Menu.Item key={"0"} icon={<UserOutlined />} onClick={handleMe}>
+                    {"Me"}
+                </Menu.Item>
+            )}
             {location.pathname !== "/settings" && (
                 <Menu.Item key={"0"} icon={<ToolOutlined />} onClick={handleSettings}>
                     {"Settings"}
