@@ -13,11 +13,19 @@
         border-top-right-radius: 0.6rem;
       }
 
-      :last-child {
+      > :last-child {
         -moz-border-radius-bottomleft: 0.6rem;
         -moz-border-radius-bottomright: 0.6rem;
         border-bottom-left-radius: 0.6rem;
         border-bottom-right-radius: 0.6rem;
+      }
+
+      :global {
+        .ant-image {
+          .ant-image-mask {
+            border-radius: 0.6rem 0.6rem 0 0;
+          }
+        }
       }
 
       .preview {
@@ -30,6 +38,8 @@
       .card {
         width: 780px;
         max-width: 95vw;
+        padding: 0;
+        border: 0;
 
         .list {
           width: 100%;
