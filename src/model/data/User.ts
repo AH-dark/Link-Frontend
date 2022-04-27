@@ -3,8 +3,10 @@ export default interface User {
     name: string;
     email: string;
     password: string;
-    create_time: Date;
-    register_ip: string;
-    login_time: Date;
+    role: number;
+    description: string | undefined;
+    registerIP: string;
+    createTime: Date;
+    loginTime: Date;
     available: boolean;
 }

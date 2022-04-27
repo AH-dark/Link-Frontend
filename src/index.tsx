@@ -4,6 +4,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import { ConfigProvider } from "antd";
+import zhCN from "antd/lib/locale/zh_CN";
 
 const root = createRoot(document.getElementById("root") as HTMLElement);
 
@@ -11,7 +13,9 @@ root.render(
     <>
         {/* Redux */}
         <Provider store={store}>
-            <App />
+            <ConfigProvider direction="ltr" locale={zhCN}>
+                <App />
+            </ConfigProvider>
         </Provider>
     </>
 );

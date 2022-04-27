@@ -15,6 +15,7 @@ import { MyState } from "./redux/reducer";
 import Cookie from "js-cookie";
 import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
+import UserInfo from "./page/UserInfo";
 
 function App() {
     const dispatch = useDispatch();
@@ -82,8 +83,14 @@ function App() {
             <Routes>
                 <Route path={"/"} element={<Home />} />
                 <Route path={"/login"} element={<Login />} />
+
                 <Route path={"/generate"} element={<Generate />} />
                 <Route path={"/link/:key"} element={<LinkDetail />} />
+
+                <Route path={"/me"} element={<UserInfo />} />
+                <Route path={"/user"} element={<UserInfo />} />
+                <Route path={"/user/:userId"} element={<UserInfo />} />
+
                 <Route path={"*"} element={<NoMatch />} />
             </Routes>
         </BrowserRouter>

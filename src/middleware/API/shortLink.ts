@@ -52,3 +52,23 @@ export const getShortLink: GetShortLinkType = async (key: string) => {
         return null;
     }
 };
+
+export interface GetShortLinkByUserType {
+    (userId: number): Promise<ShortLink[] | null>;
+}
+
+export const getShortLinkByUser: GetShortLinkByUserType = async (userId: number) => {
+    const res = await API.get<ApiResponse<ShortLink[]>>("/shortLink", {
+        responseType: "json",
+        params: {
+            userId: userId,
+        },
+    });
+
+    if (res.status === 200 && res.data.code === 200) {
+        return res.data.data;
+    } else {
+        message.error(`Error ${res.data.code}: ${res.data.message}`);
+        return null;
+    }
+};

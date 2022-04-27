@@ -1,0 +1,38 @@
+.root {
+  > * {
+    width: 580px;
+    max-width: 95vw;
+  }
+
+  .infoCard {
+    .meta {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+
+      :global {
+        .ant-card-meta-detail {
+          margin: 8px;
+        }
+      }
+    }
+  }
+
+  .listCard {
+    margin-top: 24px;
+
+    .list {
+      margin-left: 4px;
+
+      .item {
+        cursor: default;
+
+        .text {
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+}
