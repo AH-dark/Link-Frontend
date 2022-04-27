@@ -102,7 +102,6 @@ const UserInfo: FC<{
                     <List
                         className={styles.list}
                         itemLayout="horizontal"
-                        loadMore={listLoad}
                         dataSource={userLinkData}
                         renderItem={(item) => {
                             const fullKeyUrl = `${url.origin}/go/${item.key}`;
