@@ -5,6 +5,8 @@
   }
 
   .infoCard {
+    border-radius: 0.6rem;
+
     .meta {
       display: flex;
       flex-direction: row;
@@ -22,6 +24,7 @@
 
   .listCard {
     margin-top: 24px;
+    border-radius: 0.6rem;
 
     .list {
       margin-left: 4px;
