@@ -174,7 +174,7 @@ const LinkDetail: FC = () => {
                             dataSource={dataSource}
                             renderItem={(item) => {
                                 return (
-                                    <List.Item actions={item.buttons} key={item.key}>
+                                    <List.Item actions={item.buttons} key={item.key} className={styles.listItem}>
                                         <Skeleton
                                             active
                                             title={false}
@@ -183,7 +183,7 @@ const LinkDetail: FC = () => {
                                             loading={load}
                                         >
                                             <List.Item.Meta
-                                                title={<Title level={5}>{item.name}</Title>}
+                                                title={item.name}
                                                 description={<Text ellipsis={true}>{item.value}</Text>}
                                             />
                                         </Skeleton>

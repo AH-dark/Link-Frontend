@@ -4,18 +4,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
 import User from "../../model/data/User";
-import { Button, Card, Image, List, message, Skeleton, Spin, Typography } from "antd";
+import { Button, Card, Image, List, message, Pagination, Skeleton, Spin, Typography } from "antd";
 import { getUser } from "../../middleware/API/user";
 import { GetAvatar } from "../../utils/avatar";
 import styles from "./userInfo.module.scss";
 import { getShortLinkByUser } from "../../middleware/API/shortLink";
 import ShortLink from "../../model/data/ShortLink";
-import { ArrowRightOutlined, CopyOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined, CopyOutlined, InfoCircleOutlined, MailOutlined } from "@ant-design/icons";
 import SiteConfig from "../../model/data/SiteConfig";
 import ClipboardJS from "clipboard";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
+
+const min = (a: number, b: number) => {
+    return a < b ? a : b;
+};
 
 const UserInfo: FC<{
     userId?: number;
@@ -34,8 +38,11 @@ const UserInfo: FC<{
 
     const [load, setLoad] = useState(true);
     const [listLoad, setListLoad] = useState(true);
+
     const [user, setUser] = useState<User>();
-    const [userLinkData, setUserLinkData] = useState<ShortLink[]>();
+    const [userLinkData, setUserLinkData] = useState<ShortLink[]>([]);
+
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
         if (typeof userId !== "undefined") {
@@ -75,8 +82,21 @@ const UserInfo: FC<{
 
     return (
         <UI className={styles.root}>
-            <div>
-                <Card className={styles.infoCard}>
+            <div className={styles.main}>
+                <Card
+                    className={styles.infoCard}
+                    actions={[
+                        <Button
+                            shape={"circle"}
+                            icon={<MailOutlined />}
+                            title={"Mail to " + user.name}
+                            href={"mailto:" + user.email}
+                            target={"_top"}
+                            rel={"mail"}
+                        />,
+                    ]}
+                    loading={load}
+                >
                     <Meta
                         avatar={
                             <Image
@@ -102,7 +122,7 @@ const UserInfo: FC<{
                     <List
                         className={styles.list}
                         itemLayout="horizontal"
-                        dataSource={userLinkData}
+                        dataSource={userLinkData.slice((page - 1) * 5, min(page * 5, userLinkData.length))}
                         renderItem={(item) => {
                             const fullKeyUrl = `${url.origin}/go/${item.key}`;
 
@@ -171,18 +191,9 @@ const UserInfo: FC<{
                                 >
                                     <Skeleton active avatar={false} paragraph={{ rows: 1 }} loading={listLoad}>
                                         <List.Item.Meta
-                                            title={
-                                                <Title
-                                                    level={5}
-                                                    style={{ marginBottom: 0 }}
-                                                    copyable={false}
-                                                    ellipsis={true}
-                                                >
-                                                    {"Key: " + item.key}
-                                                </Title>
-                                            }
+                                            title={"Key: " + item.key}
                                             description={
-                                                <Text copyable={false} italic className={styles.text} ellipsis={true}>
+                                                <Text copyable={false} className={styles.text} ellipsis={true}>
                                                     {item.origin}
                                                 </Text>
                                             }
@@ -193,6 +204,18 @@ const UserInfo: FC<{
                         }}
                     />
                 </Card>
+                <div className={styles.paginationDiv}>
+                    <Pagination
+                        defaultCurrent={1}
+                        total={userLinkData.length}
+                        current={page}
+                        pageSize={5}
+                        onChange={(page) => {
+                            setPage(page);
+                        }}
+                        className={styles.pagination}
+                    />
+                </div>
             </div>
         </UI>
     );

@@ -35,6 +35,14 @@
 
         .list {
           width: 100%;
+
+          .listItem {
+            :global {
+              .ant-list-item-meta-title {
+                font-size: 16px;
+              }
+            }
+          }
         }
 
         :global {

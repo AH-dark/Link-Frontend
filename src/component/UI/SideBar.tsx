@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Divider, Grid, Layout, Menu } from "antd";
+import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
@@ -38,7 +38,6 @@ const SideBar: FC = () => {
                 <Item key="/explorer" icon={<GlobalOutlined />} className={styles.menuItem}>
                     {"Explorer"}
                 </Item>
-                <Divider style={{ margin: 0 }} />
                 {typeof userData === "undefined" ? (
                     <Item key="/login" icon={<LoginOutlined />} className={styles.menuItem}>
                         {"Login"}
