@@ -142,10 +142,10 @@ const LinkDetail: FC = () => {
             key: "creator",
             value:
                 typeof userData !== "undefined" ? (
-                    <span>
+                    <>
                         <Avatar src={GetAvatar(userData.email, 32)} size={"small"} style={{ marginRight: 8 }} />
                         <Text ellipsis={true}>{userData.name}</Text>
-                    </span>
+                    </>
                 ) : (
                     "Tourists"
                 ),

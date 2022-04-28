@@ -47,16 +47,16 @@ const MenuContent: FC = () => {
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
             {location.pathname !== "/me" && (
-                <Menu.Item key={"0"} icon={<UserOutlined />} onClick={handleMe}>
+                <Menu.Item key={"me"} icon={<UserOutlined />} onClick={handleMe}>
                     {"Me"}
                 </Menu.Item>
             )}
             {location.pathname !== "/settings" && (
-                <Menu.Item key={"0"} icon={<ToolOutlined />} onClick={handleSettings}>
+                <Menu.Item key={"settings"} icon={<ToolOutlined />} onClick={handleSettings}>
                     {"Settings"}
                 </Menu.Item>
             )}
-            <Menu.Item key={"1"} icon={<LogoutOutlined />} onClick={handleLogOut}>
+            <Menu.Item key={"logout"} icon={<LogoutOutlined />} onClick={handleLogOut}>
                 {"Log Out"}
             </Menu.Item>
         </Menu>

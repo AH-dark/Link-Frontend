@@ -16,6 +16,7 @@ import Cookie from "js-cookie";
 import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
 import UserInfo from "./page/UserInfo";
+import Explorer from "./page/Explorer";
 
 function App() {
     const dispatch = useDispatch();
@@ -90,6 +91,8 @@ function App() {
                 <Route path={"/me"} element={<UserInfo />} />
                 <Route path={"/user"} element={<UserInfo />} />
                 <Route path={"/user/:userId"} element={<UserInfo />} />
+
+                <Route path={"explorer"} element={<Explorer />} />
 
                 <Route path={"*"} element={<NoMatch />} />
             </Routes>

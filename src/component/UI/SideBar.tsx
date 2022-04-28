@@ -1,9 +1,9 @@
 import React, { FC, useState } from "react";
-import { Grid, Layout, Menu } from "antd";
+import { Divider, Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
-import { HomeOutlined, LinkOutlined, LoginOutlined, SettingOutlined } from "@ant-design/icons";
+import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, SettingOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MenuInfo } from "rc-menu/lib/interface";
 import User from "../../model/data/User";
@@ -35,6 +35,10 @@ const SideBar: FC = () => {
                 <Item key="/" icon={<HomeOutlined />} className={styles.menuItem}>
                     {"Home"}
                 </Item>
+                <Item key="/explorer" icon={<GlobalOutlined />} className={styles.menuItem}>
+                    {"Explorer"}
+                </Item>
+                <Divider style={{ margin: 0 }} />
                 {typeof userData === "undefined" ? (
                     <Item key="/login" icon={<LoginOutlined />} className={styles.menuItem}>
                         {"Login"}

@@ -72,3 +72,27 @@ export const getShortLinkByUser: GetShortLinkByUserType = async (userId: number)
         return null;
     }
 };
+
+export interface GetLatestShortLinkType {
+    (size?: number, page?: number): Promise<ShortLink[] | null>;
+}
+
+export const getLatestShortLink: GetLatestShortLinkType = async (size = 10, page = 1) => {
+    const res = await API.get<ApiResponse<ShortLink[]>>("/shortLink/latest", {
+        responseType: "json",
+        params: {
+            size: size,
+            page: page,
+        },
+    });
+
+    if (res.status === 200 && res.data.code === 200) {
+        if (res.data.exceptions) {
+            console.warn("Exceptions from getLatestShortLink():", res.data.exceptions);
+        }
+        return res.data.data;
+    } else {
+        message.error(`Error ${res.data.code}: ${res.data.message}`);
+        return null;
+    }
+};

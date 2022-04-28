@@ -6,7 +6,7 @@
     justify-content: center;
 
     .details {
-      :first-child {
+      > :first-child > * {
         -moz-border-radius-topleft: 0.6rem;
         -moz-border-radius-topright: 0.6rem;
         border-top-left-radius: 0.6rem;
@@ -18,14 +18,6 @@
         -moz-border-radius-bottomright: 0.6rem;
         border-bottom-left-radius: 0.6rem;
         border-bottom-right-radius: 0.6rem;
-      }
-
-      :global {
-        .ant-image {
-          .ant-image-mask {
-            border-radius: 0.6rem 0.6rem 0 0;
-          }
-        }
       }
 
       .preview {

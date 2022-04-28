@@ -50,8 +50,10 @@
       z-index: 9999;
 
       .menu {
-        .menuItem {
-          flex-grow: 1;
+        :global {
+          .ant-menu-item[role=menuitem] {
+            flex-grow: 1;
+          }
         }
       }
     }
