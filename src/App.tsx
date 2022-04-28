@@ -92,7 +92,7 @@ function App() {
                 <Route path={"/user"} element={<UserInfo />} />
                 <Route path={"/user/:userId"} element={<UserInfo />} />
 
-                <Route path={"explorer"} element={<Explorer />} />
+                <Route path={"/explorer"} element={<Explorer />} />
 
                 <Route path={"*"} element={<NoMatch />} />
             </Routes>
