@@ -95,3 +95,14 @@
     }
   }
 }
+.modal {
+  form {
+    :global {
+      .ant-form-item {
+        .ant-col.ant-form-item-label {
+          width: 100px;
+        }
+      }
+    }
+  }
+}
