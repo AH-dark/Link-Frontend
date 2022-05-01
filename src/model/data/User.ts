@@ -10,3 +10,10 @@ export default interface User {
     loginTime: Date;
     available: boolean;
 }
+
+export interface UserPutData {
+    id: number;
+    name?: string;
+    description?: string;
+    password?: string;
+}

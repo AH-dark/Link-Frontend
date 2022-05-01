@@ -1,0 +1,97 @@
+.main {
+  .card {
+    width: 780px;
+    max-width: 95vw;
+    border-radius: 0.6rem;
+
+    :global {
+      .ant-card-body {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .title {
+      display: none;
+    }
+
+    .body {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+
+      .leftArea {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 60px;
+        padding-bottom: 60px;
+
+        .typo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+
+          .userName {
+            margin-top: 28px;
+          }
+        }
+      }
+
+      .rightArea {
+        padding: 16px;
+        width: 70%;
+
+        .title {
+          display: block;
+          text-align: center;
+          padding-top: 16px;
+        }
+
+        .form {
+          padding-top: 24px;
+          padding-bottom: 48px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          :global {
+            .ant-form-item {
+              width: 100%;
+
+              span.ant-typography {
+                font-size: 1rem;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    @media screen and (max-width: 780px) {
+      .body {
+        flex-direction: column;
+        align-items: center;
+
+        .leftArea {
+          display: none;
+        }
+
+        .rightArea {
+          .title {
+            display: none;
+          }
+        }
+      }
+      .title {
+        display: block;
+        text-align: center;
+        padding-top: 16px;
+      }
+    }
+  }
+}

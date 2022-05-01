@@ -6,7 +6,7 @@ import { Avatar, Button, Menu, message, Popover } from "antd";
 import { GetAvatar } from "../../utils/avatar";
 import { LoginOutlined, LogoutOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./ui.module.scss";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./LoginMenu.scss";
 import API from "../../middleware/API";
 import ApiResponse from "../../model/ApiResponse";
@@ -14,7 +14,6 @@ import { setUserLogin } from "../../redux/action";
 
 const MenuContent: FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
     const dispatch = useDispatch();
 
     const handleSettings = () => {
@@ -46,16 +45,12 @@ const MenuContent: FC = () => {
 
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
-            {location.pathname !== "/me" && (
-                <Menu.Item key={"me"} icon={<UserOutlined />} onClick={handleMe}>
-                    {"Me"}
-                </Menu.Item>
-            )}
-            {location.pathname !== "/settings" && (
-                <Menu.Item key={"settings"} icon={<ToolOutlined />} onClick={handleSettings}>
-                    {"Settings"}
-                </Menu.Item>
-            )}
+            <Menu.Item key={"me"} icon={<UserOutlined />} onClick={handleMe}>
+                {"Me"}
+            </Menu.Item>
+            <Menu.Item key={"settings"} icon={<ToolOutlined />} onClick={handleSettings}>
+                {"Settings"}
+            </Menu.Item>
             <Menu.Item key={"logout"} icon={<LogoutOutlined />} onClick={handleLogOut}>
                 {"Log Out"}
             </Menu.Item>

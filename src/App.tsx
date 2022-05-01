@@ -18,6 +18,7 @@ import { getUser } from "./middleware/API/user";
 import UserInfo from "./component/UserPages/UserInfo";
 import Explorer from "./component/UserPages/Explorer";
 import UI from "./component/UI";
+import UserSettings from "./component/UserPages/UserSettings";
 
 function App() {
     const dispatch = useDispatch();
@@ -84,18 +85,24 @@ function App() {
         <BrowserRouter>
             <UI>
                 <Routes>
+                    {/* Basic */}
                     <Route path={"/"} element={<Home />} />
                     <Route path={"/login"} element={<Login />} />
 
+                    {/* Short Link */}
                     <Route path={"/generate"} element={<Generate />} />
                     <Route path={"/link/:key"} element={<LinkDetail />} />
+                    <Route path={"/explorer"} element={<Explorer />} />
 
+                    {/* User Explorer */}
                     <Route path={"/me"} element={<UserInfo />} />
                     <Route path={"/user"} element={<UserInfo />} />
                     <Route path={"/user/:userId"} element={<UserInfo />} />
 
-                    <Route path={"/explorer"} element={<Explorer />} />
+                    {/* User Self Manage */}
+                    <Route path={"/settings"} element={<UserSettings />} />
 
+                    {/* 404 */}
                     <Route path={"*"} element={<NoMatch />} />
                 </Routes>
             </UI>
