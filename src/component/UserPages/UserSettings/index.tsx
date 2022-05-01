@@ -84,20 +84,27 @@ const UserSettings: FC = () => {
             return;
         }
 
-        putUser({
-            id: user?.id || 0,
-            password: e.password,
-        })
-            .then((r) => {
-                if (r !== null) {
-                    message.success("密码修改成功");
-                }
-            })
-            .then(() => {
+        Modal.confirm({
+            title: "警告",
+            content: "确认更改密码为 " + e.password + " 吗？",
+            onOk: () => {
+                putUser({
+                    id: user?.id || 0,
+                    password: e.password,
+                })
+                    .then((r) => {
+                        if (r !== null) {
+                            message.success("密码修改成功");
+                        }
+                    })
+                    .then(() => {
+                        passwordForm.resetFields();
+                    });
+            },
+            onCancel: () => {
                 passwordForm.resetFields();
-            });
-
-        return true;
+            },
+        });
     };
 
     if (typeof user === "undefined") {
