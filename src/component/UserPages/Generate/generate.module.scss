@@ -1,0 +1,15 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .alert {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .form {
+    width: 580px;
+    max-width: 97.5vw;
+  }
+}

@@ -1,14 +1,14 @@
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../../redux/action";
+import { setTitle } from "../../../redux/action";
 import styles from "./generate.module.scss";
 import { Alert, Avatar, Button, Col, Form, Input, message, Row, Typography } from "antd";
 import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
-import { MyState } from "../../redux/reducer";
-import User from "../../model/data/User";
-import { GetAvatar } from "../../utils/avatar";
+import { MyState } from "../../../redux/reducer";
+import User from "../../../model/data/User";
+import { GetAvatar } from "../../../utils/avatar";
 import { useNavigate } from "react-router-dom";
-import { generateShortLink } from "../../middleware/API/shortLink";
+import { generateShortLink } from "../../../middleware/API/shortLink";
 
 const { Title } = Typography;
 

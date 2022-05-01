@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./page/Home";
+import Home from "./component/UserPages/Home";
 import "antd/dist/antd.min.css";
 import "./App.css";
-import LinkDetail from "./page/LinkDetail";
-import Login from "./page/Login";
+import LinkDetail from "./component/UserPages/LinkDetail";
+import Login from "./component/UserPages/Login";
 import User from "./model/data/User";
 import { useDispatch, useSelector } from "react-redux";
 import { setSiteConfig, setUserLogin } from "./redux/action";
 import SiteConfig from "./model/data/SiteConfig";
-import NoMatch from "./page/NoMatch";
-import Generate from "./page/Generate";
+import NoMatch from "./component/UserPages/NoMatch";
+import Generate from "./component/UserPages/Generate";
 import { MyState } from "./redux/reducer";
 import Cookie from "js-cookie";
 import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
-import UserInfo from "./page/UserInfo";
-import Explorer from "./page/Explorer";
+import UserInfo from "./component/UserPages/UserInfo";
+import Explorer from "./component/UserPages/Explorer";
 import UI from "./component/UI";
 
 function App() {

@@ -2,13 +2,13 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "./login.module.scss";
 import { Button, Checkbox, Form, Input, message, Typography } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import API from "../../middleware/API";
-import LoginData from "../../model/data/LoginData";
-import ApiResponse from "../../model/ApiResponse";
-import User from "../../model/data/User";
+import API from "../../../middleware/API";
+import LoginData from "../../../model/data/LoginData";
+import ApiResponse from "../../../model/ApiResponse";
+import User from "../../../model/data/User";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle, setUserLogin } from "../../redux/action";
-import { MyState } from "../../redux/reducer";
+import { setTitle, setUserLogin } from "../../../redux/action";
+import { MyState } from "../../../redux/reducer";
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
@@ -23,15 +23,15 @@ const Login: FC = () => {
             message.warning("您已经登录");
             navigate("/");
         }
-    });
+    }, []);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(setTitle("Login"));
-    });
+    }, []);
 
     const [load, setLoad] = useState(false);
-
-    const dispatch = useDispatch();
 
     const onFinish = (values: LoginData) => {
         console.log("Received values of login form: ", values);

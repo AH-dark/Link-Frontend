@@ -1,0 +1,71 @@
+.main {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .details {
+    > :first-child > * {
+      -moz-border-radius-topleft: 0.6rem;
+      -moz-border-radius-topright: 0.6rem;
+      border-top-left-radius: 0.6rem;
+      border-top-right-radius: 0.6rem;
+    }
+
+    > :last-child {
+      -moz-border-radius-bottomleft: 0.6rem;
+      -moz-border-radius-bottomright: 0.6rem;
+      border-bottom-left-radius: 0.6rem;
+      border-bottom-right-radius: 0.6rem;
+    }
+
+    .preview {
+      width: 780px;
+      max-width: 95vw;
+      max-height: 460px;
+      margin-bottom: 0;
+    }
+
+    .card {
+      width: 780px;
+      max-width: 95vw;
+      padding: 0;
+      border: 0;
+
+      .list {
+        width: 100%;
+
+        .listItem {
+          :global {
+            .ant-list-item-meta-title {
+              font-size: 16px;
+            }
+          }
+        }
+      }
+
+      :global {
+        .ant-card-body {
+          padding-bottom: 16px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 780px) {
+      .preview {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+      }
+    }
+  }
+
+  .go-button-badge {
+    margin-top: 12px;
+    width: 100%;
+
+    .go-button {
+      border-radius: 0.6rem;
+    }
+  }
+}

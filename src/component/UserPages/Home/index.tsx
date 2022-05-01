@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../../redux/action";
+import { setTitle } from "../../../redux/action";
 import { Grid, Input, message, Typography } from "antd";
-import { MyState } from "../../redux/reducer";
+import { MyState } from "../../../redux/reducer";
 import styles from "./home.module.scss";
-import { ShortLinkBasic } from "../../model/data/ShortLink";
+import { ShortLinkBasic } from "../../../model/data/ShortLink";
 import { useNavigate } from "react-router-dom";
-import User from "../../model/data/User";
-import { generateShortLink } from "../../middleware/API/shortLink";
+import User from "../../../model/data/User";
+import { generateShortLink } from "../../../middleware/API/shortLink";
 
 const { Title } = Typography;
 const { Search } = Input;

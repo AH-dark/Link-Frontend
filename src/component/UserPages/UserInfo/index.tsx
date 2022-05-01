@@ -1,16 +1,16 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { MyState } from "../../redux/reducer";
-import User from "../../model/data/User";
+import { MyState } from "../../../redux/reducer";
+import User from "../../../model/data/User";
 import { Button, Card, Image, List, message, Pagination, Skeleton, Spin, Typography } from "antd";
-import { getUser } from "../../middleware/API/user";
-import { GetAvatar } from "../../utils/avatar";
+import { getUser } from "../../../middleware/API/user";
+import { GetAvatar } from "../../../utils/avatar";
 import styles from "./userInfo.module.scss";
-import { getShortLinkByUser } from "../../middleware/API/shortLink";
-import ShortLink from "../../model/data/ShortLink";
+import { getShortLinkByUser } from "../../../middleware/API/shortLink";
+import ShortLink from "../../../model/data/ShortLink";
 import { ArrowRightOutlined, CopyOutlined, InfoCircleOutlined, MailOutlined } from "@ant-design/icons";
-import SiteConfig from "../../model/data/SiteConfig";
+import SiteConfig from "../../../model/data/SiteConfig";
 import ClipboardJS from "clipboard";
 
 const { Meta } = Card;
