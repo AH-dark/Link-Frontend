@@ -17,6 +17,7 @@ import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
 import UserInfo from "./page/UserInfo";
 import Explorer from "./page/Explorer";
+import UI from "./component/UI";
 
 function App() {
     const dispatch = useDispatch();
@@ -81,21 +82,23 @@ function App() {
 
     return (
         <BrowserRouter>
-            <Routes>
-                <Route path={"/"} element={<Home />} />
-                <Route path={"/login"} element={<Login />} />
+            <UI>
+                <Routes>
+                    <Route path={"/"} element={<Home />} />
+                    <Route path={"/login"} element={<Login />} />
 
-                <Route path={"/generate"} element={<Generate />} />
-                <Route path={"/link/:key"} element={<LinkDetail />} />
+                    <Route path={"/generate"} element={<Generate />} />
+                    <Route path={"/link/:key"} element={<LinkDetail />} />
 
-                <Route path={"/me"} element={<UserInfo />} />
-                <Route path={"/user"} element={<UserInfo />} />
-                <Route path={"/user/:userId"} element={<UserInfo />} />
+                    <Route path={"/me"} element={<UserInfo />} />
+                    <Route path={"/user"} element={<UserInfo />} />
+                    <Route path={"/user/:userId"} element={<UserInfo />} />
 
-                <Route path={"/explorer"} element={<Explorer />} />
+                    <Route path={"/explorer"} element={<Explorer />} />
 
-                <Route path={"*"} element={<NoMatch />} />
-            </Routes>
+                    <Route path={"*"} element={<NoMatch />} />
+                </Routes>
+            </UI>
         </BrowserRouter>
     );
 }

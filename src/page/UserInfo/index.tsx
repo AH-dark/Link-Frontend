@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import UI from "../../component/UI";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
@@ -69,155 +68,149 @@ const UserInfo: FC<{
     const url: URL = new URL(siteConfig.siteUrl);
 
     if (load) {
-        return (
-            <UI>
-                <Spin size={"large"} />
-            </UI>
-        );
+        return <Spin size={"large"} />;
     }
 
     if (typeof user === "undefined" || typeof userLinkData === "undefined") {
-        return <UI>{"Error."}</UI>;
+        return <>{"Error."}</>;
     }
 
     return (
-        <UI className={styles.root}>
-            <div className={styles.main}>
-                <Card
-                    className={styles.infoCard}
-                    actions={[
-                        <Button
-                            shape={"circle"}
-                            icon={<MailOutlined />}
-                            title={"Mail to " + user.name}
-                            href={"mailto:" + user.email}
-                            target={"_top"}
-                            rel={"mail"}
-                        />,
-                    ]}
-                    loading={load}
-                >
-                    <Meta
-                        avatar={
-                            <Image
-                                src={GetAvatar(user.email)}
-                                preview={false}
-                                placeholder={true}
-                                alt={`avatar of ${user.name}.`}
-                                style={{
-                                    borderRadius: "50%",
-                                }}
-                            />
-                        }
-                        title={
-                            <Title level={2} style={{ marginBottom: 8 }}>
-                                {user.name}
-                            </Title>
-                        }
-                        description={<Text type={"secondary"}>{user.description}</Text>}
-                        className={styles.meta}
-                    />
-                </Card>
-                <Card className={styles.listCard}>
-                    <List
-                        className={styles.list}
-                        itemLayout="horizontal"
-                        dataSource={userLinkData.slice((page - 1) * 5, min(page * 5, userLinkData.length))}
-                        renderItem={(item) => {
-                            const fullKeyUrl = `${url.origin}/go/${item.key}`;
+        <div className={styles.main}>
+            <Card
+                className={styles.infoCard}
+                actions={[
+                    <Button
+                        shape={"circle"}
+                        icon={<MailOutlined />}
+                        title={"Mail to " + user.name}
+                        href={"mailto:" + user.email}
+                        target={"_top"}
+                        rel={"mail"}
+                    />,
+                ]}
+                loading={load}
+            >
+                <Meta
+                    avatar={
+                        <Image
+                            src={GetAvatar(user.email)}
+                            preview={false}
+                            placeholder={true}
+                            alt={`avatar of ${user.name}.`}
+                            style={{
+                                borderRadius: "50%",
+                            }}
+                        />
+                    }
+                    title={
+                        <Title level={2} style={{ marginBottom: 8 }}>
+                            {user.name}
+                        </Title>
+                    }
+                    description={<Text type={"secondary"}>{user.description}</Text>}
+                    className={styles.meta}
+                />
+            </Card>
+            <Card className={styles.listCard}>
+                <List
+                    className={styles.list}
+                    itemLayout="horizontal"
+                    dataSource={userLinkData.slice((page - 1) * 5, min(page * 5, userLinkData.length))}
+                    renderItem={(item) => {
+                        const fullKeyUrl = `${url.origin}/go/${item.key}`;
 
-                            const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
-                                const clipboard = new ClipboardJS(e.currentTarget, {
-                                    text: () => {
-                                        return fullKeyUrl;
-                                    },
-                                });
+                        const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
+                            const clipboard = new ClipboardJS(e.currentTarget, {
+                                text: () => {
+                                    return fullKeyUrl;
+                                },
+                            });
 
-                                clipboard.on("success", () => {
-                                    message.success("内容已复制到剪贴板");
-                                });
-                                clipboard.on("error", () => {
-                                    message.error("无法复制到剪贴板");
-                                });
-                            };
+                            clipboard.on("success", () => {
+                                message.success("内容已复制到剪贴板");
+                            });
+                            clipboard.on("error", () => {
+                                message.error("无法复制到剪贴板");
+                            });
+                        };
 
-                            const infoUrl = "/link/" + item.key;
+                        const infoUrl = "/link/" + item.key;
 
-                            const handleInfoClick = (e: React.MouseEvent<HTMLDivElement>) => {
-                                e.preventDefault();
-                                navigate(infoUrl);
-                            };
+                        const handleInfoClick = (e: React.MouseEvent<HTMLDivElement>) => {
+                            e.preventDefault();
+                            navigate(infoUrl);
+                        };
 
-                            const handleRedirectClick = (e: React.MouseEvent<HTMLDivElement>) => {
-                                e.preventDefault();
-                                window.open(fullKeyUrl);
-                            };
+                        const handleRedirectClick = (e: React.MouseEvent<HTMLDivElement>) => {
+                            e.preventDefault();
+                            window.open(fullKeyUrl);
+                        };
 
-                            return (
-                                <List.Item
-                                    actions={[
-                                        <Button
-                                            shape={"circle"}
-                                            title={"Copy"}
-                                            icon={<CopyOutlined />}
-                                            size={"middle"}
-                                            rel={"copy"}
-                                            onClick={handleCopyClick}
-                                            type={"text"}
-                                        />,
-                                        <Button
-                                            shape={"circle"}
-                                            title={"Info"}
-                                            icon={<InfoCircleOutlined />}
-                                            size={"middle"}
-                                            rel={"self"}
-                                            href={infoUrl}
-                                            onClick={handleInfoClick}
-                                            type={"text"}
-                                        />,
-                                        <Button
-                                            shape={"circle"}
-                                            title={"Go"}
-                                            icon={<ArrowRightOutlined />}
-                                            href={item.origin}
-                                            target={"_blank"}
-                                            size={"middle"}
-                                            rel={"nofollow noopener ugc"}
-                                            type={"text"}
-                                            onClick={handleRedirectClick}
-                                        />,
-                                    ]}
-                                    className={styles.item}
-                                >
-                                    <Skeleton active avatar={false} paragraph={{ rows: 1 }} loading={listLoad}>
-                                        <List.Item.Meta
-                                            title={"Key: " + item.key}
-                                            description={
-                                                <Text copyable={false} className={styles.text} ellipsis={true}>
-                                                    {item.origin}
-                                                </Text>
-                                            }
-                                        />
-                                    </Skeleton>
-                                </List.Item>
-                            );
-                        }}
-                    />
-                </Card>
-                <div className={styles.paginationDiv}>
-                    <Pagination
-                        defaultCurrent={1}
-                        total={userLinkData.length}
-                        current={page}
-                        pageSize={5}
-                        onChange={(page) => {
-                            setPage(page);
-                        }}
-                        className={styles.pagination}
-                    />
-                </div>
+                        return (
+                            <List.Item
+                                actions={[
+                                    <Button
+                                        shape={"circle"}
+                                        title={"Copy"}
+                                        icon={<CopyOutlined />}
+                                        size={"middle"}
+                                        rel={"copy"}
+                                        onClick={handleCopyClick}
+                                        type={"text"}
+                                    />,
+                                    <Button
+                                        shape={"circle"}
+                                        title={"Info"}
+                                        icon={<InfoCircleOutlined />}
+                                        size={"middle"}
+                                        rel={"self"}
+                                        href={infoUrl}
+                                        onClick={handleInfoClick}
+                                        type={"text"}
+                                    />,
+                                    <Button
+                                        shape={"circle"}
+                                        title={"Go"}
+                                        icon={<ArrowRightOutlined />}
+                                        href={item.origin}
+                                        target={"_blank"}
+                                        size={"middle"}
+                                        rel={"nofollow noopener ugc"}
+                                        type={"text"}
+                                        onClick={handleRedirectClick}
+                                    />,
+                                ]}
+                                className={styles.item}
+                            >
+                                <Skeleton active avatar={false} paragraph={{ rows: 1 }} loading={listLoad}>
+                                    <List.Item.Meta
+                                        title={"Key: " + item.key}
+                                        description={
+                                            <Text copyable={false} className={styles.text} ellipsis={true}>
+                                                {item.origin}
+                                            </Text>
+                                        }
+                                    />
+                                </Skeleton>
+                            </List.Item>
+                        );
+                    }}
+                />
+            </Card>
+            <div className={styles.paginationDiv}>
+                <Pagination
+                    defaultCurrent={1}
+                    total={userLinkData.length}
+                    current={page}
+                    pageSize={5}
+                    onChange={(page) => {
+                        setPage(page);
+                    }}
+                    className={styles.pagination}
+                />
             </div>
-        </UI>
+        </div>
     );
 };
 

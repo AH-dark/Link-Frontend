@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import UI from "../../component/UI";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../redux/action";
 import styles from "./generate.module.scss";
@@ -74,100 +73,98 @@ const Generate: FC = () => {
     }
 
     return (
-        <UI className={styles.root}>
-            <div className={styles.main}>
-                <Title>{"Generate"}</Title>
-                <Alert
-                    type={"info"}
-                    message={"Notice"}
-                    description={"在本页面生成短链接支持自定义后缀。"}
-                    className={styles.alert}
-                    showIcon
-                    closable
-                />
-                <Form className={styles.form} form={form} layout="vertical" autoComplete="off">
-                    <Col>
-                        <Form.Item
-                            name={"origin"}
+        <div className={styles.main}>
+            <Title>{"Generate"}</Title>
+            <Alert
+                type={"info"}
+                message={"Notice"}
+                description={"在本页面生成短链接支持自定义后缀。"}
+                className={styles.alert}
+                showIcon
+                closable
+            />
+            <Form className={styles.form} form={form} layout="vertical" autoComplete="off">
+                <Col>
+                    <Form.Item
+                        name={"origin"}
+                        style={{
+                            marginBottom: 16,
+                        }}
+                    >
+                        <Input
+                            size={"large"}
+                            placeholder={"Link"}
+                            prefix={<LinkOutlined style={{ marginRight: 4 }} />}
+                            allowClear
+                        />
+                    </Form.Item>
+                    <Row
+                        justify={"space-between"}
+                        align={"middle"}
+                        style={{
+                            marginBottom: 16,
+                        }}
+                    >
+                        <Col
+                            span={12}
                             style={{
-                                marginBottom: 16,
+                                paddingRight: 4,
                             }}
                         >
-                            <Input
-                                size={"large"}
-                                placeholder={"Link"}
-                                prefix={<LinkOutlined style={{ marginRight: 4 }} />}
-                                allowClear
-                            />
-                        </Form.Item>
-                        <Row
-                            justify={"space-between"}
-                            align={"middle"}
+                            <Form.Item name={"key"} style={{ marginBottom: 4 }}>
+                                <Input
+                                    size={"large"}
+                                    placeholder={"Key"}
+                                    prefix={<TagOutlined style={{ marginRight: 4 }} />}
+                                    allowClear
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col
+                            span={12}
                             style={{
-                                marginBottom: 16,
+                                paddingLeft: 4,
                             }}
                         >
-                            <Col
-                                span={12}
-                                style={{
-                                    paddingRight: 4,
-                                }}
-                            >
-                                <Form.Item name={"key"} style={{ marginBottom: 4 }}>
-                                    <Input
-                                        size={"large"}
-                                        placeholder={"Key"}
-                                        prefix={<TagOutlined style={{ marginRight: 4 }} />}
-                                        allowClear
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col
-                                span={12}
-                                style={{
-                                    paddingLeft: 4,
-                                }}
-                            >
-                                <div style={{ marginBottom: 4 }}>
-                                    <Input
-                                        size={"large"}
-                                        placeholder={"Creator"}
-                                        prefix={
-                                            isUserAvailable ? (
-                                                <Avatar
-                                                    src={GetAvatar(user?.email)}
-                                                    size={"small"}
-                                                    style={{ marginRight: 4 }}
-                                                />
-                                            ) : (
-                                                <UserOutlined style={{ marginRight: 4 }} />
-                                            )
-                                        }
-                                        disabled={true}
-                                        value={user?.name}
-                                    />
-                                </div>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Button
-                                type={"primary"}
-                                htmlType={"submit"}
-                                size={"large"}
-                                style={{
-                                    height: "100%",
-                                    width: "100%",
-                                }}
-                                disabled={!isUserAvailable || load}
-                                onClick={submit}
-                            >
-                                {"Submit"}
-                            </Button>
-                        </Row>
-                    </Col>
-                </Form>
-            </div>
-        </UI>
+                            <div style={{ marginBottom: 4 }}>
+                                <Input
+                                    size={"large"}
+                                    placeholder={"Creator"}
+                                    prefix={
+                                        isUserAvailable ? (
+                                            <Avatar
+                                                src={GetAvatar(user?.email)}
+                                                size={"small"}
+                                                style={{ marginRight: 4 }}
+                                            />
+                                        ) : (
+                                            <UserOutlined style={{ marginRight: 4 }} />
+                                        )
+                                    }
+                                    disabled={true}
+                                    value={user?.name}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Button
+                            type={"primary"}
+                            htmlType={"submit"}
+                            size={"large"}
+                            style={{
+                                height: "100%",
+                                width: "100%",
+                            }}
+                            disabled={!isUserAvailable || load}
+                            onClick={submit}
+                        >
+                            {"Submit"}
+                        </Button>
+                    </Row>
+                </Col>
+            </Form>
+        </div>
     );
 };
 

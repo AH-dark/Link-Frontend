@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "./explorer.module.scss";
-import UI from "../../component/UI";
 import ShortLink from "../../model/data/ShortLink";
 import { getLatestShortLink } from "../../middleware/API/shortLink";
 import { Badge, Button, Card, List, message, Spin, Typography } from "antd";
@@ -83,91 +82,85 @@ const Explorer: FC = () => {
     }, [page]);
 
     if (loading) {
-        return (
-            <UI>
-                <Spin size={"large"} />
-            </UI>
-        );
+        return <Spin size={"large"} />;
     }
 
     return (
-        <UI className={styles.root}>
-            <div className={styles.main}>
-                <List
-                    className={styles.list}
-                    dataSource={data}
-                    renderItem={({ key, origin, userId, view }) => {
-                        const handleInfoIcon = (e: React.MouseEvent<HTMLDivElement>) => {
-                            e.preventDefault();
-                            navigate("/link/" + key);
-                        };
+        <div className={styles.main}>
+            <List
+                className={styles.list}
+                dataSource={data}
+                renderItem={({ key, origin, userId, view }) => {
+                    const handleInfoIcon = (e: React.MouseEvent<HTMLDivElement>) => {
+                        e.preventDefault();
+                        navigate("/link/" + key);
+                    };
 
-                        const handleUserIcon = (e: React.MouseEvent<HTMLDivElement>) => {
-                            e.preventDefault();
-                            navigate("/user/" + userId);
-                        };
+                    const handleUserIcon = (e: React.MouseEvent<HTMLDivElement>) => {
+                        e.preventDefault();
+                        navigate("/user/" + userId);
+                    };
 
-                        let actions: React.ReactNode[] = [];
+                    let actions: React.ReactNode[] = [];
 
-                        if (userId !== undefined && userId !== 0) {
-                            actions.push(
-                                <Button
-                                    type={"text"}
-                                    shape={"circle"}
-                                    icon={<UserOutlined />}
-                                    size={"middle"}
-                                    href={"/user/" + userId}
-                                    target={"_self"}
-                                    title={userHash[userId].name}
-                                    onClick={handleUserIcon}
-                                    rel={"author"}
-                                />
-                            );
-                        }
-
+                    if (userId !== undefined && userId !== 0) {
                         actions.push(
                             <Button
                                 type={"text"}
                                 shape={"circle"}
-                                icon={<InfoCircleOutlined />}
+                                icon={<UserOutlined />}
                                 size={"middle"}
-                                href={"/link/" + key}
+                                href={"/user/" + userId}
                                 target={"_self"}
-                                title={key}
-                                onClick={handleInfoIcon}
-                                rel={"info"}
+                                title={userHash[userId].name}
+                                onClick={handleUserIcon}
+                                rel={"author"}
                             />
                         );
+                    }
 
-                        const creatorName = userId !== undefined && userId !== 0 ? userHash[userId].name : "Tourist";
+                    actions.push(
+                        <Button
+                            type={"text"}
+                            shape={"circle"}
+                            icon={<InfoCircleOutlined />}
+                            size={"middle"}
+                            href={"/link/" + key}
+                            target={"_self"}
+                            title={key}
+                            onClick={handleInfoIcon}
+                            rel={"info"}
+                        />
+                    );
 
-                        return (
-                            <Badge count={"View: " + view} className={styles.badge} size={"small"}>
-                                <Card className={styles.card}>
-                                    <List.Item className={styles.listItem} actions={actions}>
-                                        <List.Item.Meta
-                                            title={"Key: " + key}
-                                            className={styles.meta}
-                                            description={
-                                                <>
-                                                    <Text type={"secondary"} ellipsis>
-                                                        {origin}
-                                                    </Text>
-                                                    <br />
-                                                    <Text type={"secondary"} ellipsis>
-                                                        {"Created by " + creatorName}
-                                                    </Text>
-                                                </>
-                                            }
-                                        />
-                                    </List.Item>
-                                </Card>
-                            </Badge>
-                        );
-                    }}
-                />
-            </div>
-        </UI>
+                    const creatorName = userId !== undefined && userId !== 0 ? userHash[userId].name : "Tourist";
+
+                    return (
+                        <Badge count={"View: " + view} className={styles.badge} size={"small"}>
+                            <Card className={styles.card}>
+                                <List.Item className={styles.listItem} actions={actions}>
+                                    <List.Item.Meta
+                                        title={"Key: " + key}
+                                        className={styles.meta}
+                                        description={
+                                            <>
+                                                <Text type={"secondary"} ellipsis>
+                                                    {origin}
+                                                </Text>
+                                                <br />
+                                                <Text type={"secondary"} ellipsis>
+                                                    {"Created by " + creatorName}
+                                                </Text>
+                                            </>
+                                        }
+                                    />
+                                </List.Item>
+                            </Card>
+                        </Badge>
+                    );
+                }}
+            />
+        </div>
     );
 };
 

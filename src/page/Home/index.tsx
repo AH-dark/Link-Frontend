@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useState } from "react";
-import UI from "../../component/UI";
 import { useDispatch, useSelector } from "react-redux";
 import { setTitle } from "../../redux/action";
 import { Grid, Input, message, Typography } from "antd";
@@ -61,27 +60,25 @@ const Index: FC = () => {
     const isSmallDevice = breakpoint.sm;
 
     return (
-        <UI className={styles.root}>
-            <div className={styles.main}>
-                <Title>{siteName}</Title>
-                <Search
-                    placeholder="Enter your url"
-                    allowClear
-                    enterButton="Shorten"
-                    size="large"
-                    onSearch={handleSubmit}
-                    style={{ width: isSmallDevice ? 480 : "90%" }}
-                    onChange={(e) => {
-                        setData({
-                            ...data,
-                            origin: e.target.value,
-                        });
-                    }}
-                    value={data.origin}
-                    loading={isLoad}
-                />
-            </div>
-        </UI>
+        <div className={styles.main}>
+            <Title>{siteName}</Title>
+            <Search
+                placeholder="Enter your url"
+                allowClear
+                enterButton="Shorten"
+                size="large"
+                onSearch={handleSubmit}
+                style={{ width: isSmallDevice ? 480 : "90%" }}
+                onChange={(e) => {
+                    setData({
+                        ...data,
+                        origin: e.target.value,
+                    });
+                }}
+                value={data.origin}
+                loading={isLoad}
+            />
+        </div>
     );
 };
 
