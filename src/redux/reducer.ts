@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { SET_SIDEBAR_OPEN, SET_SITE_CONFIG, SET_TITLE, SET_USER_LOGIN } from "./action";
+import { SET_SIDEBAR_OPEN, SET_SITE_CONFIG, SET_TITLE, SET_USER, SET_USER_LOGIN } from "./action";
 import User from "../model/data/User";
 import SiteConfig from "../model/data/SiteConfig";
 import Cookie from "js-cookie";
@@ -14,6 +14,9 @@ export interface MyState {
     user?: User;
     site: SiteConfig & {
         isSet: boolean;
+    };
+    userHash: {
+        [K: number]: User;
     };
 }
 
@@ -38,6 +41,7 @@ const initState: MyState = {
                   enableTouristShorten: false,
                   isSet: false,
               },
+    userHash: {},
 };
 
 const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
@@ -63,11 +67,23 @@ const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
             return {
                 ...state,
                 user: action.user,
+                userHash: {
+                    ...state.userHash,
+                    [action.usr.id]: action.user,
+                },
             };
         case SET_SITE_CONFIG:
             return {
                 ...state,
                 site: action.site,
+            };
+        case SET_USER:
+            return {
+                ...state,
+                userHash: {
+                    ...state.userHash,
+                    [action.usr.id]: action.user,
+                },
             };
         default:
             return state;

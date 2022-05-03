@@ -4,7 +4,7 @@ import { MyState } from "../../redux/reducer";
 import User from "../../model/data/User";
 import { Avatar, Button, Menu, message, Popover } from "antd";
 import { GetAvatar } from "../../utils/avatar";
-import { LoginOutlined, LogoutOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, SettingOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./ui.module.scss";
 import { useNavigate } from "react-router-dom";
 import "./LoginMenu.scss";
@@ -18,6 +18,10 @@ const MenuContent: FC = () => {
 
     const handleSettings = () => {
         navigate("/settings");
+    };
+
+    const handleControlPanel = () => {
+        navigate("/admin");
     };
 
     const handleMe = () => {
@@ -43,6 +47,8 @@ const MenuContent: FC = () => {
             });
     };
 
+    const user = useSelector<MyState, User | undefined>((state) => state.user);
+
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
             <Menu.Item key={"me"} icon={<UserOutlined />} onClick={handleMe}>
@@ -51,6 +57,11 @@ const MenuContent: FC = () => {
             <Menu.Item key={"settings"} icon={<ToolOutlined />} onClick={handleSettings}>
                 {"Settings"}
             </Menu.Item>
+            {user?.available && (
+                <Menu.Item key={"control"} icon={<SettingOutlined />} onClick={handleControlPanel}>
+                    {"Control Panel"}
+                </Menu.Item>
+            )}
             <Menu.Item key={"logout"} icon={<LogoutOutlined />} onClick={handleLogOut}>
                 {"Log Out"}
             </Menu.Item>

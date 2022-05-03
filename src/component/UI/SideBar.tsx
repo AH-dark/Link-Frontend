@@ -3,7 +3,7 @@ import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
 import { useSelector } from "react-redux";
 import { MyState } from "../../redux/reducer";
-import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, SettingOutlined } from "@ant-design/icons";
+import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, ToolOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { MenuInfo } from "rc-menu/lib/interface";
 import User from "../../model/data/User";
@@ -47,7 +47,7 @@ const SideBar: FC = () => {
                         <Item key="/generate" icon={<LinkOutlined />} className={styles.menuItem}>
                             {"Generate"}
                         </Item>
-                        <Item key="/settings" icon={<SettingOutlined />} className={styles.menuItem}>
+                        <Item key="/settings" icon={<ToolOutlined />} className={styles.menuItem}>
                             {"Settings"}
                         </Item>
                     </>

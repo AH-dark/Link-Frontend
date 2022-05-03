@@ -39,10 +39,7 @@ const Index: FC = () => {
         }
 
         setLoad(true);
-        let send = data;
-        send.userId = send.userId === 0 && typeof user !== "undefined" ? user.id : send.userId;
-
-        generateShortLink(data.origin, undefined, data.userId === 0 && typeof user !== "undefined" ? user.id : 0)
+        generateShortLink(data.origin, undefined, typeof user !== "undefined" ? user.id : 0)
             .then((r) => {
                 if (r !== null) {
                     message.success(

@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
 import { Button, Card, Image, List, message, Pagination, Skeleton, Spin, Typography } from "antd";
@@ -12,6 +12,7 @@ import ShortLink from "../../../model/data/ShortLink";
 import { ArrowRightOutlined, CopyOutlined, InfoCircleOutlined, MailOutlined } from "@ant-design/icons";
 import SiteConfig from "../../../model/data/SiteConfig";
 import ClipboardJS from "clipboard";
+import { setUser } from "../../../redux/action";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -38,31 +39,48 @@ const UserInfo: FC<{
     const [load, setLoad] = useState(true);
     const [listLoad, setListLoad] = useState(true);
 
-    const [user, setUser] = useState<User>();
+    const [userData, setUserData] = useState<User>();
     const [userLinkData, setUserLinkData] = useState<ShortLink[]>([]);
 
     const [page, setPage] = useState(1);
 
+    const dispatch = useDispatch();
+    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+
     useEffect(() => {
         if (typeof userId !== "undefined") {
-            getUser(userId).then((r) => {
-                if (r !== null) {
-                    setUser(r);
-                    setLoad(false);
-                    getShortLinkByUser(userId).then((r) => {
-                        if (r !== null) {
-                            setUserLinkData(r);
-                            setListLoad(false);
-                        } else {
-                            message.error("获取用户链接列表时错误");
-                        }
-                    });
-                } else {
-                    message.error("获取用户信息时错误");
-                }
-            });
+            if (userDataHash[userId]) {
+                setUserData(userDataHash[userId]);
+                setLoad(false);
+                getShortLinkByUser(userId).then((r) => {
+                    if (r !== null) {
+                        setUserLinkData(r);
+                        setListLoad(false);
+                    } else {
+                        message.error("获取用户链接列表时错误");
+                    }
+                });
+            } else {
+                getUser(userId).then((r) => {
+                    if (r !== null) {
+                        setUserData(r);
+                        setLoad(false);
+                        dispatch(setUser(r));
+                        getShortLinkByUser(userId).then((r) => {
+                            if (r !== null) {
+                                setUserLinkData(r);
+                                setListLoad(false);
+                            } else {
+                                message.error("获取用户链接列表时错误");
+                            }
+                        });
+                    } else {
+                        message.error("获取用户信息时错误");
+                    }
+                });
+            }
         }
-    }, []);
+    }, [userId]);
 
     const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
     const url: URL = new URL(siteConfig.siteUrl);
@@ -71,7 +89,7 @@ const UserInfo: FC<{
         return <Spin size={"large"} />;
     }
 
-    if (typeof user === "undefined" || typeof userLinkData === "undefined") {
+    if (typeof userData === "undefined" || typeof userLinkData === "undefined") {
         return <>{"Error."}</>;
     }
 
@@ -83,8 +101,8 @@ const UserInfo: FC<{
                     <Button
                         shape={"circle"}
                         icon={<MailOutlined />}
-                        title={"Mail to " + user.name}
-                        href={"mailto:" + user.email}
+                        title={"Mail to " + userData.name}
+                        href={"mailto:" + userData.email}
                         target={"_top"}
                         rel={"mail"}
                     />,
@@ -94,10 +112,10 @@ const UserInfo: FC<{
                 <Meta
                     avatar={
                         <Image
-                            src={GetAvatar(user.email)}
+                            src={GetAvatar(userData.email)}
                             preview={false}
                             placeholder={true}
-                            alt={`avatar of ${user.name}.`}
+                            alt={`avatar of ${userData.name}.`}
                             style={{
                                 borderRadius: "50%",
                             }}
@@ -105,10 +123,10 @@ const UserInfo: FC<{
                     }
                     title={
                         <Title level={2} style={{ marginBottom: 8 }}>
-                            {user.name}
+                            {userData.name}
                         </Title>
                     }
-                    description={<Text type={"secondary"}>{user.description}</Text>}
+                    description={<Text type={"secondary"}>{userData.description}</Text>}
                     className={styles.meta}
                 />
             </Card>

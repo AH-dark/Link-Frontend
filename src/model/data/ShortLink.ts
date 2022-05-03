@@ -7,5 +7,5 @@ export interface ShortLinkBasic {
 export default interface ShortLink extends ShortLinkBasic {
     key: string;
     view: number;
-    create_time: Date;
+    createTime: Date;
 }

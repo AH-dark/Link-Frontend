@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./component/UserPages/Home";
 import "antd/dist/antd.min.css";
 import "./App.css";
-import LinkDetail from "./component/UserPages/LinkDetail";
-import Login from "./component/UserPages/Login";
 import User from "./model/data/User";
 import { useDispatch, useSelector } from "react-redux";
 import { setSiteConfig, setUserLogin } from "./redux/action";
 import SiteConfig from "./model/data/SiteConfig";
-import NoMatch from "./component/UserPages/NoMatch";
-import Generate from "./component/UserPages/Generate";
 import { MyState } from "./redux/reducer";
 import Cookie from "js-cookie";
 import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
-import UserInfo from "./component/UserPages/UserInfo";
-import Explorer from "./component/UserPages/Explorer";
-import UI from "./component/UI";
-import UserSettings from "./component/UserPages/UserSettings";
+import UserPages from "./component/UserPages";
+
+const Admin = React.lazy(() => import("./component/Admin"));
 
 function App() {
     const dispatch = useDispatch();
@@ -83,29 +77,12 @@ function App() {
 
     return (
         <BrowserRouter>
-            <UI>
+            <React.Suspense fallback={<div>Loading...</div>}>
                 <Routes>
-                    {/* Basic */}
-                    <Route path={"/"} element={<Home />} />
-                    <Route path={"/login"} element={<Login />} />
-
-                    {/* Short Link */}
-                    <Route path={"/generate"} element={<Generate />} />
-                    <Route path={"/link/:key"} element={<LinkDetail />} />
-                    <Route path={"/explorer"} element={<Explorer />} />
-
-                    {/* User Explorer */}
-                    <Route path={"/me"} element={<UserInfo />} />
-                    <Route path={"/user"} element={<UserInfo />} />
-                    <Route path={"/user/:userId"} element={<UserInfo />} />
-
-                    {/* User Self Manage */}
-                    <Route path={"/settings"} element={<UserSettings />} />
-
-                    {/* 404 */}
-                    <Route path={"*"} element={<NoMatch />} />
+                    <Route path={"/*"} element={<UserPages />} />
+                    <Route path={"/admin/*"} element={<Admin />} />
                 </Routes>
-            </UI>
+            </React.Suspense>
         </BrowserRouter>
     );
 }

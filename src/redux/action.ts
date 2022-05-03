@@ -64,3 +64,16 @@ export const setSiteConfig: (siteConfig: SiteConfig) => ActionSetSiteConfig = (s
         },
     };
 };
+
+export const SET_USER = "SET_USER";
+
+export interface ActionSetUser extends Action {
+    user: User;
+}
+
+export const setUser: (user: User) => ActionSetUser = (user) => {
+    return {
+        type: SET_USER,
+        user: user,
+    };
+};

@@ -7,12 +7,11 @@ import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import User from "../../../model/data/User";
 import { getUser } from "../../../middleware/API/user";
+import { useDispatch, useSelector } from "react-redux";
+import { MyState } from "../../../redux/reducer";
+import { setUser } from "../../../redux/action";
 
 const { Text } = Typography;
-
-interface UserHashList {
-    [K: number]: User;
-}
 
 interface UserHash {
     [K: number]: boolean;
@@ -25,12 +24,10 @@ const Explorer: FC = () => {
 
     const navigate = useNavigate();
 
-    const [userHash, setUserHash] = useState<UserHashList>({});
-    const addUserHash = (id: number, user: User) => {
-        setUserHash({
-            ...userHash,
-            [id]: user,
-        });
+    const dispatch = useDispatch();
+    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+    const addUserHash = (user: User) => {
+        dispatch(setUser(user));
     };
 
     useEffect(() => {
@@ -46,7 +43,7 @@ const Explorer: FC = () => {
                 setData(r);
                 let arr: Promise<boolean>[] = [];
                 let userHashTemp: UserHash = {};
-                for (let k in userHash) {
+                for (let k in userDataHash) {
                     userHashTemp[k] = true;
                 }
                 for (let k in r) {
@@ -57,7 +54,7 @@ const Explorer: FC = () => {
                         arr.push(
                             getUser(userId).then((r) => {
                                 if (r !== null) {
-                                    addUserHash(userId, r);
+                                    addUserHash(r);
                                     return true;
                                 } else {
                                     return false;
@@ -112,7 +109,7 @@ const Explorer: FC = () => {
                                 size={"middle"}
                                 href={"/user/" + userId}
                                 target={"_self"}
-                                title={userHash[userId].name}
+                                title={userDataHash[userId].name}
                                 onClick={handleUserIcon}
                                 rel={"author"}
                             />
@@ -133,7 +130,7 @@ const Explorer: FC = () => {
                         />
                     );
 
-                    const creatorName = userId !== undefined && userId !== 0 ? userHash[userId].name : "Tourist";
+                    const creatorName = userId !== undefined && userId !== 0 ? userDataHash[userId].name : "Tourist";
 
                     return (
                         <Badge count={"View: " + view} className={styles.badge} size={"small"}>

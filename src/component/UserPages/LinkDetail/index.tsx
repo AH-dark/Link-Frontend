@@ -8,7 +8,7 @@ import "dayjs/locale/zh-cn";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../../../redux/action";
+import { setTitle, setUser } from "../../../redux/action";
 import { MyState } from "../../../redux/reducer";
 import SiteConfig from "../../../model/data/SiteConfig";
 import { getShortLink } from "../../../middleware/API/shortLink";
@@ -26,7 +26,7 @@ const LinkDetail: FC = () => {
         origin: "",
         userId: 0,
         view: 0,
-        create_time: new Date(),
+        createTime: new Date(),
     });
     const [userData, setUserData] = useState<User>();
     const [load, setLoad] = useState(true);
@@ -34,6 +34,7 @@ const LinkDetail: FC = () => {
     const navigate = useNavigate();
 
     const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
+    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
 
     useEffect(() => {
         if (typeof key !== "undefined") {
@@ -42,15 +43,21 @@ const LinkDetail: FC = () => {
                     console.log("[API]", "Get short link data success:", r);
                     setLinkData(r);
                     if (r.userId > 0) {
-                        getUser(r.userId)
-                            .then((r) => {
-                                if (r !== null) {
-                                    setUserData(r);
-                                }
-                            })
-                            .then(() => {
-                                setLoad(false);
-                            });
+                        if (userDataHash[r.userId]) {
+                            setUserData(userDataHash[r.userId]);
+                            setLoad(false);
+                        } else {
+                            getUser(r.userId)
+                                .then((r) => {
+                                    if (r !== null) {
+                                        setUserData(r);
+                                        dispatch(setUser(r));
+                                    }
+                                })
+                                .then(() => {
+                                    setLoad(false);
+                                });
+                        }
                     } else {
                         setLoad(false);
                     }
@@ -64,7 +71,7 @@ const LinkDetail: FC = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setTitle("Link " + key));
-    }, []);
+    }, [key]);
 
     if (load) {
         return (
@@ -151,7 +158,7 @@ const LinkDetail: FC = () => {
         {
             name: "Create Time",
             key: "time",
-            value: dayjs(linkData.create_time).locale("zh-cn").format("YYYY/MM/DD HH:mm:ss"),
+            value: dayjs(linkData.createTime).locale("zh-cn").format("YYYY/MM/DD HH:mm:ss"),
         },
     ];
 
