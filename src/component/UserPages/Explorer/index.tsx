@@ -2,27 +2,20 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "./explorer.module.scss";
 import ShortLink from "../../../model/data/ShortLink";
 import { getLatestShortLink } from "../../../middleware/API/shortLink";
-import { Badge, Button, Card, List, message, Spin, Typography } from "antd";
-import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { List, message, Spin } from "antd";
 import User from "../../../model/data/User";
 import { getUser } from "../../../middleware/API/user";
 import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import { setUser } from "../../../redux/action";
+import LinkCard from "./LinkCard";
 
-const { Text } = Typography;
-
-interface UserHash {
-    [K: number]: boolean;
-}
+type UserHash = Record<number, boolean>;
 
 const Explorer: FC = () => {
     const [data, setData] = useState<ShortLink[]>([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
-
-    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
@@ -87,75 +80,9 @@ const Explorer: FC = () => {
             <List
                 className={styles.list}
                 dataSource={data}
-                renderItem={({ key, origin, userId, view }) => {
-                    const handleInfoIcon = (e: React.MouseEvent<HTMLDivElement>) => {
-                        e.preventDefault();
-                        navigate("/link/" + key);
-                    };
-
-                    const handleUserIcon = (e: React.MouseEvent<HTMLDivElement>) => {
-                        e.preventDefault();
-                        navigate("/user/" + userId);
-                    };
-
-                    let actions: React.ReactNode[] = [];
-
-                    if (userId !== undefined && userId !== 0) {
-                        actions.push(
-                            <Button
-                                type={"text"}
-                                shape={"circle"}
-                                icon={<UserOutlined />}
-                                size={"middle"}
-                                href={"/user/" + userId}
-                                target={"_self"}
-                                title={userDataHash[userId].name}
-                                onClick={handleUserIcon}
-                                rel={"author"}
-                            />
-                        );
-                    }
-
-                    actions.push(
-                        <Button
-                            type={"text"}
-                            shape={"circle"}
-                            icon={<InfoCircleOutlined />}
-                            size={"middle"}
-                            href={"/link/" + key}
-                            target={"_self"}
-                            title={key}
-                            onClick={handleInfoIcon}
-                            rel={"info"}
-                        />
-                    );
-
-                    const creatorName = userId !== undefined && userId !== 0 ? userDataHash[userId].name : "Tourist";
-
-                    return (
-                        <Badge count={"View: " + view} className={styles.badge} size={"small"}>
-                            <Card className={styles.card}>
-                                <List.Item className={styles.listItem} actions={actions}>
-                                    <List.Item.Meta
-                                        title={"Key: " + key}
-                                        className={styles.meta}
-                                        description={
-                                            <>
-                                                <Text type={"secondary"} ellipsis>
-                                                    {origin}
-                                                </Text>
-                                                <br />
-                                                <Text type={"secondary"} ellipsis>
-                                                    {"Created by " + creatorName}
-                                                </Text>
-                                            </>
-                                        }
-                                    />
-                                </List.Item>
-                            </Card>
-                        </Badge>
-                    );
-                }}
+                renderItem={({ key, origin, userId, view }) => (
+                    <LinkCard linkKey={key} origin={origin} userId={userId} view={view} />
+                )}
             />
         </div>
     );

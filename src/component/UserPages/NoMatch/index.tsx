@@ -1,12 +1,12 @@
 import React, { FC } from "react";
 import { Button, Result } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const NoMatch: FC = () => {
-    const navigate = useNavigate();
+    const history = useHistory();
 
     const handleClick = () => {
-        navigate("/");
+        history.push("/");
     };
 
     return (

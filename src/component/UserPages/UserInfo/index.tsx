@@ -1,18 +1,18 @@
-import React, { FC, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
-import { Button, Card, Image, List, message, Pagination, Skeleton, Spin, Typography } from "antd";
+import { Button, Card, Image, List, message, Pagination, Spin, Typography } from "antd";
 import { getUser } from "../../../middleware/API/user";
 import { GetAvatar } from "../../../utils/avatar";
 import styles from "./userInfo.module.scss";
 import { getShortLinkByUser } from "../../../middleware/API/shortLink";
 import ShortLink from "../../../model/data/ShortLink";
-import { ArrowRightOutlined, CopyOutlined, InfoCircleOutlined, MailOutlined } from "@ant-design/icons";
+import { MailOutlined } from "@ant-design/icons";
 import SiteConfig from "../../../model/data/SiteConfig";
-import ClipboardJS from "clipboard";
 import { setUser } from "../../../redux/action";
+import { useHistory, useLocation } from "react-router-dom";
+import CardItem from "./CardItem";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -24,15 +24,18 @@ const min = (a: number, b: number) => {
 const UserInfo: FC<{
     userId?: number;
 }> = (props) => {
-    const paramUserId = useParams().userId;
-    const sessionUser = useSelector<MyState, User | undefined>((state) => state.user);
+    const { search } = useLocation();
+    const paramUserId = useMemo(() => {
+        return new URLSearchParams(search).get("userId");
+    }, [search]);
+    const sessionUser = useSelector<MyState, User | null>((state) => state.user);
     const userId = Number(paramUserId) || props.userId || sessionUser?.id;
 
-    const navigate = useNavigate();
+    const history = useHistory();
 
     if (typeof userId === "undefined") {
         message.error("无法获取 User ID").then(() => {
-            window.history.back();
+            history.goBack();
         });
     }
 
@@ -135,85 +138,7 @@ const UserInfo: FC<{
                     className={styles.list}
                     itemLayout="horizontal"
                     dataSource={userLinkData.slice((page - 1) * 5, min(page * 5, userLinkData.length))}
-                    renderItem={(item) => {
-                        const fullKeyUrl = `${url.origin}/go/${item.key}`;
-
-                        const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>) => {
-                            const clipboard = new ClipboardJS(e.currentTarget, {
-                                text: () => {
-                                    return fullKeyUrl;
-                                },
-                            });
-
-                            clipboard.on("success", () => {
-                                message.success("内容已复制到剪贴板");
-                            });
-                            clipboard.on("error", () => {
-                                message.error("无法复制到剪贴板");
-                            });
-                        };
-
-                        const infoUrl = "/link/" + item.key;
-
-                        const handleInfoClick = (e: React.MouseEvent<HTMLDivElement>) => {
-                            e.preventDefault();
-                            navigate(infoUrl);
-                        };
-
-                        const handleRedirectClick = (e: React.MouseEvent<HTMLDivElement>) => {
-                            e.preventDefault();
-                            window.open(fullKeyUrl);
-                        };
-
-                        return (
-                            <List.Item
-                                actions={[
-                                    <Button
-                                        shape={"circle"}
-                                        title={"Copy"}
-                                        icon={<CopyOutlined />}
-                                        size={"middle"}
-                                        rel={"copy"}
-                                        onClick={handleCopyClick}
-                                        type={"text"}
-                                    />,
-                                    <Button
-                                        shape={"circle"}
-                                        title={"Info"}
-                                        icon={<InfoCircleOutlined />}
-                                        size={"middle"}
-                                        rel={"self"}
-                                        href={infoUrl}
-                                        onClick={handleInfoClick}
-                                        type={"text"}
-                                    />,
-                                    <Button
-                                        shape={"circle"}
-                                        title={"Go"}
-                                        icon={<ArrowRightOutlined />}
-                                        href={item.origin}
-                                        target={"_blank"}
-                                        size={"middle"}
-                                        rel={"nofollow noopener ugc"}
-                                        type={"text"}
-                                        onClick={handleRedirectClick}
-                                    />,
-                                ]}
-                                className={styles.item}
-                            >
-                                <Skeleton active avatar={false} paragraph={{ rows: 1 }} loading={listLoad}>
-                                    <List.Item.Meta
-                                        title={"Key: " + item.key}
-                                        description={
-                                            <Text copyable={false} className={styles.text} ellipsis={true}>
-                                                {item.origin}
-                                            </Text>
-                                        }
-                                    />
-                                </Skeleton>
-                            </List.Item>
-                        );
-                    }}
+                    renderItem={(item) => <CardItem data={item} baseUrl={url} load={listLoad} />}
                 />
             </Card>
             <div className={styles.paginationDiv}>

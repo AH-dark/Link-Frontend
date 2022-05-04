@@ -33,10 +33,10 @@ export const setSidebarOpen: (open: boolean) => ActionSetSidebarOpen = (open) =>
 export const SET_USER_LOGIN = "SET_USER_LOGIN";
 
 export interface ActionSetUserLogin extends Action {
-    user: User | undefined;
+    user: User | null;
 }
 
-export const setUserLogin: (userData: User | undefined) => ActionSetUserLogin = (userData) => {
+export const setUserLogin: (userData: User | null) => ActionSetUserLogin = (userData) => {
     return {
         type: SET_USER_LOGIN,
         user: userData,

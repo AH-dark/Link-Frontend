@@ -7,8 +7,8 @@ import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
 import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
-import { useNavigate } from "react-router-dom";
 import { generateShortLink } from "../../../middleware/API/shortLink";
+import { useHistory } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -16,17 +16,17 @@ const Generate: FC = () => {
     const dispatch = useDispatch();
     dispatch(setTitle("Generate"));
 
-    const navigate = useNavigate();
+    const history = useHistory();
 
-    const user = useSelector<MyState, User | undefined>((state) => state.user);
-    const isUserAvailable = typeof user !== "undefined" && user.available;
+    const user = useSelector((state: MyState) => state.user as User);
+    const isUserAvailable = user !== null && user.available;
 
     const [checked, setChecked] = useState(false);
 
     useEffect(() => {
         if (!isUserAvailable) {
             message.error("Permission Denied.");
-            navigate("/");
+            history.push("/");
         } else {
             setChecked(true);
         }
@@ -59,8 +59,8 @@ const Generate: FC = () => {
                         `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${r.key}`
                     );
                     setTimeout(() => {
-                        navigate("/link/" + r.key);
-                    }, 1500);
+                        history.push("/link/" + r.key);
+                    }, 1000);
                 }
             })
             .then(() => {

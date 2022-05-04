@@ -6,24 +6,14 @@ import API from "../../../middleware/API";
 import LoginData from "../../../model/data/LoginData";
 import ApiResponse from "../../../model/ApiResponse";
 import User from "../../../model/data/User";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setTitle, setUserLogin } from "../../../redux/action";
-import { MyState } from "../../../redux/reducer";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const { Title } = Typography;
 
 const Login: FC = () => {
-    const navigate = useNavigate();
-
-    const userData = useSelector<MyState, User | undefined>((state) => state.user);
-
-    useEffect(() => {
-        if (typeof userData !== "undefined") {
-            message.warning("您已经登录");
-            navigate("/");
-        }
-    }, []);
+    const history = useHistory();
 
     const dispatch = useDispatch();
 
@@ -36,12 +26,7 @@ const Login: FC = () => {
     const onFinish = (values: LoginData) => {
         console.log("Received values of login form: ", values);
         setLoad(true);
-        API.post<ApiResponse<User>>("/login", values, {
-            responseType: "json",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
+        API.post<ApiResponse<User>>("/login", values)
             .then((res) => {
                 if (res.status === 200) {
                     if (res.data.code === 200) {
@@ -49,7 +34,7 @@ const Login: FC = () => {
                         localStorage.setItem("loginInfo", res.data.data.name);
                         message.success("登录成功");
                         console.log("Login success.");
-                        navigate("/");
+                        history.push("/");
                     } else {
                         message.error(`Error ${res.data.code}: ${res.data.message}`);
                     }

@@ -9,7 +9,7 @@ import { createStyles, makeStyles } from "@mui/styles";
 import { useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,7 +31,7 @@ const LinkRow: React.FC<
 > = (props) => {
     const classes = useStyles();
     const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
-    const navigate = useNavigate();
+    const history = useHistory();
 
     return (
         <>
@@ -65,7 +65,7 @@ const LinkRow: React.FC<
                         <IconButton
                             size={"small"}
                             onClick={() => {
-                                navigate("/admin/link/edit/" + item.key);
+                                history.push("/admin/link/edit/" + item.key);
                             }}
                         >
                             <EditRoundedIcon />

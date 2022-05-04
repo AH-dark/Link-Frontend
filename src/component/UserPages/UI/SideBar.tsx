@@ -2,11 +2,11 @@ import React, { FC, useState } from "react";
 import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
 import { useSelector } from "react-redux";
-import { MyState } from "../../redux/reducer";
+import { MyState } from "../../../redux/reducer";
 import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, ToolOutlined } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
 import type { MenuInfo } from "rc-menu/lib/interface";
-import User from "../../model/data/User";
+import User from "../../../model/data/User";
+import { useHistory, useLocation } from "react-router-dom";
 
 const { Sider } = Layout;
 const { Item } = Menu;
@@ -14,19 +14,19 @@ const { useBreakpoint } = Grid;
 
 const SideBar: FC = () => {
     const open = useSelector<MyState, boolean>((state) => state.ui.sidebar.open);
-    const userData = useSelector<MyState, User | undefined>((state) => state.user);
+    const userData = useSelector<MyState, User | null>((state) => state.user);
 
     const breakpoint = useBreakpoint();
     const isMobileSize = !breakpoint.md;
 
     const location = useLocation();
-    const navigate = useNavigate();
+    const history = useHistory();
 
     const [selected, setSelected] = useState([location.pathname]);
     const handleSelect = (e: MenuInfo) => {
         e.domEvent.preventDefault();
         setSelected(e.keyPath);
-        navigate(e.key);
+        history.push(e.key, { replace: false });
     };
 
     return (
@@ -38,7 +38,7 @@ const SideBar: FC = () => {
                 <Item key="/explorer" icon={<GlobalOutlined />} className={styles.menuItem}>
                     {"Explorer"}
                 </Item>
-                {typeof userData === "undefined" ? (
+                {userData === null ? (
                     <Item key="/login" icon={<LoginOutlined />} className={styles.menuItem}>
                         {"Login"}
                     </Item>

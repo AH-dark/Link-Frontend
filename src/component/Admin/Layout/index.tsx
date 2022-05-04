@@ -17,9 +17,9 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeIcon from "@mui/icons-material/HomeRounded";
 import dayjs from "dayjs";
 import ListItems from "./ListItems";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/styles";
 import { Theme, useMediaQuery } from "@mui/material";
+import { useHistory } from "react-router-dom";
 
 const Copyright: FC<any> = (props) => (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -87,7 +87,7 @@ const DashboardContent: FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    const navigate = useNavigate();
+    const history = useHistory();
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -113,7 +113,7 @@ const DashboardContent: FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
                     <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
                         {"Link Control Panel"}
                     </Typography>
-                    <IconButton color="inherit" onClick={() => navigate}>
+                    <IconButton color="inherit" onClick={() => history.push("/")}>
                         <HomeIcon color={"inherit"} />
                     </IconButton>
                 </Toolbar>

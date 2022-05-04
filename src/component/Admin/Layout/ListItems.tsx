@@ -5,13 +5,13 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import LinkIcon from "@mui/icons-material/LinkRounded";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const ListItems: React.FC = () => {
-    const navigate = useNavigate();
+    const history = useHistory();
     const [selected, setSelect] = useState("");
     const handleRedirect = (e: React.MouseEvent) => {
-        navigate(e.currentTarget.id);
+        history.push(e.currentTarget.id);
         setSelect(e.currentTarget.id);
     };
 

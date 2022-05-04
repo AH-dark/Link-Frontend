@@ -2,11 +2,11 @@ import React, { FC } from "react";
 import styles from "./ui.module.scss";
 import { Button, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../redux/reducer";
+import { MyState } from "../../../redux/reducer";
 import { MenuOutlined } from "@ant-design/icons";
-import { setSidebarOpen } from "../../redux/action";
-import { useNavigate } from "react-router-dom";
+import { setSidebarOpen } from "../../../redux/action";
 import LoginMenu from "./LoginMenu";
+import { useHistory } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -15,14 +15,14 @@ const NavBar: FC = () => {
     const title = useSelector<MyState, string | null>((state) => state.title);
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const history = useHistory();
 
     const handleMenuClick = () => {
         dispatch(setSidebarOpen(!open));
     };
 
     const handleTitleClick = () => {
-        navigate("/");
+        history.push("/");
     };
 
     return (

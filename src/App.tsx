@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "antd/dist/antd.min.css";
 import "./App.css";
 import User from "./model/data/User";
@@ -11,13 +10,15 @@ import Cookie from "js-cookie";
 import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
 import UserPages from "./component/UserPages";
+import { AuthRoute, CommonRoute } from "./middleware/Route";
+import { Switch } from "react-router-dom";
 
 const Admin = React.lazy(() => import("./component/Admin"));
 
 function App() {
     const dispatch = useDispatch();
 
-    const user = useSelector<MyState, User | undefined>((state) => state.user);
+    const user = useSelector<MyState, User | null>((state) => state.user);
     const siteConfig = useSelector<
         MyState,
         SiteConfig & {
@@ -31,7 +32,7 @@ function App() {
         const siteConfigStr = Cookie.get("siteConfig");
 
         let events: Promise<boolean>[] = [];
-        if (typeof user === "undefined") {
+        if (user === null) {
             events.push(
                 getUser().then((r) => {
                     if (r !== null) {
@@ -76,14 +77,16 @@ function App() {
     }
 
     return (
-        <BrowserRouter>
-            <React.Suspense fallback={<div>Loading...</div>}>
-                <Routes>
-                    <Route path={"/*"} element={<UserPages />} />
-                    <Route path={"/admin/*"} element={<Admin />} />
-                </Routes>
-            </React.Suspense>
-        </BrowserRouter>
+        <React.Suspense>
+            <Switch>
+                <AuthRoute path={"/admin"}>
+                    <Admin />
+                </AuthRoute>
+                <CommonRoute path={"/"}>
+                    <UserPages />
+                </CommonRoute>
+            </Switch>
+        </React.Suspense>
     );
 }
 

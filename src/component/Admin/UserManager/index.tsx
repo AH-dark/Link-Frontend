@@ -18,7 +18,6 @@ import {
 import { createStyles, makeStyles } from "@mui/styles";
 import User from "../../../model/data/User";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setTitle } from "../../../redux/action";
 import { useSnackbar } from "notistack";
@@ -27,6 +26,7 @@ import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
 import LimitData from "../../../model/ApiResponse/LimitData";
 import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -101,7 +101,7 @@ const UserManager: FC = () => {
         sort: "asc",
     });
 
-    const navigate = useNavigate();
+    const history = useHistory();
 
     return (
         <Stack spacing={2}>
@@ -109,7 +109,7 @@ const UserManager: FC = () => {
                 <Button
                     variant={"contained"}
                     onClick={() => {
-                        navigate("/admin/user/create");
+                        history.push("/admin/user/create");
                     }}
                     startIcon={<AddIcon />}
                 >
@@ -180,7 +180,7 @@ const UserManager: FC = () => {
                                             <IconButton
                                                 size={"small"}
                                                 onClick={() => {
-                                                    navigate("/admin/user/edit/" + userData.id);
+                                                    history.push("/admin/user/edit/" + userData.id);
                                                 }}
                                             >
                                                 <EditRoundedIcon />

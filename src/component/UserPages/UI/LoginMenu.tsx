@@ -1,31 +1,31 @@
 import React, { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../redux/reducer";
-import User from "../../model/data/User";
+import { MyState } from "../../../redux/reducer";
+import User from "../../../model/data/User";
 import { Avatar, Button, Menu, message, Popover } from "antd";
-import { GetAvatar } from "../../utils/avatar";
+import { GetAvatar } from "../../../utils/avatar";
 import { LoginOutlined, LogoutOutlined, SettingOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./ui.module.scss";
-import { useNavigate } from "react-router-dom";
 import "./LoginMenu.scss";
-import API from "../../middleware/API";
-import ApiResponse from "../../model/ApiResponse";
-import { setUserLogin } from "../../redux/action";
+import API from "../../../middleware/API";
+import ApiResponse from "../../../model/ApiResponse";
+import { setUserLogin } from "../../../redux/action";
+import { useHistory } from "react-router-dom";
 
 const MenuContent: FC = () => {
-    const navigate = useNavigate();
+    const history = useHistory();
     const dispatch = useDispatch();
 
     const handleSettings = () => {
-        navigate("/settings");
+        history.push("/settings");
     };
 
     const handleControlPanel = () => {
-        navigate("/admin");
+        history.push("/admin");
     };
 
     const handleMe = () => {
-        navigate("/me");
+        history.push("/me");
     };
 
     const handleLogOut = () => {
@@ -34,20 +34,20 @@ const MenuContent: FC = () => {
                 if (res.status === 200 && res.data.code === 200) {
                     message.success("Successfully logged out, looking forward to your next visit.");
                     console.log("Logout success.");
-                    console.log("Last login info:", res.data.data);
-                    dispatch(setUserLogin(undefined));
-                    navigate("/login");
+                    dispatch(setUserLogin(null));
+                    history.push("/login");
                 } else {
                     message.error(`Error ${res.data.code}: ${res.data.message}`);
                 }
             })
             .catch((err) => {
+                console.log(err);
                 message.error(err.response.data.message || err.message);
                 console.log(err.message);
             });
     };
 
-    const user = useSelector<MyState, User | undefined>((state) => state.user);
+    const user = useSelector<MyState, User | null>((state) => state.user);
 
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
@@ -70,14 +70,14 @@ const MenuContent: FC = () => {
 };
 
 const LoginMenu: FC = () => {
-    const user = useSelector<MyState, User | undefined>((state) => state.user);
-    const isLogin = typeof user !== "undefined";
+    const user = useSelector<MyState, User | null>((state) => state.user);
+    const isLogin = user !== null;
 
-    const navigate = useNavigate();
+    const history = useHistory();
 
     const handleLoginClick: React.MouseEventHandler<HTMLElement> = (e) => {
         e.preventDefault();
-        navigate("/login");
+        history.push("/login");
     };
 
     if (isLogin) {

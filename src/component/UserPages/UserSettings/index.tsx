@@ -1,9 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import styles from "./userSettings.module.scss";
 import { useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import User, { UserPutData } from "../../../model/data/User";
-import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Card, Form, Input, message, Modal, Typography } from "antd";
 import { GetAvatar } from "../../../utils/avatar";
 import { useForm } from "antd/es/form/Form";
@@ -23,15 +22,7 @@ interface PasswordData {
 }
 
 const UserSettings: FC = () => {
-    const user = useSelector<MyState, User | undefined>((state) => state.user);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (typeof user === "undefined") {
-            message.warning("您还未登录");
-            navigate("/login");
-        }
-    }, []);
+    const user = useSelector((state: MyState) => state.user as User);
 
     const [form] = useForm<FormData>();
     const [data, setData] = useState<FormData>({
@@ -106,10 +97,6 @@ const UserSettings: FC = () => {
             },
         });
     };
-
-    if (typeof user === "undefined") {
-        return <></>;
-    }
 
     return (
         <div className={styles.main}>

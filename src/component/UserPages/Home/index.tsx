@@ -5,9 +5,9 @@ import { Grid, Input, message, Typography } from "antd";
 import { MyState } from "../../../redux/reducer";
 import styles from "./home.module.scss";
 import { ShortLinkBasic } from "../../../model/data/ShortLink";
-import { useNavigate } from "react-router-dom";
 import User from "../../../model/data/User";
 import { generateShortLink } from "../../../middleware/API/shortLink";
+import { useHistory } from "react-router-dom";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -15,7 +15,7 @@ const { useBreakpoint } = Grid;
 
 const Index: FC = () => {
     const siteName = useSelector<MyState, string>((state) => state.site.siteName);
-    const user = useSelector<MyState, User | undefined>((state) => state.user);
+    const user = useSelector<MyState, User | null>((state) => state.user);
 
     const dispatch = useDispatch();
     useEffect(() => {
@@ -30,7 +30,7 @@ const Index: FC = () => {
 
     const [isLoad, setLoad] = useState(false);
 
-    const navigate = useNavigate();
+    const history = useHistory();
 
     const handleSubmit = () => {
         if (!RegExp("^https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$").test(data.origin)) {
@@ -39,13 +39,13 @@ const Index: FC = () => {
         }
 
         setLoad(true);
-        generateShortLink(data.origin, undefined, typeof user !== "undefined" ? user.id : 0)
+        generateShortLink(data.origin, undefined, user !== null ? user.id : 0)
             .then((r) => {
                 if (r !== null) {
                     message.success(
                         `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${r.key}`
                     );
-                    navigate("/link/" + r.key);
+                    history.push("/link/" + r.key);
                 }
             })
             .then(() => {

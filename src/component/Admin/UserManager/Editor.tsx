@@ -14,7 +14,6 @@ import {
     Typography,
 } from "@mui/material";
 import User from "../../../model/data/User";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
@@ -22,11 +21,17 @@ import { useSnackbar } from "notistack";
 import { setUserLogin } from "../../../redux/action";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
+import { useHistory, useLocation } from "react-router-dom";
 
 const Editor: React.FC = () => {
-    const currentUser = useSelector<MyState, User | undefined>((state) => state.user);
+    const currentUser = useSelector<MyState, User | null>((state) => state.user);
 
-    const { id } = useParams();
+    const { search } = useLocation();
+    const history = useHistory();
+    const id = useMemo(() => {
+        return new URLSearchParams(search).get("id");
+    }, [search]);
+
     const [originData, setOriginData] = useState<User>({
         id: -1,
         name: "",
@@ -61,7 +66,7 @@ const Editor: React.FC = () => {
     const dispatch = useDispatch();
 
     const isCreate = useMemo<boolean>(() => {
-        if (typeof id === "undefined") {
+        if (id === null) {
             return true;
         }
         const userId: number = parseInt(id);
@@ -148,7 +153,7 @@ const Editor: React.FC = () => {
                         enqueueSnackbar("Set data success.", {
                             key: "success",
                         });
-                        window.history.back();
+                        history.goBack();
                     } else {
                         enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
                     }

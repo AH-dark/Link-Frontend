@@ -1,6 +1,5 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import styles from "./link.module.scss";
-import { useNavigate, useParams } from "react-router-dom";
 import ShortLink from "../../../model/data/ShortLink";
 import { Avatar, Badge, Button, Card, Image, List, message, Skeleton, Spin, Typography } from "antd";
 import dayjs from "dayjs";
@@ -15,12 +14,15 @@ import { getShortLink } from "../../../middleware/API/shortLink";
 import { getUser } from "../../../middleware/API/user";
 import { CopyOutlined, UserOutlined } from "@ant-design/icons";
 import ClipboardJS from "clipboard";
+import { useHistory, useLocation } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 const LinkDetail: FC = () => {
-    const params = useParams();
-    const key = params.key;
+    const location = useLocation();
+    const key = useMemo(() => {
+        return new URLSearchParams(location.search).get("key");
+    }, [location.search]);
     const [linkData, setLinkData] = useState<ShortLink>({
         key: key || "",
         origin: "",
@@ -31,13 +33,13 @@ const LinkDetail: FC = () => {
     const [userData, setUserData] = useState<User>();
     const [load, setLoad] = useState(true);
 
-    const navigate = useNavigate();
+    const history = useHistory();
 
     const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
-    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+    const userDataHash = useSelector((state: MyState) => state.userHash);
 
     useEffect(() => {
-        if (typeof key !== "undefined") {
+        if (key !== null) {
             getShortLink(key).then((r) => {
                 if (r !== null) {
                     console.log("[API]", "Get short link data success:", r);
@@ -100,19 +102,19 @@ const LinkDetail: FC = () => {
         });
     };
 
-    let creatorButtonArray: React.ReactNode[] = [];
-    if (typeof userData !== "undefined") {
-        creatorButtonArray.push(
+    const creatorButton =
+        typeof userData !== "undefined" ? (
             <Button
                 icon={<UserOutlined />}
                 size={"middle"}
                 shape={"circle"}
                 onClick={() => {
-                    navigate("/user/" + userData.id);
+                    history.push("/user/" + userData.id);
                 }}
             />
+        ) : (
+            <></>
         );
-    }
 
     const dataSource: Array<{ name: string; key: string; value: React.ReactNode; buttons?: React.ReactNode[] }> = [
         {
@@ -153,7 +155,7 @@ const LinkDetail: FC = () => {
                 ) : (
                     "Tourists"
                 ),
-            buttons: creatorButtonArray,
+            buttons: [creatorButton],
         },
         {
             name: "Create Time",

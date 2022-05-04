@@ -11,7 +11,7 @@ export interface MyState {
             open: boolean;
         };
     };
-    user?: User;
+    user: User | null;
     site: SiteConfig & {
         isSet: boolean;
     };
@@ -29,6 +29,7 @@ const initState: MyState = {
             open: false,
         },
     },
+    user: null,
     site:
         typeof initSiteConfig !== "undefined"
             ? {
@@ -67,10 +68,13 @@ const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
             return {
                 ...state,
                 user: action.user,
-                userHash: {
-                    ...state.userHash,
-                    [action.usr.id]: action.user,
-                },
+                userHash:
+                    action.user !== null
+                        ? {
+                              ...state.userHash,
+                              [action.user.i]: action.user,
+                          }
+                        : state.userHash,
             };
         case SET_SITE_CONFIG:
             return {
@@ -82,7 +86,7 @@ const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
                 ...state,
                 userHash: {
                     ...state.userHash,
-                    [action.usr.id]: action.user,
+                    [action.user.id]: actin.user,
                 },
             };
         default:
