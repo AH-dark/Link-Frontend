@@ -14,7 +14,10 @@ const { Title } = Typography;
 
 const Generate: FC = () => {
     const dispatch = useDispatch();
-    dispatch(setTitle("Generate"));
+
+    useEffect(() => {
+        dispatch(setTitle("Generate"));
+    }, []);
 
     const history = useHistory();
 

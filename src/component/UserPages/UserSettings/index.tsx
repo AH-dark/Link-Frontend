@@ -127,19 +127,24 @@ const UserSettings: FC = () => {
                             autoComplete="off"
                             onFinish={handleSummit}
                         >
-                            <Form.Item key={"name"} name={"name"} label={"Name"}>
-                                <Input value={data.name} defaultValue={data.name} />
+                            <Form.Item key={"name"} name={"name"} label={"Name"} initialValue={data.name}>
+                                <Input value={data.name} />
                             </Form.Item>
-                            <Form.Item key={"email"} name={"email"} label={"Email"}>
-                                <Input value={data.email} defaultValue={data.email} disabled />
+                            <Form.Item key={"email"} name={"email"} label={"Email"} initialValue={data.email}>
+                                <Input value={data.email} disabled />
                             </Form.Item>
                             <Form.Item key={"password"} name={"password"} label={"Password (leave blank if no change)"}>
                                 <Button type={"default"} htmlType={"button"} onClick={handlePasswordChangerOpen}>
                                     {"Change Password"}
                                 </Button>
                             </Form.Item>
-                            <Form.Item key={"description"} name={"description"} label={"Description"}>
-                                <TextArea value={data.description} defaultValue={data.description} rows={4} />
+                            <Form.Item
+                                key={"description"}
+                                name={"description"}
+                                label={"Description"}
+                                initialValue={data.description}
+                            >
+                                <TextArea value={data.description} rows={4} />
                             </Form.Item>
                             <Button type={"primary"} htmlType={"submit"}>
                                 {"Submit"}
