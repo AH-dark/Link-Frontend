@@ -11,7 +11,7 @@ import ShortLink from "../../../model/data/ShortLink";
 import { MailOutlined } from "@ant-design/icons";
 import SiteConfig from "../../../model/data/SiteConfig";
 import { addUserHash } from "../../../redux/action";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import CardItem from "./CardItem";
 
 const { Meta } = Card;
@@ -24,16 +24,23 @@ const min = (a: number, b: number) => {
 const UserInfo: FC<{
     userId?: number;
 }> = (props) => {
-    const { search } = useLocation();
-    const paramUserId = useMemo(() => {
-        return new URLSearchParams(search).get("userId");
-    }, [search]);
+    const paramUserId = useParams<{ userId?: string }>().userId;
     const sessionUser = useSelector<MyState, User | null>((state) => state.user);
-    const userId = Number(paramUserId) || props.userId || sessionUser?.id;
+    const userId = useMemo(() => {
+        if (typeof paramUserId !== "undefined" && !isNaN(parseInt(paramUserId))) {
+            return parseInt(paramUserId);
+        } else if (typeof props.userId !== "undefined") {
+            return props.userId;
+        } else if (sessionUser !== null) {
+            return sessionUser.id;
+        } else {
+            return null;
+        }
+    }, []);
 
     const history = useHistory();
 
-    if (typeof userId === "undefined") {
+    if (userId === null) {
         message.error("无法获取 User ID").then(() => {
             history.goBack();
         });
@@ -51,7 +58,7 @@ const UserInfo: FC<{
     const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
 
     useEffect(() => {
-        if (typeof userId !== "undefined") {
+        if (userId !== null) {
             if (userDataHash[userId]) {
                 setUserData(userDataHash[userId]);
                 setLoad(false);

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "./link.module.scss";
 import ShortLink from "../../../model/data/ShortLink";
 import { Avatar, Badge, Button, Card, Image, List, message, Skeleton, Spin, Typography } from "antd";
@@ -7,22 +7,19 @@ import "dayjs/locale/zh-cn";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle, addUserHash } from "../../../redux/action";
+import { addUserHash, setTitle } from "../../../redux/action";
 import { MyState } from "../../../redux/reducer";
 import SiteConfig from "../../../model/data/SiteConfig";
 import { getShortLink } from "../../../middleware/API/shortLink";
 import { getUser } from "../../../middleware/API/user";
 import { CopyOutlined, UserOutlined } from "@ant-design/icons";
 import ClipboardJS from "clipboard";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
 const LinkDetail: FC = () => {
-    const location = useLocation();
-    const key = useMemo(() => {
-        return new URLSearchParams(location.search).get("key");
-    }, [location.search]);
+    const { key } = useParams<{ key: string }>();
     const [linkData, setLinkData] = useState<ShortLink>({
         key: key || "",
         origin: "",
