@@ -10,7 +10,7 @@ import { getShortLinkByUser } from "../../../middleware/API/shortLink";
 import ShortLink from "../../../model/data/ShortLink";
 import { MailOutlined } from "@ant-design/icons";
 import SiteConfig from "../../../model/data/SiteConfig";
-import { setUser } from "../../../redux/action";
+import { addUserHash } from "../../../redux/action";
 import { useHistory, useLocation } from "react-router-dom";
 import CardItem from "./CardItem";
 
@@ -68,7 +68,7 @@ const UserInfo: FC<{
                     if (r !== null) {
                         setUserData(r);
                         setLoad(false);
-                        dispatch(setUser(r));
+                        dispatch(addUserHash(r));
                         getShortLinkByUser(userId).then((r) => {
                             if (r !== null) {
                                 setUserLinkData(r);

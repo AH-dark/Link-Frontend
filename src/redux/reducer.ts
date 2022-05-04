@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { SET_SIDEBAR_OPEN, SET_SITE_CONFIG, SET_TITLE, SET_USER, SET_USER_LOGIN } from "./action";
+import { SET_SIDEBAR_OPEN, SET_SITE_CONFIG, SET_TITLE, ADD_USER_HASH, SET_USER_LOGIN } from "./action";
 import User from "../model/data/User";
 import SiteConfig from "../model/data/SiteConfig";
 import Cookie from "js-cookie";
@@ -81,12 +81,12 @@ const reducer: Reducer<MyState> = (state: MyState = initState, action) => {
                 ...state,
                 site: action.site,
             };
-        case SET_USER:
+        case ADD_USER_HASH:
             return {
                 ...state,
                 userHash: {
                     ...state.userHash,
-                    [action.user.id]: actin.user,
+                    [action.user.id]: action.user,
                 },
             };
         default:

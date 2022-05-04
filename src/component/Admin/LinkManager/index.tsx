@@ -17,7 +17,7 @@ import {
 import { createStyles, makeStyles } from "@mui/styles";
 import User from "../../../model/data/User";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle, setUser } from "../../../redux/action";
+import { setTitle, addUserHash } from "../../../redux/action";
 import { useSnackbar } from "notistack";
 import ShortLink from "../../../model/data/ShortLink";
 import API from "../../../middleware/API";
@@ -82,7 +82,7 @@ const LinkManager: FC = () => {
                             })
                                 .then((r) => {
                                     if (r.status === 200 && r.data.code === 200) {
-                                        dispatch(setUser(r.data.data));
+                                        dispatch(addUserHash(r.data.data));
                                     }
                                 })
                                 .catch((err) => {

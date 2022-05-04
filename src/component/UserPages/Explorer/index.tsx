@@ -7,7 +7,7 @@ import User from "../../../model/data/User";
 import { getUser } from "../../../middleware/API/user";
 import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
-import { setUser } from "../../../redux/action";
+import { addUserHash } from "../../../redux/action";
 import LinkCard from "./LinkCard";
 
 type UserHash = Record<number, boolean>;
@@ -19,9 +19,6 @@ const Explorer: FC = () => {
 
     const dispatch = useDispatch();
     const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
-    const addUserHash = (user: User) => {
-        dispatch(setUser(user));
-    };
 
     useEffect(() => {
         const height = window.innerHeight;
@@ -47,7 +44,7 @@ const Explorer: FC = () => {
                         arr.push(
                             getUser(userId).then((r) => {
                                 if (r !== null) {
-                                    addUserHash(r);
+                                    dispatch(addUserHash(r));
                                     return true;
                                 } else {
                                     return false;

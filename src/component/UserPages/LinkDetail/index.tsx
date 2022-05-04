@@ -7,7 +7,7 @@ import "dayjs/locale/zh-cn";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle, setUser } from "../../../redux/action";
+import { setTitle, addUserHash } from "../../../redux/action";
 import { MyState } from "../../../redux/reducer";
 import SiteConfig from "../../../model/data/SiteConfig";
 import { getShortLink } from "../../../middleware/API/shortLink";
@@ -53,7 +53,7 @@ const LinkDetail: FC = () => {
                                 .then((r) => {
                                     if (r !== null) {
                                         setUserData(r);
-                                        dispatch(setUser(r));
+                                        dispatch(addUserHash(r));
                                     }
                                 })
                                 .then(() => {

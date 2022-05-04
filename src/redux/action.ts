@@ -65,15 +65,15 @@ export const setSiteConfig: (siteConfig: SiteConfig) => ActionSetSiteConfig = (s
     };
 };
 
-export const SET_USER = "SET_USER";
+export const ADD_USER_HASH = "ADD_USER_HASH";
 
-export interface ActionSetUser extends Action {
+export interface ActionAddUserHash extends Action {
     user: User;
 }
 
-export const setUser: (user: User) => ActionSetUser = (user) => {
+export const addUserHash: (user: User) => ActionAddUserHash = (user) => {
     return {
-        type: SET_USER,
+        type: ADD_USER_HASH,
         user: user,
     };
 };
