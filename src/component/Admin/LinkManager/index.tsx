@@ -48,18 +48,26 @@ const LinkManager: FC = () => {
     const [limit, setLimit] = useState(10);
     const [total, setTotal] = useState(0);
     const [linkDataList, setLinkDataList] = useState<Array<ShortLink>>([]);
-    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+    const userDataHash = useSelector<MyState, Record<number, User>>((state) => state.userHash);
     const [load, setLoad] = useState(false);
 
     const dispatch = useDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
-        dispatch(setTitle("User Manage - Control Panel"));
+        dispatch(setTitle("Link Manage - Control Panel"));
     });
 
     const loadList = () => {
         setLoad(true);
+
+        let hashBool: Record<number, boolean> = {};
+        for (let userDataHashKey in userDataHash) {
+            hashBool[userDataHashKey] = true;
+        }
+
+        let taskArr: Promise<void>[] = [];
+
         API.get<ApiResponse<LimitData<Array<ShortLink>>>>("/root/link/all", {
             responseType: "json",
             params: {
@@ -73,29 +81,31 @@ const LinkManager: FC = () => {
                     setLinkDataList(r.data.data.data);
                     r.data.data.data.map((link) => {
                         const userId = link.userId;
-                        if (userId > 0 && typeof userDataHash[userId] === "undefined") {
-                            API.get<ApiResponse<User>>("/root/user", {
-                                params: {
-                                    id: userId,
-                                },
-                                responseType: "json",
-                            })
-                                .then((r) => {
-                                    if (r.status === 200 && r.data.code === 200) {
-                                        dispatch(addUserHash(r.data.data));
-                                    }
+                        if (userId > 0 && typeof hashBool[userId] === "undefined") {
+                            hashBool[userId] = true;
+                            taskArr.push(
+                                API.get<ApiResponse<User>>("/root/user", {
+                                    params: {
+                                        id: userId,
+                                    },
+                                    responseType: "json",
                                 })
-                                .catch((err) => {
-                                    enqueueSnackbar(
-                                        typeof err.response.data !== "undefined"
-                                            ? `Error ${err.response.data.code}: ${err.response.data.message}`
-                                            : err.message
-                                    );
-                                });
+                                    .then((r) => {
+                                        if (r.status === 200 && r.data.code === 200) {
+                                            dispatch(addUserHash(r.data.data));
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        enqueueSnackbar(
+                                            typeof err.response.data !== "undefined"
+                                                ? `Error ${err.response.data.code}: ${err.response.data.message}`
+                                                : err.message
+                                        );
+                                    })
+                            );
                         }
                     });
                 }
-                setLoad(false);
             })
             .catch((err) => {
                 enqueueSnackbar(
@@ -103,6 +113,11 @@ const LinkManager: FC = () => {
                         ? `Error ${err.response.data.code}: ${err.response.data.message}`
                         : err.message
                 );
+            })
+            .then(() => {
+                Promise.all(taskArr).then(() => {
+                    setLoad(false);
+                });
             });
     };
 

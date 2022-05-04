@@ -15,9 +15,7 @@ export interface MyState {
     site: SiteConfig & {
         isSet: boolean;
     };
-    userHash: {
-        [K: number]: User;
-    };
+    userHash: Record<number, User>;
 }
 
 const initSiteConfig = Cookie.get("siteConfig");
