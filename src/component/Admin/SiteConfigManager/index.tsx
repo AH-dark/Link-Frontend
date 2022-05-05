@@ -38,6 +38,7 @@ const SiteConfigManager: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
 
     const getSiteConfig = () => {
+        setLoad(true);
         API.get<ApiResponse<SiteConfig>>("/root/siteConfig")
             .then((res) => {
                 if (res.status === 200 && res.data.code === 200) {
@@ -52,15 +53,14 @@ const SiteConfigManager: React.FC = () => {
                         ? `Error ${err.response.data.code}: ${err.response.data.message}`
                         : err.message
                 );
+            })
+            .then(() => {
+                setLoad(false);
             });
     };
 
     useEffect(() => {
-        setLoad(true);
         getSiteConfig();
-        return () => {
-            setLoad(false);
-        };
     }, []);
 
     const handleChange = (name: string) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
