@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styles from "./siteConfigManager.module.scss";
 import { Box, FormControl, FormHelperText, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import SiteConfig from "../../../model/data/SiteConfig";
-import { setSiteConfig as setReduxSiteConfig } from "../../../redux/action";
+import { setSiteConfig as setReduxSiteConfig, setTitle } from "../../../redux/action";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
 import { useSnackbar } from "notistack";
@@ -62,6 +62,10 @@ const SiteConfigManager: React.FC = () => {
     useEffect(() => {
         getSiteConfig();
     }, []);
+
+    useEffect(() => {
+        dispatch(setTitle("Site Config Manage - Control Panel"));
+    });
 
     const handleChange = (name: string) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setSiteConfig({

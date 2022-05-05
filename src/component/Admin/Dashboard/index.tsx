@@ -21,6 +21,8 @@ import { useTheme } from "@mui/styles";
 import dayjs from "dayjs";
 import { Link as LinkIcon, People as PeopleIcon } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
+import { setTitle } from "../../../redux/action";
+import { useDispatch } from "react-redux";
 
 type LineDataType = Array<{
     name: string;
@@ -93,6 +95,11 @@ const Dashboard: React.FC = () => {
                 setLoading(false);
             });
     };
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setTitle("Dashboard - Control Panel"));
+    });
 
     const [loading, setLoading] = useState(false);
 
