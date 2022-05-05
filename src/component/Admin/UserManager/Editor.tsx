@@ -21,16 +21,13 @@ import { useSnackbar } from "notistack";
 import { setUserLogin } from "../../../redux/action";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const Editor: React.FC = () => {
     const currentUser = useSelector<MyState, User | null>((state) => state.user);
 
-    const { search } = useLocation();
     const history = useHistory();
-    const id = useMemo(() => {
-        return new URLSearchParams(search).get("id");
-    }, [search]);
+    const { id } = useParams<{ id?: string }>();
 
     const [originData, setOriginData] = useState<User>({
         id: -1,
@@ -66,7 +63,7 @@ const Editor: React.FC = () => {
     const dispatch = useDispatch();
 
     const isCreate = useMemo<boolean>(() => {
-        if (id === null) {
+        if (typeof id === "undefined") {
             return true;
         }
         const userId: number = parseInt(id);
