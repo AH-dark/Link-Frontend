@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import LinkIcon from "@mui/icons-material/LinkRounded";
-import { useHistory } from "react-router-dom";
+import SettingsApplicationsRoundedIcon from "@mui/icons-material/SettingsApplicationsRounded";
 
 const ListItems: React.FC = () => {
     const history = useHistory();
@@ -22,6 +23,12 @@ const ListItems: React.FC = () => {
                     <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
+            </ListItemButton>
+            <ListItemButton onClick={handleRedirect} id={"/admin/site"} selected={selected === "/admin/site"}>
+                <ListItemIcon>
+                    <SettingsApplicationsRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="SiteConfig" />
             </ListItemButton>
             <ListItemButton onClick={handleRedirect} id={"/admin/user"} selected={selected === "/admin/user"}>
                 <ListItemIcon>

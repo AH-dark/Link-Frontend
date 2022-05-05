@@ -7,6 +7,7 @@ import { createTheme } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
 import { AuthRoute } from "../../middleware/Route";
 import { Redirect, Switch } from "react-router-dom";
+import SiteConfigManager from "./SiteConfigManager";
 
 const Dashboard = React.lazy(() => import("./Dashboard"));
 const UserManager = React.lazy(() => import("./UserManager"));
@@ -21,26 +22,32 @@ const Admin: FC = () => {
             <ThemeProvider theme={theme}>
                 <SnackbarProvider maxSnack={3}>
                     <Layout>
-                        <Switch>
-                            <Redirect path={"/admin"} to={"/admin/dashboard"} exact />
-                            <AuthRoute path={"/admin/dashboard"} exact>
-                                <Dashboard />
-                            </AuthRoute>
+                        <React.Suspense>
+                            <Switch>
+                                <Redirect path={"/admin"} to={"/admin/dashboard"} exact />
+                                <AuthRoute path={"/admin/dashboard"} exact>
+                                    <Dashboard />
+                                </AuthRoute>
 
-                            <AuthRoute path={"/admin/user"} exact>
-                                <UserManager />
-                            </AuthRoute>
-                            <AuthRoute path={"/admin/user/edit/:id"} exact>
-                                <UserEditor />
-                            </AuthRoute>
-                            <AuthRoute path={"/admin/user/create"} exact>
-                                <UserEditor />
-                            </AuthRoute>
+                                <AuthRoute path={"/admin/user"} exact>
+                                    <UserManager />
+                                </AuthRoute>
+                                <AuthRoute path={"/admin/user/edit/:id"} exact>
+                                    <UserEditor />
+                                </AuthRoute>
+                                <AuthRoute path={"/admin/user/create"} exact>
+                                    <UserEditor />
+                                </AuthRoute>
 
-                            <AuthRoute path={"/admin/link"} exact>
-                                <LinkManager />
-                            </AuthRoute>
-                        </Switch>
+                                <AuthRoute path={"/admin/link"} exact>
+                                    <LinkManager />
+                                </AuthRoute>
+
+                                <AuthRoute path={"/admin/site"} exact>
+                                    <SiteConfigManager />
+                                </AuthRoute>
+                            </Switch>
+                        </React.Suspense>
                     </Layout>
                 </SnackbarProvider>
             </ThemeProvider>

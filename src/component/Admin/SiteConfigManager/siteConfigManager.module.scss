@@ -1,0 +1,18 @@
+.root {
+  .title {
+  }
+
+  .form {
+    margin-top: 24px;
+    max-width: 400px;
+
+    .formControl {
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+
+    .button {
+      margin-top: 16px;
+    }
+  }
+}
