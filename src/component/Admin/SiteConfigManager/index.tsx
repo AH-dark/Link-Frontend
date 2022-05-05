@@ -90,10 +90,13 @@ const SiteConfigManager: React.FC = () => {
             })
             .catch((err) => {
                 enqueueSnackbar(err.message);
+            })
+            .then(() => {
+                setSubmitting(false);
             });
     };
 
-    if (typeof siteConfig === null || !load) {
+    if (typeof siteConfig === null || load) {
         return <></>;
     }
 
