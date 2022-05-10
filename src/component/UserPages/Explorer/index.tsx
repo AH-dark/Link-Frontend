@@ -8,7 +8,8 @@ import { getUser } from "../../../middleware/API/user";
 import { useDispatch, useSelector } from "react-redux";
 import { MyState } from "../../../redux/reducer";
 import { addUserHash } from "../../../redux/action";
-import LinkCard from "./LinkCard";
+
+const LinkCard = React.lazy(() => import("./LinkCard"));
 
 type UserHash = Record<number, boolean>;
 
@@ -74,13 +75,15 @@ const Explorer: FC = () => {
 
     return (
         <div className={styles.main}>
-            <List
-                className={styles.list}
-                dataSource={data}
-                renderItem={({ key, origin, userId, view }) => (
-                    <LinkCard linkKey={key} origin={origin} userId={userId} view={view} />
-                )}
-            />
+            <React.Suspense fallback={<Spin size={"large"} />}>
+                <List
+                    className={styles.list}
+                    dataSource={data}
+                    renderItem={({ key, origin, userId, view }) => (
+                        <LinkCard linkKey={key} origin={origin} userId={userId} view={view} />
+                    )}
+                />
+            </React.Suspense>
         </div>
     );
 };
