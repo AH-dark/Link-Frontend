@@ -27,6 +27,8 @@ import ApiResponse from "../../../model/ApiResponse";
 import LimitData from "../../../model/ApiResponse/LimitData";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import compare from "../../../utils/compare";
+import TableSort from "../../../model/tableSort";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -93,12 +95,9 @@ const UserManager: FC = () => {
             });
     }, [page, limit]);
 
-    const [orderBy, setOrderBy] = useState<{
-        key: string;
-        sort: "desc" | "asc";
-    }>({
+    const [orderBy, setOrderBy] = useState<TableSort<User>>({
         key: "id",
-        sort: "asc",
+        sort: "desc",
     });
 
     const history = useHistory();
@@ -166,29 +165,50 @@ const UserManager: FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {load ? (
-                                <></>
-                            ) : (
-                                userDatas.map((userData) => (
-                                    <TableRow key={userData.id} className={classes.dataRow}>
-                                        <TableCell>{userData.id}</TableCell>
-                                        <TableCell>{userData.name}</TableCell>
-                                        <TableCell>{userData.email}</TableCell>
-                                        <TableCell>{userData.role === 1 ? "管理员" : "普通用户"}</TableCell>
-                                        <TableCell>{userData.available ? "活跃" : "禁用"}</TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                size={"small"}
-                                                onClick={() => {
-                                                    history.push("/admin/user/edit/" + userData.id);
-                                                }}
-                                            >
-                                                <EditRoundedIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
+                            {!load &&
+                                userDatas
+                                    .sort((a, b) => {
+                                        switch (orderBy.key) {
+                                            case "id":
+                                            default:
+                                                if (orderBy.sort === "asc") {
+                                                    return compare(a.id, b.id);
+                                                } else {
+                                                    return compare(b.id, a.id);
+                                                }
+                                            case "name":
+                                                if (orderBy.sort === "asc") {
+                                                    return compare(a.name, b.name);
+                                                } else {
+                                                    return compare(b.name, a.name);
+                                                }
+                                            case "email":
+                                                if (orderBy.sort === "asc") {
+                                                    return compare(a.email, b.email);
+                                                } else {
+                                                    return compare(b.email, a.email);
+                                                }
+                                        }
+                                    })
+                                    .map((userData) => (
+                                        <TableRow key={userData.id} className={classes.dataRow}>
+                                            <TableCell>{userData.id}</TableCell>
+                                            <TableCell>{userData.name}</TableCell>
+                                            <TableCell>{userData.email}</TableCell>
+                                            <TableCell>{userData.role === 1 ? "管理员" : "普通用户"}</TableCell>
+                                            <TableCell>{userData.available ? "活跃" : "禁用"}</TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    size={"small"}
+                                                    onClick={() => {
+                                                        history.push("/admin/user/edit/" + userData.id);
+                                                    }}
+                                                >
+                                                    <EditRoundedIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

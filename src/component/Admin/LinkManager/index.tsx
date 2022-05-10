@@ -17,7 +17,7 @@ import {
 import { createStyles, makeStyles } from "@mui/styles";
 import User from "../../../model/data/User";
 import { useDispatch, useSelector } from "react-redux";
-import { setTitle, addUserHash } from "../../../redux/action";
+import { addUserHash, setTitle } from "../../../redux/action";
 import { useSnackbar } from "notistack";
 import ShortLink from "../../../model/data/ShortLink";
 import API from "../../../middleware/API";
@@ -27,6 +27,7 @@ import { MyState } from "../../../redux/reducer";
 import LinkRow from "./LinkRow";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import classNames from "classnames";
+import TableSort from "../../../model/tableSort";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -125,11 +126,8 @@ const LinkManager: FC = () => {
         loadList();
     }, [page, limit]);
 
-    const [orderBy, setOrderBy] = useState<{
-        key: string;
-        sort: "desc" | "asc";
-    }>({
-        key: "create_time",
+    const [orderBy, setOrderBy] = useState<TableSort<ShortLink>>({
+        key: "createTime",
         sort: "desc",
     });
 
@@ -180,11 +178,11 @@ const LinkManager: FC = () => {
                                 <TableCell style={{ minWidth: 120 }}>{"Origin"}</TableCell>
                                 <TableCell style={{ minWidth: 170 }}>
                                     <TableSortLabel
-                                        active={orderBy.key === "creator"}
+                                        active={orderBy.key === "userId"}
                                         direction={orderBy.sort}
                                         onClick={() =>
                                             setOrderBy({
-                                                key: "creator",
+                                                key: "userId",
                                                 sort: orderBy.sort === "asc" ? "desc" : "asc",
                                             })
                                         }
@@ -208,11 +206,11 @@ const LinkManager: FC = () => {
                                 </TableCell>
                                 <TableCell style={{ minWidth: 170 }}>
                                     <TableSortLabel
-                                        active={orderBy.key === "create_time"}
+                                        active={orderBy.key === "createTime"}
                                         direction={orderBy.sort}
                                         onClick={() =>
                                             setOrderBy({
-                                                key: "create_time",
+                                                key: "createTime",
                                                 sort: orderBy.sort === "asc" ? "desc" : "asc",
                                             })
                                         }
@@ -224,7 +222,9 @@ const LinkManager: FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {load ? <></> : <LinkRow data={linkDataList} handleDeleteLink={handleDeleteLink} />}
+                            {!load && (
+                                <LinkRow data={linkDataList} handleDeleteLink={handleDeleteLink} orderBy={orderBy} />
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
