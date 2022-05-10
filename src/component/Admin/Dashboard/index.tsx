@@ -19,7 +19,7 @@ import ApiResponse from "../../../model/ApiResponse";
 import { useSnackbar } from "notistack";
 import { useTheme } from "@mui/styles";
 import dayjs from "dayjs";
-import { Link as LinkIcon, People as PeopleIcon } from "@mui/icons-material";
+import { Link as LinkIcon, People as PeopleIcon, NumbersRounded as NumbersRoundedIcon } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
 import { setTitle } from "../../../redux/action";
 import { useDispatch } from "react-redux";
@@ -41,6 +41,8 @@ const Dashboard: React.FC = () => {
     const xl = useMediaQuery(theme.breakpoints.between("lg", "xl"));
     const xxl = useMediaQuery(theme.breakpoints.up("xl"));
 
+    const displayGraph = useMediaQuery(theme.breakpoints.up("sm"));
+
     const size = useMemo<number>(() => {
         switch (true) {
             case xs:
@@ -51,11 +53,9 @@ const Dashboard: React.FC = () => {
             default:
                 return 7;
             case lg:
-                return 9;
             case xl:
-                return 11;
             case xxl:
-                return 14;
+                return 9;
         }
     }, [xs, sm, md, lg, xl, xxl]);
 
@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
         if (typeof data !== "undefined") {
             for (let i = size - 1; i >= 0; i--) {
                 arr.push({
-                    name: dayjs().add(-i, "day").format("MM月DD日").toString(),
+                    name: dayjs().add(-i, "day").format("M月D日").toString(),
                     link: data.newShortLinkData[i],
                     user: data.newUserData[i],
                 });
@@ -110,7 +110,6 @@ const Dashboard: React.FC = () => {
     const aspect = useMemo<number>(() => {
         switch (true) {
             case xs:
-                return 1;
             case sm:
                 return 1;
             case md:
@@ -118,11 +117,12 @@ const Dashboard: React.FC = () => {
             case lg:
                 return 2.2;
             case xl:
-            case xxl:
             default:
+                return 2.6;
+            case xxl:
                 return 3;
         }
-    }, [xs, sm, md, lg, xl, xxl]);
+    }, [window.innerWidth]);
 
     if (loading || typeof data === "undefined") {
         return <></>;
@@ -147,19 +147,44 @@ const Dashboard: React.FC = () => {
                     <Box
                         sx={{
                             mt: 3,
+                            padding: 1,
+                            overflow: "hidden",
+                            width: !displayGraph ? "100%" : undefined,
                         }}
                     >
-                        <ResponsiveContainer width={"100%"} height={300} aspect={aspect}>
-                            <LineChart data={lineData} height={300} width={1200}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" fontSize={"0.8rem"} />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line name={"链接"} type="monotone" dataKey="link" stroke={Color.blue[600]} />
-                                <Line name={"用户"} type="monotone" dataKey="user" stroke={Color.orange[500]} />
-                            </LineChart>
-                        </ResponsiveContainer>
+                        {displayGraph ? (
+                            <ResponsiveContainer width={"100%"} height={300} aspect={aspect}>
+                                <LineChart data={lineData} height={300} width={1200}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" fontSize={"0.8rem"} />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line name={"链接"} type="monotone" dataKey="link" stroke={Color.blue[600]} />
+                                    <Line name={"用户"} type="monotone" dataKey="user" stroke={Color.orange[500]} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <List
+                                sx={{
+                                    width: "100%",
+                                }}
+                            >
+                                {lineData.map((item) => (
+                                    <ListItem disablePadding>
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                                <NumbersRoundedIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            primary={`链接：${item.link} / 用户：${item.user}`}
+                                            secondary={item.name}
+                                        />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        )}
                     </Box>
                 </Paper>
             </Grid>
@@ -198,7 +223,7 @@ const Dashboard: React.FC = () => {
             </Grid>
             {/* Recent Orders */}
             <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>{"Orders"}</Paper>
+                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>{"Others"}</Paper>
             </Grid>
         </Grid>
     );
