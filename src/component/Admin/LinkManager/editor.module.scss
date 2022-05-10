@@ -1,0 +1,46 @@
+.root {
+  padding: 16px 16px 16px 24px;
+
+  .form {
+    margin-top: 24px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-evenly;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    .row {
+      max-width: 400px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      display: inline-flex;
+      flex-direction: row;
+      width: 100%;
+
+      .formControl {
+        :global {
+          .MuiInput-root {
+            margin-left: 14px;
+          }
+        }
+      }
+
+      .switch {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-left: 16px;
+
+        label {
+          font-size: 14px;
+        }
+      }
+    }
+
+  }
+}

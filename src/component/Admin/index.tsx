@@ -13,6 +13,7 @@ const Dashboard = React.lazy(() => import("./Dashboard"));
 const UserManager = React.lazy(() => import("./UserManager"));
 const UserEditor = React.lazy(() => import("./UserManager/Editor"));
 const LinkManager = React.lazy(() => import("./LinkManager"));
+const LinkEditor = React.lazy(() => import("./LinkManager/Editor"));
 
 const theme = createTheme();
 
@@ -41,6 +42,12 @@ const Admin: FC = () => {
 
                                 <AuthRoute path={"/admin/link"} exact>
                                     <LinkManager />
+                                </AuthRoute>
+                                <AuthRoute path={"/admin/link/create"} exact>
+                                    <LinkEditor />
+                                </AuthRoute>
+                                <AuthRoute path={"/admin/link/edit/:key"} exact>
+                                    <LinkEditor />
                                 </AuthRoute>
 
                                 <AuthRoute path={"/admin/site"} exact>
