@@ -1,6 +1,4 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
 import { Button, Card, Image, List, message, Pagination, Spin, Typography } from "antd";
 import { getUser } from "../../../middleware/API/user";
@@ -9,10 +7,10 @@ import styles from "./userInfo.module.scss";
 import { getShortLinkByUser } from "../../../middleware/API/shortLink";
 import ShortLink from "../../../model/data/ShortLink";
 import { MailOutlined } from "@ant-design/icons";
-import SiteConfig from "../../../model/data/SiteConfig";
-import { addUserHash } from "../../../redux/action";
 import { useHistory, useParams } from "react-router-dom";
 import CardItem from "./CardItem";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { addUserHash } from "../../../redux/data";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -25,7 +23,7 @@ const UserInfo: FC<{
     userId?: number;
 }> = (props) => {
     const paramUserId = useParams<{ userId?: string }>().userId;
-    const sessionUser = useSelector<MyState, User | null>((state) => state.user);
+    const sessionUser = useAppSelector((state) => state.data.user);
     const userId = useMemo(() => {
         if (typeof paramUserId !== "undefined" && !isNaN(parseInt(paramUserId))) {
             return parseInt(paramUserId);
@@ -54,8 +52,8 @@ const UserInfo: FC<{
 
     const [page, setPage] = useState(1);
 
-    const dispatch = useDispatch();
-    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+    const dispatch = useAppDispatch();
+    const userDataHash = useAppSelector((state) => state.data.userHash);
 
     useEffect(() => {
         if (userId !== null) {
@@ -92,7 +90,7 @@ const UserInfo: FC<{
         }
     }, [userId]);
 
-    const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
+    const siteConfig = useAppSelector((state) => state.data.site);
     const url: URL = new URL(siteConfig.siteUrl);
 
     if (load) {

@@ -6,16 +6,17 @@ import API from "../../../middleware/API";
 import LoginData from "../../../model/data/LoginData";
 import ApiResponse from "../../../model/ApiResponse";
 import User from "../../../model/data/User";
-import { useDispatch } from "react-redux";
-import { setTitle, setUserLogin } from "../../../redux/action";
 import { useHistory } from "react-router-dom";
+import { useAppDispatch } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
+import { setUserLogin } from "../../../redux/data";
 
 const { Title } = Typography;
 
 const Login: FC = () => {
     const history = useHistory();
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setTitle("Login"));

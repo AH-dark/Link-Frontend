@@ -1,23 +1,21 @@
 import React, { FC, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../../../redux/action";
 import { Grid, Input, message, Typography } from "antd";
-import { MyState } from "../../../redux/reducer";
 import styles from "./home.module.scss";
 import { ShortLinkBasic } from "../../../model/data/ShortLink";
-import User from "../../../model/data/User";
 import { generateShortLink } from "../../../middleware/API/shortLink";
 import { useHistory } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const { Title } = Typography;
 const { Search } = Input;
 const { useBreakpoint } = Grid;
 
 const Index: FC = () => {
-    const siteName = useSelector<MyState, string>((state) => state.site.siteName);
-    const user = useSelector<MyState, User | null>((state) => state.user);
+    const siteName = useAppSelector((state) => state.data.site.siteName);
+    const user = useAppSelector((state) => state.data.user);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(setTitle("Home"));
     }, []);

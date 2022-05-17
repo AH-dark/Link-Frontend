@@ -19,10 +19,10 @@ import ApiResponse from "../../../model/ApiResponse";
 import { useSnackbar } from "notistack";
 import { useTheme } from "@mui/styles";
 import dayjs from "dayjs";
-import { Link as LinkIcon, People as PeopleIcon, NumbersRounded as NumbersRoundedIcon } from "@mui/icons-material";
+import { Link as LinkIcon, NumbersRounded as NumbersRoundedIcon, People as PeopleIcon } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
-import { setTitle } from "../../../redux/action";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 type LineDataType = Array<{
     name: string;
@@ -96,7 +96,7 @@ const Dashboard: React.FC = () => {
             });
     };
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(setTitle("Dashboard - Control Panel"));
     });

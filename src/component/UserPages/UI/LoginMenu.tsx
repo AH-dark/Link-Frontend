@@ -1,6 +1,4 @@
 import React, { FC } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
 import { Avatar, Button, Menu, message, Popover } from "antd";
 import { GetAvatar } from "../../../utils/avatar";
@@ -9,12 +7,13 @@ import styles from "./ui.module.scss";
 import "./LoginMenu.scss";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
-import { setUserLogin } from "../../../redux/action";
 import { useHistory } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { setUserLogin } from "../../../redux/data";
 
 const MenuContent: FC = () => {
     const history = useHistory();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const handleSettings = () => {
         history.push("/settings");
@@ -47,7 +46,7 @@ const MenuContent: FC = () => {
             });
     };
 
-    const user = useSelector<MyState, User | null>((state) => state.user);
+    const user = useAppSelector((state) => state.data.user);
 
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
@@ -70,7 +69,7 @@ const MenuContent: FC = () => {
 };
 
 const LoginMenu: FC = () => {
-    const user = useSelector<MyState, User | null>((state) => state.user);
+    const user = useAppSelector((state) => state.data.user);
     const isLogin = user !== null;
 
     const history = useHistory();

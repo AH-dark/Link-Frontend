@@ -6,12 +6,10 @@ import dayjs from "dayjs";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { createStyles, makeStyles } from "@mui/styles";
-import { useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
-import User from "../../../model/data/User";
 import { useHistory } from "react-router-dom";
 import TableSort from "../../../model/tableSort";
 import compare from "../../../utils/compare";
+import { useAppSelector } from "../../../redux/hook";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,7 +31,7 @@ const LinkRow: React.FC<
     }
 > = (props) => {
     const classes = useStyles();
-    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+    const userDataHash = useAppSelector((state) => state.data.userHash);
     const history = useHistory();
 
     return (

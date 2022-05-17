@@ -1,19 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setTitle } from "../../../redux/action";
 import styles from "./generate.module.scss";
 import { Alert, Avatar, Button, Col, Form, Input, message, Row, Typography } from "antd";
 import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
-import { MyState } from "../../../redux/reducer";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
 import { generateShortLink } from "../../../middleware/API/shortLink";
 import { useHistory } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const { Title } = Typography;
 
 const Generate: FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setTitle("Generate"));
@@ -21,7 +20,7 @@ const Generate: FC = () => {
 
     const history = useHistory();
 
-    const user = useSelector((state: MyState) => state.user as User);
+    const user = useAppSelector((state) => state.data.user as User);
     const isUserAvailable = user !== null && user.available;
 
     const [checked, setChecked] = useState(false);

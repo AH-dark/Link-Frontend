@@ -18,8 +18,6 @@ import {
 import { createStyles, makeStyles } from "@mui/styles";
 import User from "../../../model/data/User";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import { useDispatch } from "react-redux";
-import { setTitle } from "../../../redux/action";
 import { useSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/AddRounded";
 import API from "../../../middleware/API";
@@ -29,6 +27,8 @@ import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 import compare from "../../../utils/compare";
 import TableSort from "../../../model/tableSort";
+import { useAppDispatch } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -59,7 +59,7 @@ const UserManager: FC = () => {
     const [userDatas, setUserDatas] = useState<Array<User>>([]);
     const [load, setLoad] = useState(false);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {

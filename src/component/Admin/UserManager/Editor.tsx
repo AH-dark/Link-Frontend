@@ -14,17 +14,16 @@ import {
     Typography,
 } from "@mui/material";
 import User from "../../../model/data/User";
-import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { useSnackbar } from "notistack";
-import { setUserLogin } from "../../../redux/action";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
 import { useHistory, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { setUserLogin } from "../../../redux/data";
 
 const Editor: React.FC = () => {
-    const currentUser = useSelector<MyState, User | null>((state) => state.user);
+    const currentUser = useAppSelector((state) => state.data.user);
 
     const history = useHistory();
     const { id } = useParams<{ id?: string }>();
@@ -60,7 +59,7 @@ const Editor: React.FC = () => {
     });
 
     const { enqueueSnackbar } = useSnackbar();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const isCreate = useMemo<boolean>(() => {
         if (typeof id === "undefined") {

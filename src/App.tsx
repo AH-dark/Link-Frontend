@@ -1,30 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.min.css";
 import "./App.css";
-import User from "./model/data/User";
-import { useDispatch, useSelector } from "react-redux";
-import { setSiteConfig, setUserLogin } from "./redux/action";
 import SiteConfig from "./model/data/SiteConfig";
-import { MyState } from "./redux/reducer";
 import Cookie from "js-cookie";
 import { getSiteConfig } from "./middleware/API/siteConfig";
 import { getUser } from "./middleware/API/user";
 import UserPages from "./component/UserPages";
 import { AuthRoute, CommonRoute } from "./middleware/Route";
 import { Switch } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "./redux/hook";
+import { setSiteConfig, setUserLogin } from "./redux/data";
 
 const Admin = React.lazy(() => import("./component/Admin"));
 
 function App() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const user = useSelector<MyState, User | null>((state) => state.user);
-    const siteConfig = useSelector<
-        MyState,
-        SiteConfig & {
-            isSet: boolean;
-        }
-    >((state) => state.site);
+    const user = useAppSelector((state) => state.data.user);
+    const siteConfig = useAppSelector((state) => state.data.site);
 
     const [load, setLoad] = useState(true);
 
@@ -71,6 +64,12 @@ function App() {
             return;
         });
     }, []);
+
+    window.document.title = useAppSelector((state) =>
+        state.viewUpdate.title === null
+            ? state.data.site.siteName
+            : state.viewUpdate.title + " - " + state.data.site.siteName
+    );
 
     if (load) {
         return <>{"Loading..."}</>;

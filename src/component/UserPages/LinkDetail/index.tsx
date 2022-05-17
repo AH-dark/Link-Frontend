@@ -6,15 +6,14 @@ import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
-import { useDispatch, useSelector } from "react-redux";
-import { addUserHash, setTitle } from "../../../redux/action";
-import { MyState } from "../../../redux/reducer";
-import SiteConfig from "../../../model/data/SiteConfig";
 import { getShortLink } from "../../../middleware/API/shortLink";
 import { getUser } from "../../../middleware/API/user";
 import { CopyOutlined, UserOutlined } from "@ant-design/icons";
 import ClipboardJS from "clipboard";
 import { useHistory, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { addUserHash } from "../../../redux/data";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const { Title, Text } = Typography;
 
@@ -40,8 +39,8 @@ const LinkDetail: FC = () => {
         return "https://screenshot.ahdark.com/" + url;
     }, [linkData.origin]);
 
-    const siteConfig = useSelector<MyState, SiteConfig>((state) => state.site);
-    const userDataHash = useSelector((state: MyState) => state.userHash);
+    const siteConfig = useAppSelector((state) => state.data.site);
+    const userDataHash = useAppSelector((state) => state.data.userHash);
 
     useEffect(() => {
         if (key !== null) {
@@ -75,7 +74,7 @@ const LinkDetail: FC = () => {
         }
     }, [key]);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(setTitle("Link " + key));
     }, [key]);

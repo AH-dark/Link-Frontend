@@ -1,12 +1,11 @@
 import React, { FC, useState } from "react";
 import styles from "./userSettings.module.scss";
-import { useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import User, { UserPutData } from "../../../model/data/User";
 import { Avatar, Button, Card, Form, Input, message, Modal, Typography } from "antd";
 import { GetAvatar } from "../../../utils/avatar";
 import { useForm } from "antd/es/form/Form";
 import { putUser } from "../../../middleware/API/user";
+import { useAppSelector } from "../../../redux/hook";
 
 const { Text, Title } = Typography;
 const { TextArea, Password } = Input;
@@ -22,7 +21,7 @@ interface PasswordData {
 }
 
 const UserSettings: FC = () => {
-    const user = useSelector((state: MyState) => state.user as User);
+    const user = useAppSelector((state) => state.data.user as User);
 
     const [form] = useForm<FormData>();
     const [data, setData] = useState<FormData>({

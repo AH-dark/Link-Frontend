@@ -2,9 +2,8 @@ import React from "react";
 import styles from "./explorer.module.scss";
 import { Badge, Button, Card, List, Typography } from "antd";
 import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import { useHistory } from "react-router-dom";
+import { useAppSelector } from "../../../redux/hook";
 
 const { Text } = Typography;
 
@@ -14,7 +13,7 @@ const LinkCard: React.FC<{
     userId: number;
     view: number;
 }> = ({ linkKey, origin, userId, view }) => {
-    const userDataHash = useSelector((state: MyState) => state.userHash);
+    const userDataHash = useAppSelector((state) => state.data.userHash);
 
     const history = useHistory();
 

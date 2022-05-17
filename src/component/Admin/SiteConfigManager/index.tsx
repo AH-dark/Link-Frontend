@@ -2,12 +2,13 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styles from "./siteConfigManager.module.scss";
 import { Box, FormControl, FormHelperText, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import SiteConfig from "../../../model/data/SiteConfig";
-import { setSiteConfig as setReduxSiteConfig, setTitle } from "../../../redux/action";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
 import { useSnackbar } from "notistack";
-import { useDispatch } from "react-redux";
 import { LoadingButton } from "@mui/lab";
+import { setTitle } from "../../../redux/viewUpdate";
+import { setSiteConfig as setReduxSiteConfig } from "../../../redux/data";
+import { useAppDispatch } from "../../../redux/hook";
 
 const FormItem: React.FC<{
     name: string;
@@ -26,7 +27,7 @@ const FormItem: React.FC<{
 };
 
 const SiteConfigManager: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
     const [siteConfig, setSiteConfig] = useState<SiteConfig>({

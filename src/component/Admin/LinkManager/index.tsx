@@ -16,18 +16,18 @@ import {
 } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import User from "../../../model/data/User";
-import { useDispatch, useSelector } from "react-redux";
-import { addUserHash, setTitle } from "../../../redux/action";
 import { useSnackbar } from "notistack";
 import ShortLink from "../../../model/data/ShortLink";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
 import LimitData from "../../../model/ApiResponse/LimitData";
-import { MyState } from "../../../redux/reducer";
 import LinkRow from "./LinkRow";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import classNames from "classnames";
 import TableSort from "../../../model/tableSort";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
+import { addUserHash } from "../../../redux/data";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,10 +49,10 @@ const LinkManager: FC = () => {
     const [limit, setLimit] = useState(10);
     const [total, setTotal] = useState(0);
     const [linkDataList, setLinkDataList] = useState<Array<ShortLink>>([]);
-    const userDataHash = useSelector<MyState, Record<number, User>>((state) => state.userHash);
+    const userDataHash = useAppSelector((state) => state.data.userHash);
     const [load, setLoad] = useState(false);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {

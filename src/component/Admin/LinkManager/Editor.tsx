@@ -1,19 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./editor.module.scss";
 import { Box, Button, CircularProgress, Paper, TextField, Typography } from "@mui/material";
-import User from "../../../model/data/User";
-import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { useSnackbar } from "notistack";
 import API from "../../../middleware/API";
 import ApiResponse from "../../../model/ApiResponse";
 import { useHistory, useParams } from "react-router-dom";
 import ShortLink, { ShortLinkBasic } from "../../../model/data/ShortLink";
-import { setTitle } from "../../../redux/action";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const Editor: React.FC = () => {
-    const currentUser = useSelector<MyState, User | null>((state) => state.user);
+    const currentUser = useAppSelector((state) => state.data.user);
 
     const history = useHistory();
     const { key } = useParams<{ key?: string }>();
@@ -35,7 +33,7 @@ const Editor: React.FC = () => {
     const [load, setLoad] = useState(false);
 
     const { enqueueSnackbar } = useSnackbar();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(setTitle("Link Editor - Control Panel"));

@@ -17,49 +17,47 @@ const LinkEditor = React.lazy(() => import("./LinkManager/Editor"));
 
 const theme = createTheme();
 
-const Admin: FC = () => {
-    return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <ThemeProvider theme={theme}>
-                <SnackbarProvider maxSnack={3}>
-                    <Layout>
-                        <React.Suspense>
-                            <Switch>
-                                <Redirect path={"/admin"} to={"/admin/dashboard"} exact />
-                                <AuthRoute path={"/admin/dashboard"} exact>
-                                    <Dashboard />
-                                </AuthRoute>
+const Admin: FC = () => (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3}>
+                <Layout>
+                    <React.Suspense>
+                        <Switch>
+                            <Redirect path={"/admin"} to={"/admin/dashboard"} exact />
+                            <AuthRoute path={"/admin/dashboard"} exact>
+                                <Dashboard />
+                            </AuthRoute>
 
-                                <AuthRoute path={"/admin/user"} exact>
-                                    <UserManager />
-                                </AuthRoute>
-                                <AuthRoute path={"/admin/user/edit/:id"} exact>
-                                    <UserEditor />
-                                </AuthRoute>
-                                <AuthRoute path={"/admin/user/create"} exact>
-                                    <UserEditor />
-                                </AuthRoute>
+                            <AuthRoute path={"/admin/user"} exact>
+                                <UserManager />
+                            </AuthRoute>
+                            <AuthRoute path={"/admin/user/edit/:id"} exact>
+                                <UserEditor />
+                            </AuthRoute>
+                            <AuthRoute path={"/admin/user/create"} exact>
+                                <UserEditor />
+                            </AuthRoute>
 
-                                <AuthRoute path={"/admin/link"} exact>
-                                    <LinkManager />
-                                </AuthRoute>
-                                <AuthRoute path={"/admin/link/create"} exact>
-                                    <LinkEditor />
-                                </AuthRoute>
-                                <AuthRoute path={"/admin/link/edit/:key"} exact>
-                                    <LinkEditor />
-                                </AuthRoute>
+                            <AuthRoute path={"/admin/link"} exact>
+                                <LinkManager />
+                            </AuthRoute>
+                            <AuthRoute path={"/admin/link/create"} exact>
+                                <LinkEditor />
+                            </AuthRoute>
+                            <AuthRoute path={"/admin/link/edit/:key"} exact>
+                                <LinkEditor />
+                            </AuthRoute>
 
-                                <AuthRoute path={"/admin/site"} exact>
-                                    <SiteConfigManager />
-                                </AuthRoute>
-                            </Switch>
-                        </React.Suspense>
-                    </Layout>
-                </SnackbarProvider>
-            </ThemeProvider>
-        </LocalizationProvider>
-    );
-};
+                            <AuthRoute path={"/admin/site"} exact>
+                                <SiteConfigManager />
+                            </AuthRoute>
+                        </Switch>
+                    </React.Suspense>
+                </Layout>
+            </SnackbarProvider>
+        </ThemeProvider>
+    </LocalizationProvider>
+);
 
 export default Admin;

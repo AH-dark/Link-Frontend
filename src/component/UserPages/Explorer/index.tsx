@@ -3,11 +3,9 @@ import styles from "./explorer.module.scss";
 import ShortLink from "../../../model/data/ShortLink";
 import { getLatestShortLink } from "../../../middleware/API/shortLink";
 import { List, message, Spin } from "antd";
-import User from "../../../model/data/User";
 import { getUser } from "../../../middleware/API/user";
-import { useDispatch, useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
-import { addUserHash } from "../../../redux/action";
+import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { addUserHash } from "../../../redux/data";
 
 const LinkCard = React.lazy(() => import("./LinkCard"));
 
@@ -18,8 +16,8 @@ const Explorer: FC = () => {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
 
-    const dispatch = useDispatch();
-    const userDataHash = useSelector<MyState, { [K: number]: User }>((state) => state.userHash);
+    const dispatch = useAppDispatch();
+    const userDataHash = useAppSelector((state) => state.data.userHash);
 
     useEffect(() => {
         const height = window.innerHeight;

@@ -1,20 +1,18 @@
 import React, { FC, useState } from "react";
 import { Grid, Layout, Menu } from "antd";
 import styles from "./ui.module.scss";
-import { useSelector } from "react-redux";
-import { MyState } from "../../../redux/reducer";
 import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, ToolOutlined } from "@ant-design/icons";
 import type { MenuInfo } from "rc-menu/lib/interface";
-import User from "../../../model/data/User";
 import { useHistory, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../../redux/hook";
 
 const { Sider } = Layout;
 const { Item } = Menu;
 const { useBreakpoint } = Grid;
 
 const SideBar: FC = () => {
-    const open = useSelector<MyState, boolean>((state) => state.ui.sidebar.open);
-    const userData = useSelector<MyState, User | null>((state) => state.user);
+    const open = useAppSelector((state) => state.viewUpdate.sidebar.open);
+    const userData = useAppSelector((state) => state.data.user);
 
     const breakpoint = useBreakpoint();
     const isMobileSize = !breakpoint.md;
