@@ -19,7 +19,7 @@
     "@mui/lab": "^5.0.0-alpha.82",
     "@mui/material": "^5.8.0",
     "@mui/styles": "^5.8.0",
-    "@mui/x-date-pickers": "^5.0.0-alpha.3",
+    "@mui/x-date-pickers": "^5.0.0-alpha.4",
     "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.2.0",
