@@ -4,10 +4,10 @@ import { Alert, Avatar, Button, Col, Form, Input, message, Row, Typography } fro
 import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
 import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
-import { generateShortLink } from "../../../middleware/API/shortLink";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
+import { useGetUserQuery, usePostShortLinkMutation } from "../../../service/localApi";
 
 const { Title } = Typography;
 
@@ -20,7 +20,7 @@ const Generate: FC = () => {
 
     const history = useHistory();
 
-    const user = useAppSelector((state) => state.data.user as User);
+    const user = useGetUserQuery().data as User;
     const isUserAvailable = user !== null && user.available;
 
     const [checked, setChecked] = useState(false);
@@ -41,7 +41,7 @@ const Generate: FC = () => {
     const origin = Form.useWatch<string>("origin", form);
     const key = Form.useWatch<string>("key", form);
 
-    const [load, setLoad] = useState(false);
+    const [postShortLink, { isLoading }] = usePostShortLinkMutation();
 
     const submit = () => {
         if (!RegExp("^https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$").test(origin)) {
@@ -53,10 +53,10 @@ const Generate: FC = () => {
             return;
         }
 
-        setLoad(true);
-        generateShortLink(origin, key, user?.id)
+        postShortLink({ origin, key, userId: user?.id })
+            .unwrap()
             .then((r) => {
-                if (r !== null) {
+                if (typeof r !== "undefined") {
                     message.success(
                         `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${r.key}`
                     );
@@ -64,9 +64,6 @@ const Generate: FC = () => {
                         history.push("/link/" + r.key);
                     }, 1000);
                 }
-            })
-            .then(() => {
-                setLoad(false);
             });
     };
 
@@ -158,7 +155,7 @@ const Generate: FC = () => {
                                 height: "100%",
                                 width: "100%",
                             }}
-                            disabled={!isUserAvailable || load}
+                            disabled={!isUserAvailable || isLoading}
                             onClick={submit}
                         >
                             {"Submit"}

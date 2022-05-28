@@ -2,13 +2,12 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styles from "./siteConfigManager.module.scss";
 import { Box, FormControl, FormHelperText, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import SiteConfig from "../../../model/data/SiteConfig";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
 import { setTitle } from "../../../redux/viewUpdate";
-import { setSiteConfig as setReduxSiteConfig } from "../../../redux/data";
 import { useAppDispatch } from "../../../redux/hook";
+import { useGetSiteConfigQuery, usePutSiteConfigMutation } from "../../../service/rootApi";
+import { useGetSiteConfigQuery as useUserGetSiteConfigQuery } from "../../../service/localApi";
 
 const FormItem: React.FC<{
     name: string;
@@ -30,39 +29,16 @@ const SiteConfigManager: React.FC = () => {
     const dispatch = useAppDispatch();
     const { enqueueSnackbar } = useSnackbar();
 
-    const [siteConfig, setSiteConfig] = useState<SiteConfig>({
-        siteName: "",
-        siteUrl: "",
-        enableTouristShorten: false,
-    });
-    const [load, setLoad] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
-
-    const getSiteConfig = () => {
-        setLoad(true);
-        API.get<ApiResponse<SiteConfig>>("/root/siteConfig")
-            .then((res) => {
-                if (res.status === 200 && res.data.code === 200) {
-                    setSiteConfig(res.data.data);
-                } else {
-                    enqueueSnackbar(res.data.message);
-                }
-            })
-            .catch((err) => {
-                enqueueSnackbar(
-                    typeof err.response.data !== "undefined"
-                        ? `Error ${err.response.data.code}: ${err.response.data.message}`
-                        : err.message
-                );
-            })
-            .then(() => {
-                setLoad(false);
-            });
-    };
+    const { data: SiteConfigInitData, isLoading: isGetting, refetch } = useGetSiteConfigQuery();
+    const { refetch: userSideSiteConfigRefetch } = useUserGetSiteConfigQuery();
+    const [putSiteConfig, { isLoading: isSiteConfigUpdating }] = usePutSiteConfigMutation();
+    const [siteConfig, setSiteConfig] = useState<SiteConfig>({} as SiteConfig);
 
     useEffect(() => {
-        getSiteConfig();
-    }, []);
+        if (typeof SiteConfigInitData !== "undefined" && !isGetting) {
+            setSiteConfig(SiteConfigInitData);
+        }
+    }, [SiteConfigInitData, isGetting]);
 
     useEffect(() => {
         dispatch(setTitle("Site Config Manage - Control Panel"));
@@ -77,27 +53,27 @@ const SiteConfigManager: React.FC = () => {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        setSubmitting(true);
-
-        API.put<ApiResponse<SiteConfig>>("/root/siteConfig", siteConfig)
-            .then((res) => {
-                if (res.status === 200 && res.data.code === 200) {
-                    setSiteConfig(res.data.data);
-                    dispatch(setReduxSiteConfig(res.data.data));
-                    enqueueSnackbar("Submit success.");
-                } else {
-                    enqueueSnackbar("Backend error.");
+        putSiteConfig(siteConfig)
+            .unwrap()
+            .then((r) => {
+                if (typeof r !== "undefined") {
+                    setSiteConfig(r);
+                    enqueueSnackbar("Submit success.", {
+                        variant: "success",
+                    });
+                    refetch();
+                    userSideSiteConfigRefetch();
                 }
             })
             .catch((err) => {
-                enqueueSnackbar(err.message);
-            })
-            .then(() => {
-                setSubmitting(false);
+                console.error(err.message);
+                enqueueSnackbar("Backend error.", {
+                    variant: "error",
+                });
             });
     };
 
-    if (typeof siteConfig === null || load) {
+    if (typeof siteConfig === null || isGetting || isSiteConfigUpdating) {
         return <></>;
     }
 
@@ -128,7 +104,7 @@ const SiteConfigManager: React.FC = () => {
                 >
                     <InputLabel>{"Tourist Shorten"}</InputLabel>
                     <Select
-                        value={siteConfig.enableTouristShorten}
+                        value={String(siteConfig.enableTouristShorten)}
                         onChange={(e) => {
                             setSiteConfig({
                                 ...siteConfig,
@@ -140,7 +116,12 @@ const SiteConfigManager: React.FC = () => {
                         <MenuItem value={"false"}>Disable</MenuItem>
                     </Select>
                 </FormControl>
-                <LoadingButton variant={"contained"} type={"submit"} loading={submitting} className={styles.button}>
+                <LoadingButton
+                    variant={"contained"}
+                    type={"submit"}
+                    loading={isSiteConfigUpdating}
+                    className={styles.button}
+                >
                     {"Submit"}
                 </LoadingButton>
             </Box>

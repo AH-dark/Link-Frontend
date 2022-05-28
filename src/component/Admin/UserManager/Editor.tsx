@@ -16,18 +16,33 @@ import {
 import User from "../../../model/data/User";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { useSnackbar } from "notistack";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
 import { useHistory, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { setUserLogin } from "../../../redux/data";
+import { useCreateUserMutation, useGetUserQuery, usePutUserMutation } from "../../../service/rootApi";
+import { useGetUserQuery as useGetUserQueryOnUserPermission } from "../../../service/localApi";
 
 const Editor: React.FC = () => {
-    const currentUser = useAppSelector((state) => state.data.user);
+    const { data: currentUser, refetch, isLoading: isGettingCurrentUser } = useGetUserQueryOnUserPermission();
 
     const history = useHistory();
     const { id } = useParams<{ id?: string }>();
 
+    const isCreate = useMemo<boolean>(() => {
+        if (typeof id === "undefined") {
+            return true;
+        }
+        const userId: number = parseInt(id);
+        if (isNaN(userId)) {
+            return true;
+        }
+        console.log("[Editor]", `Editing user ${userId}`);
+        return userId <= 0;
+    }, [id]);
+
+    const {
+        isLoading: isGettingUser,
+        data: userData,
+        isError,
+    } = useGetUserQuery({ id: typeof id !== "undefined" && !isNaN(parseInt(id)) ? parseInt(id) : 0 });
     const [originData, setOriginData] = useState<User>({
         id: -1,
         name: "",
@@ -47,55 +62,25 @@ const Editor: React.FC = () => {
         password: "",
         description: "",
         role: 0,
-        registerIP: "0.0.0.0",
+        registerIP: "",
         available: false,
         createTime: new Date(),
         loginTime: new Date(),
     });
-    const [load, setLoad] = useState(false);
+
+    useEffect(() => {
+        if (typeof userData !== "undefined" && !isGettingUser && !isCreate) {
+            setOriginData(userData);
+            setData(userData);
+        }
+    }, [userData, isGettingUser, isCreate]);
+
     const [dataError, setDataError] = useState({
         email: false,
         registerIP: false,
     });
 
     const { enqueueSnackbar } = useSnackbar();
-    const dispatch = useAppDispatch();
-
-    const isCreate = useMemo<boolean>(() => {
-        if (typeof id === "undefined") {
-            return true;
-        }
-        const userId: number = parseInt(id);
-        if (isNaN(userId)) {
-            return true;
-        }
-        console.log("[Editor]", `Editing user ${userId}`);
-        return userId <= 0;
-    }, [id]);
-
-    useEffect(() => {
-        if (!isCreate) {
-            setLoad(true);
-            API.get<ApiResponse<User>>("/root/user", {
-                params: {
-                    id: parseInt(id as string),
-                },
-                responseType: "json",
-            })
-                .then((r) => {
-                    if (r.status === 200 && r.data.code === 200) {
-                        setData(r.data.data);
-                        setOriginData(r.data.data);
-                        setLoad(false);
-                    } else {
-                        enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
-                    }
-                })
-                .catch((err) => {
-                    enqueueSnackbar(`Error ${err.data.code}: ${err.data.message}`);
-                });
-        }
-    }, [id, isCreate]);
 
     useEffect(() => {
         if (!RegExp("^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$").test(data.email) && data.email !== "") {
@@ -135,44 +120,53 @@ const Editor: React.FC = () => {
         setData({ ...data, [name]: e.target.value });
     };
 
+    const [putUser] = usePutUserMutation();
+    const [createUser] = useCreateUserMutation();
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!isCreate) {
-            API.put<ApiResponse<User>>("/root/user", data)
+            putUser(data)
+                .unwrap()
                 .then((r) => {
-                    if (r.status === 200 && r.data.code === 200) {
-                        setData(r.data.data);
-                        setOriginData(r.data.data);
-                        if (r.data.data.id === currentUser?.id) {
-                            dispatch(setUserLogin(r.data.data));
+                    if (typeof r !== "undefined") {
+                        setData(r);
+                        setOriginData(r);
+                        if (r.id === currentUser?.id) {
+                            refetch();
                         }
                         enqueueSnackbar("Set data success.", {
-                            key: "success",
+                            variant: "success",
                         });
                         history.goBack();
                     } else {
-                        enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
+                        enqueueSnackbar("Updated failed, unknown error.", {
+                            variant: "error",
+                        });
                     }
                 })
                 .catch((err) => {
-                    enqueueSnackbar(`Error ${err.data.code}: ${err.data.message}`);
+                    enqueueSnackbar(`Error ${err.data.code}: ${err.data.message}`, {
+                        variant: "error",
+                    });
                 });
         } else {
             let tmp: any = data;
             tmp.id = undefined;
             tmp.createTime = undefined;
             tmp.loginTime = undefined;
-            API.post<ApiResponse<User>>("/root/user", tmp)
+            createUser(tmp)
+                .unwrap()
                 .then((r) => {
-                    if (r.status === 200 && r.data.code === 200) {
-                        setData(r.data.data);
-                        setOriginData(r.data.data);
+                    if (typeof r !== "undefined") {
+                        setData(r);
+                        setOriginData(r);
                         enqueueSnackbar("Add user success.", {
-                            key: "success",
+                            variant: "success",
                         });
                         window.history.back();
                     } else {
-                        enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
+                        enqueueSnackbar("Created failed, unknown error.");
                     }
                 })
                 .catch((err) => {
@@ -185,8 +179,12 @@ const Editor: React.FC = () => {
         }
     };
 
-    if (load) {
+    if (isGettingCurrentUser || isGettingUser) {
         return <CircularProgress />;
+    }
+
+    if (isError) {
+        return <>Error.</>;
     }
 
     return (

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import {
     Box,
     Button,
@@ -18,17 +18,14 @@ import {
 import { createStyles, makeStyles } from "@mui/styles";
 import User from "../../../model/data/User";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import { useSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/AddRounded";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
-import LimitData from "../../../model/ApiResponse/LimitData";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 import compare from "../../../utils/compare";
 import TableSort from "../../../model/tableSort";
 import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
+import { useGetAllUserQuery } from "../../../service/rootApi";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,45 +52,21 @@ const UserManager: FC = () => {
     const classes = useStyles();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const [total, setTotal] = useState(0);
-    const [userDatas, setUserDatas] = useState<Array<User>>([]);
-    const [load, setLoad] = useState(false);
+    const { isLoading, data: data } = useGetAllUserQuery({ page: page, limit: limit });
+    const total = useMemo<number>(() => {
+        if (typeof data !== "undefined") {
+            return data.total;
+        } else {
+            return 0;
+        }
+    }, [data]);
+    const userData = useMemo(() => data?.data || [], [data]);
 
     const dispatch = useAppDispatch();
-    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         dispatch(setTitle("User Manage - Control Panel"));
     });
-
-    useEffect(() => {
-        setLoad(true);
-        API.get<ApiResponse<LimitData<Array<User>>>>("/root/user/all", {
-            responseType: "json",
-            params: {
-                page: page,
-                limit: limit,
-            },
-        })
-            .then((r) => {
-                if (r.status === 200 && r.data.code === 200) {
-                    setTotal(r.data.data.total);
-                    setUserDatas(r.data.data.data);
-                } else {
-                    enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
-                }
-            })
-            .catch((err) => {
-                enqueueSnackbar(
-                    typeof err.response.data !== "undefined"
-                        ? `Error ${err.response.data.code}: ${err.response.data.message}`
-                        : err.message
-                );
-            })
-            .then(() => {
-                setLoad(false);
-            });
-    }, [page, limit]);
 
     const [orderBy, setOrderBy] = useState<TableSort<User>>({
         key: "id",
@@ -165,8 +138,9 @@ const UserManager: FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {!load &&
-                                userDatas
+                            {!isLoading &&
+                                userData
+                                    .concat([])
                                     .sort((a, b) => {
                                         switch (orderBy.key) {
                                             case "id":

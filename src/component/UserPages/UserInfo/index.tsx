@@ -1,16 +1,12 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
-import User from "../../../model/data/User";
+import React, { FC, useMemo, useState } from "react";
 import { Button, Card, Image, List, message, Pagination, Spin, Typography } from "antd";
-import { getUser } from "../../../middleware/API/user";
 import { GetAvatar } from "../../../utils/avatar";
 import styles from "./userInfo.module.scss";
-import { getShortLinkByUser } from "../../../middleware/API/shortLink";
-import ShortLink from "../../../model/data/ShortLink";
 import { MailOutlined } from "@ant-design/icons";
 import { useHistory, useParams } from "react-router-dom";
 import CardItem from "./CardItem";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { addUserHash } from "../../../redux/data";
+import { useGetShortLinkByUserQuery, useGetSiteConfigQuery, useGetUserQuery } from "../../../service/localApi";
+import SiteConfig from "../../../model/data/SiteConfig";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -23,18 +19,18 @@ const UserInfo: FC<{
     userId?: number;
 }> = (props) => {
     const paramUserId = useParams<{ userId?: string }>().userId;
-    const sessionUser = useAppSelector((state) => state.data.user);
-    const userId = useMemo(() => {
+    const sessionUser = useGetUserQuery().data;
+    const userId = useMemo<number | null>(() => {
         if (typeof paramUserId !== "undefined" && !isNaN(parseInt(paramUserId))) {
             return parseInt(paramUserId);
         } else if (typeof props.userId !== "undefined") {
             return props.userId;
-        } else if (sessionUser !== null) {
+        } else if (typeof sessionUser !== "undefined") {
             return sessionUser.id;
         } else {
             return null;
         }
-    }, []);
+    }, [paramUserId, props.userId, sessionUser]);
 
     const history = useHistory();
 
@@ -44,53 +40,12 @@ const UserInfo: FC<{
         });
     }
 
-    const [load, setLoad] = useState(true);
-    const [listLoad, setListLoad] = useState(true);
-
-    const [userData, setUserData] = useState<User>();
-    const [userLinkData, setUserLinkData] = useState<ShortLink[]>([]);
+    const { data: userData, isLoading: load } = useGetUserQuery({ id: userId || undefined });
+    const { data: userLinkData, isLoading: listLoad } = useGetShortLinkByUserQuery(userId || 0);
 
     const [page, setPage] = useState(1);
 
-    const dispatch = useAppDispatch();
-    const userDataHash = useAppSelector((state) => state.data.userHash);
-
-    useEffect(() => {
-        if (userId !== null) {
-            if (userDataHash[userId]) {
-                setUserData(userDataHash[userId]);
-                setLoad(false);
-                getShortLinkByUser(userId).then((r) => {
-                    if (r !== null) {
-                        setUserLinkData(r);
-                        setListLoad(false);
-                    } else {
-                        message.error("获取用户链接列表时错误");
-                    }
-                });
-            } else {
-                getUser(userId).then((r) => {
-                    if (r !== null) {
-                        setUserData(r);
-                        setLoad(false);
-                        dispatch(addUserHash(r));
-                        getShortLinkByUser(userId).then((r) => {
-                            if (r !== null) {
-                                setUserLinkData(r);
-                                setListLoad(false);
-                            } else {
-                                message.error("获取用户链接列表时错误");
-                            }
-                        });
-                    } else {
-                        message.error("获取用户信息时错误");
-                    }
-                });
-            }
-        }
-    }, [userId]);
-
-    const siteConfig = useAppSelector((state) => state.data.site);
+    const siteConfig = useGetSiteConfigQuery().data as SiteConfig;
     const url: URL = new URL(siteConfig.siteUrl);
 
     if (load) {

@@ -4,16 +4,14 @@ import User, { UserPutData } from "../../../model/data/User";
 import { Avatar, Button, Card, Form, Input, message, Modal, Typography } from "antd";
 import { GetAvatar } from "../../../utils/avatar";
 import { useForm } from "antd/es/form/Form";
-import { putUser } from "../../../middleware/API/user";
-import { useAppSelector } from "../../../redux/hook";
+import { useGetUserQuery, usePutUserMutation } from "../../../service/localApi";
 
 const { Text, Title } = Typography;
 const { TextArea, Password } = Input;
 
-interface FormData extends UserPutData {
+type FormData = {
     email?: string;
-    password?: undefined;
-}
+} & Omit<UserPutData, "password">;
 
 interface PasswordData {
     password: string;
@@ -21,7 +19,7 @@ interface PasswordData {
 }
 
 const UserSettings: FC = () => {
-    const user = useAppSelector((state) => state.data.user as User);
+    const { data: user, refetch } = useGetUserQuery();
 
     const [form] = useForm<FormData>();
     const [data, setData] = useState<FormData>({
@@ -31,21 +29,28 @@ const UserSettings: FC = () => {
         id: user?.id || 0,
     });
 
+    const [putUser, { isLoading }] = usePutUserMutation();
     const handleSummit = (value: FormData) => {
-        putUser(value).then((r) => {
-            if (r !== null) {
-                let d = {
-                    ...value,
-                    id: r.id,
-                    name: r.name,
-                    email: r.email,
-                    description: r.description || "",
-                };
-                setData(d);
-                message.success("更新成功");
-                form.setFieldsValue(d);
-            }
-        });
+        putUser(value)
+            .unwrap()
+            .then((r) => {
+                if (typeof r !== "undefined") {
+                    let d = {
+                        ...value,
+                        id: r.id,
+                        name: r.name,
+                        email: r.email,
+                        description: r.description || "",
+                    };
+                    setData(d);
+                    message.success("更新成功");
+                    form.setFieldsValue(d);
+                    refetch();
+                }
+            })
+            .catch(() => {
+                message.error("Unknown error.");
+            });
     };
 
     const [passwordChangerOpen, setPasswordChangerOpen] = useState(false);
@@ -105,13 +110,13 @@ const UserSettings: FC = () => {
                         {"Settings"}
                     </Title>
                     <div className={styles.leftArea}>
-                        <Avatar src={GetAvatar(user.email, 96)} size={96} />
+                        <Avatar src={GetAvatar((user as User).email, 96)} size={96} />
                         <Typography className={styles.typo}>
                             <Title level={3} className={styles.userName}>
-                                {user.name}
+                                {(user as User).name}
                             </Title>
                             <Text type={"secondary"} ellipsis={true}>
-                                {user.description}
+                                {(user as User).description}
                             </Text>
                         </Typography>
                     </div>
@@ -145,7 +150,7 @@ const UserSettings: FC = () => {
                             >
                                 <TextArea value={data.description} rows={4} />
                             </Form.Item>
-                            <Button type={"primary"} htmlType={"submit"}>
+                            <Button type={"primary"} htmlType={"submit"} loading={isLoading}>
                                 {"Submit"}
                             </Button>
                         </Form>
