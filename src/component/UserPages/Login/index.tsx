@@ -1,15 +1,12 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import styles from "./login.module.scss";
 import { Button, Checkbox, Form, Input, message, Typography } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import API from "../../../middleware/API";
 import LoginData from "../../../model/data/LoginData";
-import ApiResponse from "../../../model/ApiResponse";
-import User from "../../../model/data/User";
 import { useHistory } from "react-router-dom";
 import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
-import { setUserLogin } from "../../../redux/data";
+import { useGetUserQuery, useLoginMutation } from "../../../service/localApi";
 
 const { Title } = Typography;
 
@@ -22,31 +19,23 @@ const Login: FC = () => {
         dispatch(setTitle("Login"));
     }, []);
 
-    const [load, setLoad] = useState(false);
+    const userQuery = useGetUserQuery();
+    const [login, { isLoading }] = useLoginMutation();
 
     const onFinish = (values: LoginData) => {
-        console.log("Received values of login form: ", values);
-        setLoad(true);
-        API.post<ApiResponse<User>>("/login", values)
-            .then((res) => {
-                if (res.status === 200) {
-                    if (res.data.code === 200) {
-                        dispatch(setUserLogin(res.data.data));
-                        localStorage.setItem("loginInfo", res.data.data.name);
-                        message.success("登录成功");
-                        console.log("Login success.");
-                        history.push("/");
-                    } else {
-                        message.error(`Error ${res.data.code}: ${res.data.message}`);
-                    }
+        login(values)
+            .unwrap()
+            .then((r) => {
+                if (typeof r !== "undefined") {
+                    userQuery.refetch();
+                    message.success("登录成功");
+                    console.log("Login success.");
+                    history.push("/");
                 }
             })
             .catch((err) => {
-                message.error(err.response.data.message || err.message);
-                console.log(err.message);
-            })
-            .then(() => {
-                setLoad(false);
+                message.error(err.message);
+                console.log(err);
             });
     };
 
@@ -76,8 +65,8 @@ const Login: FC = () => {
 
                 <Form.Item>
                     <div className={styles.buttonArea}>
-                        <Button type="primary" htmlType="submit" className={styles.loginButton} disabled={load}>
-                            Log in
+                        <Button type="primary" htmlType="submit" className={styles.loginButton} disabled={isLoading}>
+                            {"Log in"}
                         </Button>
                         {/*
                              <span style={{ marginTop: 6 }}>

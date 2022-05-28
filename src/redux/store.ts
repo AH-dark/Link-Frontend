@@ -1,15 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
-import data from "./data";
 import viewUpdate from "./viewUpdate";
+import localApi from "../service/localApi";
+import rootApi from "../service/rootApi";
 
 const store = configureStore({
     reducer: {
-        data,
         viewUpdate,
+        [localApi.reducerPath]: localApi.reducer,
+        [rootApi.reducerPath]: rootApi.reducer,
     },
     devTools: process.env.NODE_ENV === "development",
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(thunk).concat(localApi.middleware).concat(rootApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

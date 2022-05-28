@@ -1,19 +1,15 @@
 import React, { FC } from "react";
-import User from "../../../model/data/User";
 import { Avatar, Button, Menu, message, Popover } from "antd";
 import { GetAvatar } from "../../../utils/avatar";
 import { LoginOutlined, LogoutOutlined, SettingOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./ui.module.scss";
 import "./LoginMenu.scss";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { setUserLogin } from "../../../redux/data";
+import { useGetUserQuery, useLogoutMutation } from "../../../service/localApi";
 
 const MenuContent: FC = () => {
     const history = useHistory();
-    const dispatch = useAppDispatch();
+    const [logout] = useLogoutMutation();
 
     const handleSettings = () => {
         history.push("/settings");
@@ -28,25 +24,22 @@ const MenuContent: FC = () => {
     };
 
     const handleLogOut = () => {
-        API.post<ApiResponse<User>>("/logout")
-            .then((res) => {
-                if (res.status === 200 && res.data.code === 200) {
+        logout()
+            .unwrap()
+            .then((r) => {
+                if (typeof r !== "undefined") {
                     message.success("Successfully logged out, looking forward to your next visit.");
                     console.log("Logout success.");
-                    dispatch(setUserLogin(null));
                     history.push("/login");
-                } else {
-                    message.error(`Error ${res.data.code}: ${res.data.message}`);
                 }
             })
             .catch((err) => {
-                console.log(err);
-                message.error(err.response.data.message || err.message);
+                message.error(err.message);
                 console.log(err.message);
             });
     };
 
-    const user = useAppSelector((state) => state.data.user);
+    const user = useGetUserQuery().data;
 
     return (
         <Menu mode={"inline"} selectable={false} inlineIndent={8} style={{ border: "none" }}>
@@ -69,8 +62,8 @@ const MenuContent: FC = () => {
 };
 
 const LoginMenu: FC = () => {
-    const user = useAppSelector((state) => state.data.user);
-    const isLogin = user !== null;
+    const user = useGetUserQuery().data;
+    const isLogin = typeof user !== "undefined";
 
     const history = useHistory();
 

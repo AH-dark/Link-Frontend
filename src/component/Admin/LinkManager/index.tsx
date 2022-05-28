@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import {
     Box,
     Button,
@@ -15,19 +15,15 @@ import {
     Theme,
 } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import User from "../../../model/data/User";
 import { useSnackbar } from "notistack";
 import ShortLink from "../../../model/data/ShortLink";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
-import LimitData from "../../../model/ApiResponse/LimitData";
 import LinkRow from "./LinkRow";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import classNames from "classnames";
 import TableSort from "../../../model/tableSort";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
-import { addUserHash } from "../../../redux/data";
+import { useDeleteShortLinkMutation, useGetAllShortLinkQuery } from "../../../service/rootApi";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,10 +43,6 @@ const LinkManager: FC = () => {
     const classes = useStyles();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const [total, setTotal] = useState(0);
-    const [linkDataList, setLinkDataList] = useState<Array<ShortLink>>([]);
-    const userDataHash = useAppSelector((state) => state.data.userHash);
-    const [load, setLoad] = useState(false);
 
     const dispatch = useAppDispatch();
     const { enqueueSnackbar } = useSnackbar();
@@ -59,103 +51,56 @@ const LinkManager: FC = () => {
         dispatch(setTitle("Link Manage - Control Panel"));
     });
 
-    const loadList = () => {
-        setLoad(true);
-
-        let hashBool: Record<number, boolean> = {};
-        for (let userDataHashKey in userDataHash) {
-            hashBool[userDataHashKey] = true;
+    const { isError, isFetching, isLoading, data, refetch } = useGetAllShortLinkQuery({
+        page: page,
+        limit: limit,
+    });
+    const linkDataList = useMemo<ShortLink[]>(() => {
+        if (typeof data !== "undefined") {
+            return data.data;
+        } else {
+            return [];
         }
-
-        let taskArr: Promise<void>[] = [];
-
-        API.get<ApiResponse<LimitData<Array<ShortLink>>>>("/root/link/all", {
-            responseType: "json",
-            params: {
-                page: page,
-                limit: limit,
-            },
-        })
-            .then((r) => {
-                if (r !== null) {
-                    setTotal(r.data.data.total);
-                    setLinkDataList(r.data.data.data);
-                    r.data.data.data.map((link) => {
-                        const userId = link.userId;
-                        if (userId > 0 && typeof hashBool[userId] === "undefined") {
-                            hashBool[userId] = true;
-                            taskArr.push(
-                                API.get<ApiResponse<User>>("/root/user", {
-                                    params: {
-                                        id: userId,
-                                    },
-                                    responseType: "json",
-                                })
-                                    .then((r) => {
-                                        if (r.status === 200 && r.data.code === 200) {
-                                            dispatch(addUserHash(r.data.data));
-                                        }
-                                    })
-                                    .catch((err) => {
-                                        enqueueSnackbar(
-                                            typeof err.response.data !== "undefined"
-                                                ? `Error ${err.response.data.code}: ${err.response.data.message}`
-                                                : err.message
-                                        );
-                                    })
-                            );
-                        }
-                    });
-                }
-            })
-            .catch((err) => {
-                enqueueSnackbar(
-                    typeof err.response.data !== "undefined"
-                        ? `Error ${err.response.data.code}: ${err.response.data.message}`
-                        : err.message
-                );
-            })
-            .then(() => {
-                Promise.all(taskArr).then(() => {
-                    setLoad(false);
-                });
-            });
-    };
-
-    useEffect(() => {
-        loadList();
-    }, [page, limit]);
+    }, [data]);
+    const total = useMemo<number>(() => {
+        if (typeof data !== "undefined") {
+            return data.total;
+        } else {
+            return 0;
+        }
+    }, [data]);
 
     const [orderBy, setOrderBy] = useState<TableSort<ShortLink>>({
         key: "createTime",
         sort: "desc",
     });
 
+    const [deleteShortLink, {}] = useDeleteShortLinkMutation();
+
     const handleDeleteLink = (key: string) => () => {
-        API.delete<ApiResponse>("/root/link", {
-            params: {
-                key: key,
-            },
-        })
+        deleteShortLink(key)
+            .unwrap()
             .then((r) => {
-                if (r.status === 200 && r.data.code === 200) {
+                if (typeof r !== "undefined") {
                     enqueueSnackbar("Deleted success.");
-                    loadList();
+                    refetch();
                 } else {
-                    enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
+                    enqueueSnackbar(`Deleted failed, unknown error.`);
                 }
             })
             .catch((err) => {
-                enqueueSnackbar(
-                    typeof err.data !== "undefined" ? `Error ${err.data.code}: ${err.data.message}` : err.message
-                );
+                enqueueSnackbar(err.message);
             });
     };
+
+    if (isError) {
+        return <>Error.</>;
+    }
 
     return (
         <Stack spacing={2}>
             <Box>
-                <Button variant={"contained"} startIcon={<RefreshRoundedIcon />} onClick={() => loadList()}>
+                <Button variant={"contained"} startIcon={<RefreshRoundedIcon />} onClick={() => refetch()}>
                     {"Refresh"}
                 </Button>
             </Box>
@@ -222,7 +167,7 @@ const LinkManager: FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {!load && (
+                            {!isLoading && !isFetching && typeof data !== "undefined" && (
                                 <LinkRow data={linkDataList} handleDeleteLink={handleDeleteLink} orderBy={orderBy} />
                             )}
                         </TableBody>

@@ -1,85 +1,51 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import styles from "./link.module.scss";
 import ShortLink from "../../../model/data/ShortLink";
 import { Avatar, Badge, Button, Card, Image, List, message, Skeleton, Spin, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
-import User from "../../../model/data/User";
 import { GetAvatar } from "../../../utils/avatar";
-import { getShortLink } from "../../../middleware/API/shortLink";
-import { getUser } from "../../../middleware/API/user";
 import { CopyOutlined, UserOutlined } from "@ant-design/icons";
 import ClipboardJS from "clipboard";
 import { useHistory, useParams } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { addUserHash } from "../../../redux/data";
+import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
+import { useGetShortLinkQuery, useGetSiteConfigQuery, useGetUserQuery } from "../../../service/localApi";
+import SiteConfig from "../../../model/data/SiteConfig";
 
 const { Title, Text } = Typography;
 
 const LinkDetail: FC = () => {
     const { key } = useParams<{ key: string }>();
-    const [linkData, setLinkData] = useState<ShortLink>({
-        key: key || "",
-        origin: "",
-        userId: 0,
-        view: 0,
-        createTime: new Date(),
-    });
-    const [userData, setUserData] = useState<User>();
-    const [load, setLoad] = useState(true);
+    const { data: linkData, isLoading: isShortLinkLoading, isError: isShortLinkError } = useGetShortLinkQuery(key);
+    const {
+        data: userData,
+        isLoading: isUserLoading,
+        isError: isUserError,
+    } = useGetUserQuery({ id: linkData ? linkData.userId : 0 }, {});
 
     const history = useHistory();
 
     const imageUrl = useMemo<string>(() => {
+        if (typeof linkData === "undefined") {
+            return "";
+        }
+
         let url: string = linkData.origin;
         if (url.indexOf("://") !== -1) {
             url = url.slice(url.indexOf("://") + "://".length);
         }
         return "https://screenshot.ahdark.com/" + url;
-    }, [linkData.origin]);
+    }, [linkData]);
 
-    const siteConfig = useAppSelector((state) => state.data.site);
-    const userDataHash = useAppSelector((state) => state.data.userHash);
-
-    useEffect(() => {
-        if (key !== null) {
-            getShortLink(key).then((r) => {
-                if (r !== null) {
-                    console.log("[API]", "Get short link data success:", r);
-                    setLinkData(r);
-                    if (r.userId > 0) {
-                        if (userDataHash[r.userId]) {
-                            setUserData(userDataHash[r.userId]);
-                            setLoad(false);
-                        } else {
-                            getUser(r.userId)
-                                .then((r) => {
-                                    if (r !== null) {
-                                        setUserData(r);
-                                        dispatch(addUserHash(r));
-                                    }
-                                })
-                                .then(() => {
-                                    setLoad(false);
-                                });
-                        }
-                    } else {
-                        setLoad(false);
-                    }
-                }
-            });
-        } else {
-            message.error("Param Key missed.");
-        }
-    }, [key]);
+    const { data: siteConfig } = useGetSiteConfigQuery();
 
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(setTitle("Link " + key));
     }, [key]);
 
-    if (load) {
+    if (isShortLinkLoading || isShortLinkError || isUserLoading || isUserError) {
         return (
             <div className={styles.main}>
                 <Spin size={"large"} style={{ marginBottom: "2em" }} />
@@ -88,7 +54,7 @@ const LinkDetail: FC = () => {
         );
     }
 
-    const url: URL = new URL(siteConfig.siteUrl);
+    const url: URL = new URL((siteConfig as SiteConfig).siteUrl);
 
     const copyFromText = (text: string) => (e: React.MouseEvent) => {
         const clipboard = new ClipboardJS(e.currentTarget, {
@@ -124,26 +90,26 @@ const LinkDetail: FC = () => {
         {
             name: "Shorten Url",
             key: "url",
-            value: <Text ellipsis={true}>{`${url.origin}/go/${linkData.key}`}</Text>,
+            value: <Text ellipsis={true}>{`${url.origin}/go/${(linkData as ShortLink).key}`}</Text>,
             buttons: [
                 <Button
                     icon={<CopyOutlined />}
                     size={"middle"}
                     shape={"circle"}
-                    onClick={copyFromText(`${url.origin}/go/${linkData.key}`)}
+                    onClick={copyFromText(`${url.origin}/go/${(linkData as ShortLink).key}`)}
                 />,
             ],
         },
         {
             name: "Origin Url",
             key: "origin",
-            value: <Text ellipsis={true}>{linkData.origin}</Text>,
+            value: <Text ellipsis={true}>{(linkData as ShortLink).origin}</Text>,
             buttons: [
                 <Button
                     icon={<CopyOutlined />}
                     size={"middle"}
                     shape={"circle"}
-                    onClick={copyFromText(linkData.origin)}
+                    onClick={copyFromText((linkData as ShortLink).origin)}
                 />,
             ],
         },
@@ -164,7 +130,9 @@ const LinkDetail: FC = () => {
         {
             name: "Create Time",
             key: "time",
-            value: dayjs(linkData.createTime).locale("zh-cn").format("YYYY/MM/DD HH:mm:ss"),
+            value: dayjs((linkData as ShortLink).createTime)
+                .locale("zh-cn")
+                .format("YYYY/MM/DD HH:mm:ss"),
         },
     ];
 
@@ -189,7 +157,7 @@ const LinkDetail: FC = () => {
                                         title={false}
                                         avatar={false}
                                         paragraph={{ rows: 1 }}
-                                        loading={load}
+                                        loading={isShortLinkLoading}
                                     >
                                         <List.Item.Meta
                                             title={item.name}
@@ -203,11 +171,15 @@ const LinkDetail: FC = () => {
                     />
                 </Card>
             </div>
-            <Badge className={styles["go-button-badge"]} count={linkData.view} title={"View: " + linkData.view}>
+            <Badge
+                className={styles["go-button-badge"]}
+                count={(linkData as ShortLink).view}
+                title={"View: " + (linkData as ShortLink).view}
+            >
                 <Button
                     type={"primary"}
                     block
-                    href={url.origin + "/go/" + linkData.key}
+                    href={url.origin + "/go/" + (linkData as ShortLink).key}
                     rel={"noopener"}
                     target={"_self"}
                     className={styles["go-button"]}

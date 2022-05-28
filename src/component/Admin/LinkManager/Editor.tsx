@@ -3,19 +3,34 @@ import styles from "./editor.module.scss";
 import { Box, Button, CircularProgress, Paper, TextField, Typography } from "@mui/material";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { useSnackbar } from "notistack";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
 import { useHistory, useParams } from "react-router-dom";
 import ShortLink, { ShortLinkBasic } from "../../../model/data/ShortLink";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
+import { useGetShortLinkQuery, usePostShortLinkMutation, usePutShortLinkMutation } from "../../../service/rootApi";
+import User from "../../../model/data/User";
+import { useGetUserQuery } from "../../../service/localApi";
 
 const Editor: React.FC = () => {
-    const currentUser = useAppSelector((state) => state.data.user);
+    const currentUser = useGetUserQuery().data as User;
 
     const history = useHistory();
     const { key } = useParams<{ key?: string }>();
 
+    const isCreate = useMemo<boolean>(() => {
+        if (typeof key === "undefined") {
+            return true;
+        }
+        console.log("[Editor]", `Editing link ${key}`);
+        return false;
+    }, [key]);
+
+    const {
+        isLoading,
+        isFetching,
+        data: shortLinkData,
+        refetch,
+    } = useGetShortLinkQuery(!isCreate && typeof key !== "undefined" ? key : "");
     const [originData, setOriginData] = useState<ShortLink>({
         key: "",
         origin: "",
@@ -30,7 +45,13 @@ const Editor: React.FC = () => {
         view: 0,
         createTime: new Date(),
     });
-    const [load, setLoad] = useState(false);
+
+    useEffect(() => {
+        if (!isCreate && !isLoading && typeof shortLinkData !== "undefined") {
+            setData(shortLinkData);
+            setOriginData(shortLinkData);
+        }
+    }, [isCreate, isLoading, shortLinkData]);
 
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useAppDispatch();
@@ -39,89 +60,66 @@ const Editor: React.FC = () => {
         dispatch(setTitle("Link Editor - Control Panel"));
     }, []);
 
-    const isCreate = useMemo<boolean>(() => {
-        if (typeof key === "undefined") {
-            return true;
-        }
-        console.log("[Editor]", `Editing link ${key}`);
-        return false;
-    }, [key]);
-
-    useEffect(() => {
-        if (!isCreate) {
-            setLoad(true);
-            API.get<ApiResponse<ShortLink>>("/root/link", {
-                params: {
-                    key: key,
-                },
-                responseType: "json",
-            })
-                .then((r) => {
-                    if (r.status === 200 && r.data.code === 200) {
-                        setData(r.data.data);
-                        setOriginData(r.data.data);
-                        setLoad(false);
-                    } else {
-                        enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
-                    }
-                })
-                .catch((err) => {
-                    enqueueSnackbar(`Error ${err.data.code}: ${err.data.message}`);
-                });
-        }
-    }, [key, isCreate]);
-
     const handleFormChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setData({ ...data, [name]: e.target.value });
     };
 
+    const [putShortLink, { isLoading: isPutting }] = usePutShortLinkMutation();
+    const [postShortLink, { isLoading: isCreating }] = usePostShortLinkMutation();
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!isCreate) {
-            API.put<ApiResponse<ShortLink>>("/root/link", data)
+            putShortLink(data)
+                .unwrap()
                 .then((r) => {
-                    if (r.status === 200 && r.data.code === 200) {
-                        setData(r.data.data);
-                        setOriginData(r.data.data);
+                    if (typeof r !== "undefined") {
                         enqueueSnackbar("Set data success.", {
                             key: "success",
+                            variant: "success",
                         });
+                        refetch();
                         history.goBack();
                     } else {
-                        enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
+                        enqueueSnackbar("Unknown error.", {
+                            variant: "error",
+                        });
                     }
                 })
                 .catch((err) => {
-                    enqueueSnackbar(`Error ${err.data.code}: ${err.data.message}`);
+                    enqueueSnackbar("Error " + err, {
+                        variant: "error",
+                    });
                 });
         } else {
             let tmp: ShortLinkBasic = data;
             tmp.userId = currentUser?.id || 0;
-            API.post<ApiResponse<ShortLink>>("/root/link", tmp)
+            postShortLink(tmp)
+                .unwrap()
                 .then((r) => {
-                    if (r.status === 200 && r.data.code === 200) {
-                        setData(r.data.data);
-                        setOriginData(r.data.data);
+                    if (typeof r !== "undefined") {
                         enqueueSnackbar("Add user success.", {
                             key: "success",
+                            variant: "success",
                         });
-                        window.history.back();
+                        refetch();
+                        history.goBack();
                     } else {
-                        enqueueSnackbar(`Error ${r.data.code}: ${r.data.message}`);
+                        enqueueSnackbar("Unknown error.", {
+                            variant: "error",
+                        });
                     }
                 })
                 .catch((err) => {
-                    enqueueSnackbar(
-                        typeof err.response.data !== "undefined"
-                            ? `Error ${err.response.data.code}: ${err.response.data.message}`
-                            : err.message
-                    );
+                    enqueueSnackbar("Error " + err, {
+                        variant: "error",
+                    });
                 });
         }
     };
 
-    if (load) {
+    if (isLoading || isFetching) {
         return <CircularProgress />;
     }
 
@@ -203,7 +201,7 @@ const Editor: React.FC = () => {
                     </>
                 )}
                 <Box className={styles.row}>
-                    <Button type={"submit"} variant="contained" fullWidth>
+                    <Button type={"submit"} variant="contained" fullWidth disabled={isPutting || isCreating}>
                         {"Submit"}
                     </Button>
                 </Box>

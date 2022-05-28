@@ -11,9 +11,4 @@ export default interface User {
     available: boolean;
 }
 
-export interface UserPutData {
-    id: number;
-    name?: string;
-    description?: string;
-    password?: string;
-}
+export type UserPutData = Partial<Pick<User, "id" | "name" | "description" | "password">>;

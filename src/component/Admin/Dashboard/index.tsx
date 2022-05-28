@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import {
@@ -13,9 +13,6 @@ import {
     useMediaQuery,
 } from "@mui/material";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import StatData from "../../../model/data/StatData";
-import API from "../../../middleware/API";
-import ApiResponse from "../../../model/ApiResponse";
 import { useSnackbar } from "notistack";
 import { useTheme } from "@mui/styles";
 import dayjs from "dayjs";
@@ -23,6 +20,7 @@ import { Link as LinkIcon, NumbersRounded as NumbersRoundedIcon, People as Peopl
 import * as Color from "@mui/material/colors";
 import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
+import { useGetStatDataQuery } from "../../../service/rootApi";
 
 type LineDataType = Array<{
     name: string;
@@ -59,7 +57,7 @@ const Dashboard: React.FC = () => {
         }
     }, [xs, sm, md, lg, xl, xxl]);
 
-    const [data, setData] = useState<StatData>();
+    const { data, isLoading, isError, error } = useGetStatDataQuery(size);
     const lineData: LineDataType = useMemo(() => {
         let arr: LineDataType = [];
         if (typeof data !== "undefined") {
@@ -74,38 +72,19 @@ const Dashboard: React.FC = () => {
         return arr;
     }, [data]);
 
-    const fetchLineData = () => {
-        setLoading(true);
-        API.get<ApiResponse<StatData>>("/root/stat", {
-            params: {
-                day: size,
-            },
-        })
-            .then((res) => {
-                if (res.status === 200 && res.data.code === 200) {
-                    setData(res.data.data);
-                } else {
-                    enqueueSnackbar(res.data.message);
-                }
-            })
-            .catch((err) => {
-                enqueueSnackbar(err.message);
-            })
-            .then(() => {
-                setLoading(false);
+    useEffect(() => {
+        if (isError) {
+            console.error(error);
+            enqueueSnackbar("Error: " + error, {
+                variant: "error",
             });
-    };
+        }
+    }, [isError]);
 
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(setTitle("Dashboard - Control Panel"));
     });
-
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        fetchLineData();
-    }, [size]);
 
     const aspect = useMemo<number>(() => {
         switch (true) {
@@ -124,7 +103,7 @@ const Dashboard: React.FC = () => {
         }
     }, [window.innerWidth]);
 
-    if (loading || typeof data === "undefined") {
+    if (isLoading || typeof data === "undefined") {
         return <></>;
     }
 

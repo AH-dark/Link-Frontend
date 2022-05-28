@@ -20,7 +20,7 @@ const theme = createTheme();
 const Admin: FC = () => (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
+            <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
                 <Layout>
                     <React.Suspense>
                         <Switch>

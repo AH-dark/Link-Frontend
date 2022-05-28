@@ -3,7 +3,7 @@ import styles from "./explorer.module.scss";
 import { Badge, Button, Card, List, Typography } from "antd";
 import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { useAppSelector } from "../../../redux/hook";
+import { useGetUserQuery } from "../../../service/localApi";
 
 const { Text } = Typography;
 
@@ -13,8 +13,6 @@ const LinkCard: React.FC<{
     userId: number;
     view: number;
 }> = ({ linkKey, origin, userId, view }) => {
-    const userDataHash = useAppSelector((state) => state.data.userHash);
-
     const history = useHistory();
 
     const handleInfoIcon = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -27,6 +25,8 @@ const LinkCard: React.FC<{
         history.push("/user/" + userId);
     };
 
+    const data = useGetUserQuery({ id: userId }).data;
+
     let actions: React.ReactNode[] = [];
 
     if (userId !== undefined && userId !== 0) {
@@ -38,7 +38,7 @@ const LinkCard: React.FC<{
                 size={"middle"}
                 href={"/user/" + userId}
                 target={"_self"}
-                title={userDataHash[userId].name}
+                title={data?.name || ""}
                 onClick={handleUserIcon}
                 rel={"author"}
             />
@@ -58,8 +58,7 @@ const LinkCard: React.FC<{
             rel={"info"}
         />
     );
-
-    const creatorName = userId !== undefined && userId !== 0 ? userDataHash[userId].name : "Tourist";
+    const creatorName = data?.name || "Tourist";
 
     return (
         <Badge count={"View: " + view} className={styles.badge} size={"small"}>

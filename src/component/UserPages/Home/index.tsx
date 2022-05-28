@@ -2,18 +2,18 @@ import React, { FC, useEffect, useState } from "react";
 import { Grid, Input, message, Typography } from "antd";
 import styles from "./home.module.scss";
 import { ShortLinkBasic } from "../../../model/data/ShortLink";
-import { generateShortLink } from "../../../middleware/API/shortLink";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
+import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
+import { useGetSiteConfigQuery, useGetUserQuery, usePostShortLinkMutation } from "../../../service/localApi";
 
 const { Title } = Typography;
 const { Search } = Input;
 const { useBreakpoint } = Grid;
 
 const Index: FC = () => {
-    const siteName = useAppSelector((state) => state.data.site.siteName);
-    const user = useAppSelector((state) => state.data.user);
+    const { siteName } = useGetSiteConfigQuery().data || { siteName: "Link" };
+    const user = useGetUserQuery().data;
 
     const dispatch = useAppDispatch();
     useEffect(() => {
@@ -26,28 +26,26 @@ const Index: FC = () => {
         userId: 0,
     });
 
-    const [isLoad, setLoad] = useState(false);
-
     const history = useHistory();
+
+    const [generateLink, { isLoading }] = usePostShortLinkMutation();
 
     const handleSubmit = () => {
         if (!RegExp("^https?://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$").test(data.origin)) {
             message.warning("Please enter a valid URL.");
             return;
         }
-
-        setLoad(true);
-        generateShortLink(data.origin, undefined, user !== null ? user.id : 0)
+        generateLink({
+            origin: data.origin,
+            key: undefined,
+            userId: user !== null && typeof user !== "undefined" ? user.id : 0,
+        })
+            .unwrap()
             .then((r) => {
-                if (r !== null) {
-                    message.success(
-                        `Generating success: ${window.location.protocol}//${window.location.hostname}/go/${r.key}`
-                    );
+                if (typeof r !== "undefined") {
+                    message.success("Generate success.");
                     history.push("/link/" + r.key);
                 }
-            })
-            .then(() => {
-                setLoad(false);
             });
     };
 
@@ -71,7 +69,7 @@ const Index: FC = () => {
                     });
                 }}
                 value={data.origin}
-                loading={isLoad}
+                loading={isLoading}
             />
         </div>
     );

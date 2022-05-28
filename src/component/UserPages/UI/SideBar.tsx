@@ -5,6 +5,7 @@ import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, ToolOutlined
 import type { MenuInfo } from "rc-menu/lib/interface";
 import { useHistory, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../redux/hook";
+import { useGetUserQuery } from "../../../service/localApi";
 
 const { Sider } = Layout;
 const { Item } = Menu;
@@ -12,7 +13,7 @@ const { useBreakpoint } = Grid;
 
 const SideBar: FC = () => {
     const open = useAppSelector((state) => state.viewUpdate.sidebar.open);
-    const userData = useAppSelector((state) => state.data.user);
+    const userData = useGetUserQuery().data;
 
     const breakpoint = useBreakpoint();
     const isMobileSize = !breakpoint.md;
@@ -36,7 +37,7 @@ const SideBar: FC = () => {
                 <Item key="/explorer" icon={<GlobalOutlined />} className={styles.menuItem}>
                     {"Explorer"}
                 </Item>
-                {userData === null ? (
+                {typeof userData === "undefined" ? (
                     <Item key="/login" icon={<LoginOutlined />} className={styles.menuItem}>
                         {"Login"}
                     </Item>
