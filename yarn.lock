@@ -1617,10 +1617,10 @@
     prop-types "^15.8.1"
     react-is "^17.0.2"
 
-"@mui/icons-material@^5.8.2":
-  version "5.8.2"
-  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.8.2.tgz#211ac2a041ece952749d39c3c26071226993be14"
-  integrity sha512-fP6KUCCZZjc2rdbMSmkNmBHDskLkmP0uCox57cbVXvomU6BOPrCxnr5YXsSsQrZB8fchx7hfH0bkAgvMZ5KM0Q==
+"@mui/icons-material@^5.8.3":
+  version "5.8.3"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.8.3.tgz#75c8bde42e6ba71e3871439a2b751be987343493"
+  integrity sha512-dAdhimSLKOV0Q8FR7AYGEaCrTUh9OV7zU4Ueo5REoUt4cC3Vy+UBKDjZk66x5ezaYb63AFgQIFwtnZj3B/QDbQ==
   dependencies:
     "@babel/runtime" "^7.17.2"
 
@@ -2322,15 +2322,6 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^18.0.12":
-  version "18.0.12"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.12.tgz#cdaa209d0a542b3fcf69cf31a03976ec4cdd8840"
-  integrity sha512-duF1OTASSBQtcigUvhuiTB1Ya3OvSy+xORCiEf20H0P0lzx+/KeVsA99U5UjLXSbyo1DRJDlLKqTeM1ngosqtg==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^18.0.10":
   version "18.0.12"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.12.tgz#cdaa209d0a542b3fcf69cf31a03976ec4cdd8840"
   integrity sha512-duF1OTASSBQtcigUvhuiTB1Ya3OvSy+xORCiEf20H0P0lzx+/KeVsA99U5UjLXSbyo1DRJDlLKqTeM1ngosqtg==
