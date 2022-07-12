@@ -1270,7 +1270,7 @@
     "@emotion/weak-memoize" "^0.2.5"
     hoist-non-react-statics "^3.3.1"
 
-"@emotion/serialize@^1.0.2", "@emotion/serialize@^1.0.3", "@emotion/serialize@^1.0.4":
+"@emotion/serialize@^1.0.2", "@emotion/serialize@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@emotion/serialize/-/serialize-1.0.4.tgz#ff31fd11bb07999611199c2229e152faadc21a3c"
   integrity sha512-1JHamSpH8PIfFwAMryO2bNka+y8+KA5yga5Ocf2d7ZEiJjb7xlLW7aknBGZqJLajuLOvJ+72vN+IBSwPlXD1Pg==
@@ -1617,10 +1617,10 @@
     prop-types "^15.8.1"
     react-is "^17.0.2"
 
-"@mui/icons-material@^5.8.3":
-  version "5.8.3"
-  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.8.3.tgz#75c8bde42e6ba71e3871439a2b751be987343493"
-  integrity sha512-dAdhimSLKOV0Q8FR7AYGEaCrTUh9OV7zU4Ueo5REoUt4cC3Vy+UBKDjZk66x5ezaYb63AFgQIFwtnZj3B/QDbQ==
+"@mui/icons-material@^5.8.4":
+  version "5.8.4"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.8.4.tgz#3f2907c9f8f5ce4d754cb8fb4b68b5a1abf4d095"
+  integrity sha512-9Z/vyj2szvEhGWDvb+gG875bOGm8b8rlHBKOD1+nA3PcgC3fV6W1AU6pfOorPeBfH2X4mb9Boe97vHvaSndQvA==
   dependencies:
     "@babel/runtime" "^7.17.2"
 
