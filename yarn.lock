@@ -1744,18 +1744,20 @@
     react-transition-group "^4.4.2"
     rifm "^0.12.1"
 
-"@mui/x-date-pickers@^5.0.0-alpha.5":
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-5.0.0-alpha.5.tgz#5792b3c82070fa7fe70f54e971e8fa174191f974"
-  integrity sha512-13sX7TJEkUP8oX3956XsLE8rWnCsC5YgZex2faLbnbdo3axvmje/HH3BPd7KvymQxz4tQWW68+m0+nL2sLjSng==
+"@mui/x-date-pickers@^5.0.0-beta.0":
+  version "5.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@mui/x-date-pickers/-/x-date-pickers-5.0.0-beta.0.tgz#1f2a4400c617453a2d0831a789f2b648c9e2f29b"
+  integrity sha512-WfcYe+5j3xbGO9d+uMFem06b9q+9yIcFj0dP3PKCa1zb6m3Tbkigig6vlCuHLKLSXe1P6IQCt+BNVVbU1rfh7A==
   dependencies:
     "@babel/runtime" "^7.17.2"
+    "@date-io/core" "^2.14.0"
     "@date-io/date-fns" "^2.14.0"
     "@date-io/dayjs" "^2.14.0"
     "@date-io/luxon" "^2.14.0"
     "@date-io/moment" "^2.14.0"
     "@mui/utils" "^5.4.1"
-    clsx "^1.1.1"
+    "@types/react-transition-group" "^4.4.4"
+    clsx "^1.2.1"
     prop-types "^15.7.2"
     react-transition-group "^4.4.2"
     rifm "^0.12.1"
@@ -3447,10 +3449,10 @@ cliui@^7.0.2:
     strip-ansi "^6.0.0"
     wrap-ansi "^7.0.0"
 
-clsx@^1.1.0, clsx@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmmirror.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
-  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
+clsx@^1.1.0, clsx@^1.1.1, clsx@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
 
 co@^4.6.0:
   version "4.6.0"
