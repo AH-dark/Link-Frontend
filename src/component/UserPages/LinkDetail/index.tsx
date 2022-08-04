@@ -11,7 +11,6 @@ import { useHistory, useParams } from "react-router-dom";
 import { useAppDispatch } from "../../../redux/hook";
 import { setTitle } from "../../../redux/viewUpdate";
 import { useGetShortLinkQuery, useGetSiteConfigQuery, useGetUserQuery } from "../../../service/localApi";
-import SiteConfig from "../../../model/data/SiteConfig";
 
 const { Title, Text } = Typography;
 
@@ -45,16 +44,10 @@ const LinkDetail: FC = () => {
         dispatch(setTitle("Link " + key));
     }, [key]);
 
-    if (isShortLinkLoading || isShortLinkError || isUserLoading || isUserError) {
-        return (
-            <div className={styles.main}>
-                <Spin size={"large"} style={{ marginBottom: "2em" }} />
-                <Title level={2}>{"Loading..."}</Title>
-            </div>
-        );
-    }
-
-    const url: URL = new URL((siteConfig as SiteConfig).siteUrl);
+    const url: URL = useMemo<URL>(
+        () => (typeof siteConfig !== "undefined" ? new URL(siteConfig.siteUrl) : new URL(window.location.href)),
+        [siteConfig]
+    );
 
     const copyFromText = (text: string) => (e: React.MouseEvent) => {
         const clipboard = new ClipboardJS(e.currentTarget, {
@@ -72,69 +65,87 @@ const LinkDetail: FC = () => {
         });
     };
 
-    const creatorButton =
-        typeof userData !== "undefined" ? (
-            <Button
-                icon={<UserOutlined />}
-                size={"middle"}
-                shape={"circle"}
-                onClick={() => {
-                    history.push("/user/" + userData.id);
-                }}
-            />
-        ) : (
-            <></>
-        );
+    const creatorButton = useMemo<JSX.Element>(
+        () =>
+            typeof userData !== "undefined" ? (
+                <Button
+                    icon={<UserOutlined />}
+                    size={"middle"}
+                    shape={"circle"}
+                    onClick={() => {
+                        history.push("/user/" + userData.id);
+                    }}
+                />
+            ) : (
+                <></>
+            ),
+        [userData]
+    );
 
-    const dataSource: Array<{ name: string; key: string; value: React.ReactNode; buttons?: React.ReactNode[] }> = [
-        {
-            name: "Shorten Url",
-            key: "url",
-            value: <Text ellipsis={true}>{`${url.origin}/go/${(linkData as ShortLink).key}`}</Text>,
-            buttons: [
-                <Button
-                    icon={<CopyOutlined />}
-                    size={"middle"}
-                    shape={"circle"}
-                    onClick={copyFromText(`${url.origin}/go/${(linkData as ShortLink).key}`)}
-                />,
-            ],
-        },
-        {
-            name: "Origin Url",
-            key: "origin",
-            value: <Text ellipsis={true}>{(linkData as ShortLink).origin}</Text>,
-            buttons: [
-                <Button
-                    icon={<CopyOutlined />}
-                    size={"middle"}
-                    shape={"circle"}
-                    onClick={copyFromText((linkData as ShortLink).origin)}
-                />,
-            ],
-        },
-        {
-            name: "Creator",
-            key: "creator",
-            value:
-                typeof userData !== "undefined" ? (
-                    <>
-                        <Avatar src={GetAvatar(userData.email, 32)} size={"small"} style={{ marginRight: 8 }} />
-                        <Text ellipsis={true}>{userData.name}</Text>
-                    </>
-                ) : (
-                    "Tourists"
-                ),
-            buttons: [creatorButton],
-        },
-        {
-            name: "Create Time",
-            key: "time",
-            value: dayjs((linkData as ShortLink).createTime)
-                .locale("zh-cn")
-                .format("YYYY/MM/DD HH:mm:ss"),
-        },
-    ];
+    const dataSource = useMemo<
+        Array<{ name: string; key: string; value: React.ReactNode; buttons?: React.ReactNode[] }>
+    >(() => {
+        if (typeof linkData === "undefined") {
+            return [];
+        }
+
+        return [
+            {
+                name: "Shorten Url",
+                key: "url",
+                value: <Text ellipsis={true}>{`${url.origin}/go/${linkData.key}`}</Text>,
+                buttons: [
+                    <Button
+                        icon={<CopyOutlined />}
+                        size={"middle"}
+                        shape={"circle"}
+                        onClick={copyFromText(`${url.origin}/go/${linkData.key}`)}
+                    />,
+                ],
+            },
+            {
+                name: "Origin Url",
+                key: "origin",
+                value: <Text ellipsis={true}>{linkData.origin}</Text>,
+                buttons: [
+                    <Button
+                        icon={<CopyOutlined />}
+                        size={"middle"}
+                        shape={"circle"}
+                        onClick={copyFromText(linkData.origin)}
+                    />,
+                ],
+            },
+            {
+                name: "Creator",
+                key: "creator",
+                value:
+                    typeof userData !== "undefined" ? (
+                        <>
+                            <Avatar src={GetAvatar(userData.email, 32)} size={"small"} style={{ marginRight: 8 }} />
+                            <Text ellipsis={true}>{userData.name}</Text>
+                        </>
+                    ) : (
+                        "Tourists"
+                    ),
+                buttons: [creatorButton],
+            },
+            {
+                name: "Create Time",
+                key: "time",
+                value: dayjs(linkData.createTime).format("YYYY/MM/DD HH:mm:ss"),
+            },
+        ];
+    }, [linkData, userData]);
+
+    if (isShortLinkLoading || isShortLinkError || isUserLoading || isUserError) {
+        return (
+            <div className={styles.main}>
+                <Spin size={"large"} style={{ marginBottom: "2em" }} />
+                <Title level={2}>{"Loading..."}</Title>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.main}>
