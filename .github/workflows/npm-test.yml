@@ -35,9 +35,9 @@ jobs:
         cache: 'pnpm'
 
     - name: Install Dependencies
-      run: pnpm install --no-frozen-lockfile
+      run: pnpm install --no-frozen
 
     - name: Build Test
-      run: pnpm run build --no-frozen
+      run: pnpm run build
       env:
         CI: false
