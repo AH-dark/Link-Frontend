@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Button, Card, Image, List, message, Pagination, Spin, Typography } from "antd";
 import { GetAvatar } from "utils/avatar";
 import styles from "./userInfo.module.scss";
@@ -7,6 +7,8 @@ import { useHistory, useParams } from "react-router-dom";
 import CardItem from "./CardItem";
 import { useGetShortLinkByUserQuery, useGetSiteConfigQuery, useGetUserQuery } from "service/localApi";
 import SiteConfig from "model/data/SiteConfig";
+import { useAppDispatch } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
@@ -42,6 +44,11 @@ const UserInfo: FC<{
 
     const { data: userData, isLoading: load } = useGetUserQuery({ id: userId || undefined });
     const { data: userLinkData, isLoading: listLoad } = useGetShortLinkByUserQuery(userId || 0);
+
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(setTitle(userId && sessionUser && userId === sessionUser.id ? "Me" : `${userData?.name}`));
+    }, [userId, userData, dispatch]);
 
     const [page, setPage] = useState(1);
 

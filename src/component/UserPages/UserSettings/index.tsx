@@ -1,10 +1,12 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styles from "./userSettings.module.scss";
 import User, { UserPutData } from "model/data/User";
 import { Avatar, Button, Card, Form, Input, message, Modal, Typography } from "antd";
 import { GetAvatar } from "utils/avatar";
 import { useForm } from "antd/es/form/Form";
 import { useGetUserQuery, usePutUserMutation } from "service/localApi";
+import { useAppDispatch } from "../../../redux/hook";
+import { setTitle } from "../../../redux/viewUpdate";
 
 const { Text, Title } = Typography;
 const { TextArea, Password } = Input;
@@ -19,7 +21,12 @@ interface PasswordData {
 }
 
 const UserSettings: FC = () => {
+    const dispatch = useAppDispatch();
     const { data: user, refetch } = useGetUserQuery();
+
+    useEffect(() => {
+        dispatch(setTitle("Settings"));
+    }, [dispatch]);
 
     const [form] = useForm<FormData>();
     const [data, setData] = useState<FormData>({
