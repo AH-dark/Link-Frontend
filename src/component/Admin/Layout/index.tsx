@@ -139,18 +139,23 @@ const DashboardContent: FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
             <Box
                 component="main"
                 sx={{
-                    backgroundColor: (theme) =>
+                    bgcolor: (theme) =>
                         theme.palette.mode === "light" ? theme.palette.grey[100] : theme.palette.grey[900],
                     flexGrow: 1,
                     height: "100vh",
+                    minHeight: "100vh",
+                    maxHeight: "100vh",
                     overflow: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "nowrap",
                 }}
             >
                 <Toolbar />
-                <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+                <Container maxWidth="xl" sx={{ mt: 4, flexGrow: 1, position: "relative" }}>
                     {props.children}
-                    <Copyright sx={{ pt: 4 }} />
                 </Container>
+                <Copyright sx={{ padding: 1 }} />
             </Box>
         </Box>
     );

@@ -1,32 +1,23 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import {
-    Box,
-    Button,
-    Pagination,
-    Paper,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TableSortLabel,
-} from "@mui/material";
+import { useHistory } from "react-router-dom";
+import { Box, Button, Paper, Stack } from "@mui/material";
+import { DataGrid, GridActionsCellItem, GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid";
+import dayjs from "dayjs";
 import { useSnackbar } from "notistack";
 import ShortLink from "model/data/ShortLink";
-import LinkRow from "./LinkRow";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
-import classNames from "classnames";
-import TableSort from "model/tableSort";
 import { useAppDispatch } from "redux/hook";
 import { setTitle } from "redux/viewUpdate";
+import { useGetUserQuery } from "service/localApi";
 import { useDeleteShortLinkMutation, useGetAllShortLinkQuery } from "service/rootApi";
-import { makeStyles } from "../../../styles/hooks";
+import { makeStyles } from "styles/hooks";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
 const useStyles = makeStyles()((theme) => ({
     root: {
         padding: theme.spacing(2),
+        height: "100%",
     },
     pagination: {
         display: "flex",
@@ -42,34 +33,16 @@ const LinkManager: FC = () => {
     const [limit, setLimit] = useState(10);
 
     const dispatch = useAppDispatch();
+    const history = useHistory();
     const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         dispatch(setTitle("Link Manage - Control Panel"));
     });
 
-    const { isError, isFetching, isLoading, data, refetch } = useGetAllShortLinkQuery({
+    const { error, data, refetch } = useGetAllShortLinkQuery({
         page: page,
         limit: limit,
-    });
-    const linkDataList = useMemo<ShortLink[]>(() => {
-        if (typeof data !== "undefined") {
-            return data.data;
-        } else {
-            return [];
-        }
-    }, [data]);
-    const total = useMemo<number>(() => {
-        if (typeof data !== "undefined") {
-            return data.total;
-        } else {
-            return 0;
-        }
-    }, [data]);
-
-    const [orderBy, setOrderBy] = useState<TableSort<ShortLink>>({
-        key: "createTime",
-        sort: "desc",
     });
 
     const [deleteShortLink, {}] = useDeleteShortLinkMutation();
@@ -90,94 +63,88 @@ const LinkManager: FC = () => {
             });
     };
 
-    if (isError) {
-        return <>Error.</>;
-    }
+    const UserNameCell: React.FC<{ params: GridRenderCellParams }> = ({ params }) => {
+        const { data } = useGetUserQuery({ id: params.value });
+        return <>{data?.name}</>;
+    };
+
+    const column = useMemo<GridColDef<ShortLink>[]>(
+        () => [
+            {
+                field: "key",
+                headerName: "Key",
+                width: 120,
+                type: "string",
+            },
+            {
+                field: "origin",
+                headerName: "Origin",
+                minWidth: 240,
+                sortable: false,
+                type: "string",
+            },
+            {
+                field: "userId",
+                headerName: "Creator",
+                sortable: false,
+                renderCell: (params) => (params.value == 0 ? "Tourist" : <UserNameCell params={params} />),
+            },
+            {
+                field: "view",
+                headerName: "View",
+                type: "number",
+                width: 90,
+            },
+            {
+                field: "createTime",
+                headerName: "Create Time",
+                type: "dateTime",
+                valueFormatter: (params) => dayjs(params.value).format("YYYY-MM-DD HH:mm:ss"),
+                width: 180,
+            },
+            {
+                field: "action",
+                headerName: "Actions",
+                type: "actions",
+                getActions: (params: GridRowParams) => [
+                    <GridActionsCellItem
+                        label={"Delete"}
+                        onClick={handleDeleteLink(params.id as string)}
+                        icon={<DeleteRoundedIcon />}
+                    />,
+                    <GridActionsCellItem
+                        label={"Edit"}
+                        onClick={() => {
+                            history.push("/admin/link/edit/" + params.id);
+                        }}
+                        icon={<EditRoundedIcon />}
+                    />,
+                ],
+            },
+        ],
+        []
+    );
 
     return (
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ height: "100%" }}>
             <Box>
                 <Button variant={"contained"} startIcon={<RefreshRoundedIcon />} onClick={() => refetch()}>
                     {"Refresh"}
                 </Button>
             </Box>
             <Paper className={classes.root}>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow style={{ height: 48 }}>
-                                <TableCell style={{ minWidth: 60 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "key"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({ key: "key", sort: orderBy.sort === "asc" ? "desc" : "asc" })
-                                        }
-                                    >
-                                        {"Key"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 120 }}>{"Origin"}</TableCell>
-                                <TableCell style={{ minWidth: 170 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "userId"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({
-                                                key: "userId",
-                                                sort: orderBy.sort === "asc" ? "desc" : "asc",
-                                            })
-                                        }
-                                    >
-                                        {"Creator"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 170 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "view"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({
-                                                key: "view",
-                                                sort: orderBy.sort === "asc" ? "desc" : "asc",
-                                            })
-                                        }
-                                    >
-                                        {"View"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 170 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "createTime"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({
-                                                key: "createTime",
-                                                sort: orderBy.sort === "asc" ? "desc" : "asc",
-                                            })
-                                        }
-                                    >
-                                        {"Create Time"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 100 }}>操作</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {!isLoading && !isFetching && typeof data !== "undefined" && (
-                                <LinkRow data={linkDataList} handleDeleteLink={handleDeleteLink} orderBy={orderBy} />
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-            <Paper className={classNames(classes.root, classes.pagination)}>
-                <Pagination
-                    count={Math.trunc(total / limit) + (total % limit !== 0 ? 1 : 0)}
-                    page={page}
-                    onChange={(event, page) => {
-                        setPage(page);
-                    }}
+                <DataGrid
+                    columns={column}
+                    rows={data?.data || []}
+                    getRowId={(i) => i.key}
+                    error={error}
+                    page={page - 1}
+                    onPageChange={(n) => setPage(n + 1)}
+                    pageSize={data?.limit}
+                    onPageSizeChange={(n) => setLimit(n)}
+                    rowsPerPageOptions={[10, 25, 50, 100]}
+                    rowCount={data?.total || 0}
+                    paginationMode={"server"}
                 />
             </Paper>
         </Stack>

@@ -11,6 +11,7 @@ specifiers:
   '@mui/lab': ^5.0.0-alpha.90
   '@mui/material': ^5.9.0
   '@mui/system': ^5.10.5
+  '@mui/x-data-grid': ^5.17.3
   '@mui/x-date-pickers': ^5.0.0-beta.5
   '@reduxjs/toolkit': ^1.8.3
   '@testing-library/dom': ^8.18.0
@@ -60,6 +61,7 @@ dependencies:
   '@mui/lab': 5.0.0-alpha.90_p4763tg3d6kidd7mib42exxpnm
   '@mui/material': 5.9.0_bl6qrq6463ovzmqn4cmwv7vydq
   '@mui/system': 5.10.5_kgoqblbzxlux4bm4vftowiq75m
+  '@mui/x-data-grid': 5.17.3_p7vyulqssfits4cbh6pozpvuii
   '@mui/x-date-pickers': 5.0.0-beta.5_e4an76qhgotu3plnnmv6dsspe4
   '@reduxjs/toolkit': 1.8.3_kkwg4cbsojnjnupd3btipussee
   antd: 4.21.6_biqbaboplfbrettd7655fr4n2y
@@ -2378,6 +2380,26 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-is: 18.2.0
+    dev: false
+
+  /@mui/x-data-grid/5.17.3_p7vyulqssfits4cbh6pozpvuii:
+    resolution: {integrity: sha512-EBTD7nfV3b6Zz7X8IS0BR4x3ihzHqGAemP6Ah22N/oHTIz+HWsCMtsYWRs5SjQewVjY8JXJ3fcJJEgldOcaqqg==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.4.1
+      '@mui/system': ^5.4.1
+      react: ^17.0.2 || ^18.0.0
+      react-dom: ^17.0.2 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.18.9
+      '@mui/material': 5.9.0_bl6qrq6463ovzmqn4cmwv7vydq
+      '@mui/system': 5.10.5_kgoqblbzxlux4bm4vftowiq75m
+      '@mui/utils': 5.10.3_react@18.2.0
+      clsx: 1.2.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      reselect: 4.1.6
     dev: false
 
   /@mui/x-date-pickers/5.0.0-beta.5_e4an76qhgotu3plnnmv6dsspe4:
@@ -9910,6 +9932,10 @@ packages:
 
   /reselect/4.1.5:
     resolution: {integrity: sha512-uVdlz8J7OO+ASpBYoz1Zypgx0KasCY20H+N8JD13oUMtPvSHQuscrHop4KbXrbsBcdB9Ds7lVK7eRkBIfO43vQ==}
+    dev: false
+
+  /reselect/4.1.6:
+    resolution: {integrity: sha512-ZovIuXqto7elwnxyXbBtCPo9YFEr3uJqj2rRbcOOog1bmu2Ag85M4hixSwFWyaBMKXNgvPaJ9OSu9SkBPIeJHQ==}
     dev: false
 
   /resize-observer-polyfill/1.5.1:

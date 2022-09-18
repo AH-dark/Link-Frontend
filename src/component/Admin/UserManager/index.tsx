@@ -1,34 +1,19 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import {
-    Box,
-    Button,
-    IconButton,
-    Pagination,
-    Paper,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TableSortLabel,
-} from "@mui/material";
+import { Box, Button, Paper, Stack } from "@mui/material";
+import { DataGrid, GridActionsCellItem, GridColDef, GridRowParams } from "@mui/x-data-grid";
+import { makeStyles } from "styles/hooks";
 import User from "model/data/User";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import AddIcon from "@mui/icons-material/AddRounded";
-import classNames from "classnames";
 import { useHistory } from "react-router-dom";
-import compare from "utils/compare";
-import TableSort from "model/tableSort";
 import { useAppDispatch } from "redux/hook";
 import { setTitle } from "redux/viewUpdate";
 import { useGetAllUserQuery } from "service/rootApi";
-import { makeStyles } from "styles/hooks";
 
 const useStyles = makeStyles()((theme) => ({
     root: {
         padding: theme.spacing(2),
+        height: "100%",
     },
     dataRow: {
         "&:last-child td, &:last-child th": { border: 0 },
@@ -49,15 +34,7 @@ const UserManager: FC = () => {
     const { classes } = useStyles();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
-    const { isLoading, data: data } = useGetAllUserQuery({ page: page, limit: limit });
-    const total = useMemo<number>(() => {
-        if (typeof data !== "undefined") {
-            return data.total;
-        } else {
-            return 0;
-        }
-    }, [data]);
-    const userData = useMemo(() => data?.data || [], [data]);
+    const { data, error } = useGetAllUserQuery({ page: page, limit: limit });
 
     const dispatch = useAppDispatch();
 
@@ -65,15 +42,59 @@ const UserManager: FC = () => {
         dispatch(setTitle("User Manage - Control Panel"));
     });
 
-    const [orderBy, setOrderBy] = useState<TableSort<User>>({
-        key: "id",
-        sort: "desc",
-    });
-
     const history = useHistory();
 
+    const columns = useMemo<GridColDef<User>[]>(
+        () => [
+            {
+                field: "id",
+                headerName: "# ID",
+                width: 80,
+            },
+            {
+                field: "name",
+                headerName: "Name",
+                sortable: false,
+                width: 160,
+            },
+            {
+                field: "email",
+                headerName: "Email",
+                sortable: false,
+                width: 240,
+            },
+            {
+                field: "role",
+                headerName: "Role",
+                width: 120,
+                valueFormatter: (params) => (params.value === 0 ? "User" : "Manager"),
+            },
+            {
+                field: "available",
+                headerName: "Status",
+                width: 120,
+                valueFormatter: (params) => (params.value ? "Active" : "Disable"),
+            },
+            {
+                field: "actions",
+                type: "actions",
+                headerName: "Actions",
+                getActions: (params: GridRowParams) => [
+                    <GridActionsCellItem
+                        label={"Edit"}
+                        onClick={() => {
+                            history.push("/admin/user/edit/" + params.id);
+                        }}
+                        icon={<EditRoundedIcon />}
+                    />,
+                ],
+            },
+        ],
+        []
+    );
+
     return (
-        <Stack spacing={2}>
+        <Stack spacing={2} sx={{ height: "100%" }}>
             <Box>
                 <Button
                     variant={"contained"}
@@ -86,111 +107,17 @@ const UserManager: FC = () => {
                 </Button>
             </Box>
             <Paper className={classes.root}>
-                <TableContainer>
-                    <Table>
-                        <TableHead>
-                            <TableRow style={{ height: 48 }}>
-                                <TableCell style={{ minWidth: 48 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "id"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({ key: "id", sort: orderBy.sort === "asc" ? "desc" : "asc" })
-                                        }
-                                    >
-                                        {"# ID"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 120 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "name"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({
-                                                key: "name",
-                                                sort: orderBy.sort === "asc" ? "desc" : "asc",
-                                            })
-                                        }
-                                    >
-                                        {"昵称"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 170 }}>
-                                    <TableSortLabel
-                                        active={orderBy.key === "email"}
-                                        direction={orderBy.sort}
-                                        onClick={() =>
-                                            setOrderBy({
-                                                key: "email",
-                                                sort: orderBy.sort === "asc" ? "desc" : "asc",
-                                            })
-                                        }
-                                    >
-                                        {"Email"}
-                                    </TableSortLabel>
-                                </TableCell>
-                                <TableCell style={{ minWidth: 70 }}>{"用户类型"}</TableCell>
-                                <TableCell style={{ minWidth: 50 }}>{"状态"}</TableCell>
-                                <TableCell style={{ minWidth: 100 }}>操作</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {!isLoading &&
-                                userData
-                                    .concat([])
-                                    .sort((a, b) => {
-                                        switch (orderBy.key) {
-                                            case "id":
-                                            default:
-                                                if (orderBy.sort === "asc") {
-                                                    return compare(a.id, b.id);
-                                                } else {
-                                                    return compare(b.id, a.id);
-                                                }
-                                            case "name":
-                                                if (orderBy.sort === "asc") {
-                                                    return compare(a.name, b.name);
-                                                } else {
-                                                    return compare(b.name, a.name);
-                                                }
-                                            case "email":
-                                                if (orderBy.sort === "asc") {
-                                                    return compare(a.email, b.email);
-                                                } else {
-                                                    return compare(b.email, a.email);
-                                                }
-                                        }
-                                    })
-                                    .map((userData) => (
-                                        <TableRow key={userData.id} className={classes.dataRow}>
-                                            <TableCell>{userData.id}</TableCell>
-                                            <TableCell>{userData.name}</TableCell>
-                                            <TableCell>{userData.email}</TableCell>
-                                            <TableCell>{userData.role === 1 ? "管理员" : "普通用户"}</TableCell>
-                                            <TableCell>{userData.available ? "活跃" : "禁用"}</TableCell>
-                                            <TableCell>
-                                                <IconButton
-                                                    size={"small"}
-                                                    onClick={() => {
-                                                        history.push("/admin/user/edit/" + userData.id);
-                                                    }}
-                                                >
-                                                    <EditRoundedIcon />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-            <Paper className={classNames(classes.root, classes.pagination)}>
-                <Pagination
-                    count={Math.trunc(total / limit) + (total % limit !== 0 ? 1 : 0)}
-                    page={page}
-                    onChange={(event, page) => {
-                        setPage(page);
-                    }}
+                <DataGrid
+                    columns={columns}
+                    rows={data?.data || []}
+                    error={error}
+                    page={page - 1}
+                    onPageChange={(n) => setPage(n + 1)}
+                    pageSize={data?.limit}
+                    onPageSizeChange={(n) => setLimit(n)}
+                    rowsPerPageOptions={[10, 25, 50, 100]}
+                    rowCount={data?.total || 0}
+                    paginationMode={"server"}
                 />
             </Paper>
         </Stack>
