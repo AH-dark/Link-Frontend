@@ -1,12 +1,12 @@
 import React, { FC, useMemo, useState } from "react";
 import { Button, Card, Image, List, message, Pagination, Spin, Typography } from "antd";
-import { GetAvatar } from "../../../utils/avatar";
+import { GetAvatar } from "utils/avatar";
 import styles from "./userInfo.module.scss";
 import { MailOutlined } from "@ant-design/icons";
 import { useHistory, useParams } from "react-router-dom";
 import CardItem from "./CardItem";
-import { useGetShortLinkByUserQuery, useGetSiteConfigQuery, useGetUserQuery } from "../../../service/localApi";
-import SiteConfig from "../../../model/data/SiteConfig";
+import { useGetShortLinkByUserQuery, useGetSiteConfigQuery, useGetUserQuery } from "service/localApi";
+import SiteConfig from "model/data/SiteConfig";
 
 const { Meta } = Card;
 const { Title, Text } = Typography;

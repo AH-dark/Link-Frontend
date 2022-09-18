@@ -12,35 +12,32 @@ import {
     TableHead,
     TableRow,
     TableSortLabel,
-    Theme,
 } from "@mui/material";
-import { createStyles, makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
-import ShortLink from "../../../model/data/ShortLink";
+import ShortLink from "model/data/ShortLink";
 import LinkRow from "./LinkRow";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import classNames from "classnames";
-import TableSort from "../../../model/tableSort";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useDeleteShortLinkMutation, useGetAllShortLinkQuery } from "../../../service/rootApi";
+import TableSort from "model/tableSort";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useDeleteShortLinkMutation, useGetAllShortLinkQuery } from "service/rootApi";
+import { makeStyles } from "../../../styles/hooks";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            padding: theme.spacing(2),
-        },
-        pagination: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-        },
-    })
-);
+const useStyles = makeStyles()((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+    pagination: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+}));
 
 const LinkManager: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
 

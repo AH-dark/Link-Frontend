@@ -1,16 +1,16 @@
 import React, { FC, useEffect, useMemo } from "react";
 import styles from "./link.module.scss";
-import ShortLink from "../../../model/data/ShortLink";
+import ShortLink from "model/data/ShortLink";
 import { Avatar, Badge, Button, Card, Image, List, message, Skeleton, Spin, Typography } from "antd";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
-import { GetAvatar } from "../../../utils/avatar";
+import { GetAvatar } from "utils/avatar";
 import { CopyOutlined, UserOutlined } from "@ant-design/icons";
 import ClipboardJS from "clipboard";
 import { useHistory, useParams } from "react-router-dom";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetShortLinkQuery, useGetSiteConfigQuery, useGetUserQuery } from "../../../service/localApi";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetShortLinkQuery, useGetSiteConfigQuery, useGetUserQuery } from "service/localApi";
 
 const { Title, Text } = Typography;
 

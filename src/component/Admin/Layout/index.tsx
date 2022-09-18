@@ -17,7 +17,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import HomeIcon from "@mui/icons-material/HomeRounded";
 import dayjs from "dayjs";
 import ListItems from "./ListItems";
-import { useTheme } from "@mui/styles";
+import { useTheme } from "@mui/material/styles";
 import { Theme, useMediaQuery } from "@mui/material";
 import { useHistory } from "react-router-dom";
 

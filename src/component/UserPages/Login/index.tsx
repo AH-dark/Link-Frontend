@@ -2,11 +2,11 @@ import React, { FC, useEffect } from "react";
 import styles from "./login.module.scss";
 import { Button, Checkbox, Form, Input, message, Typography } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import LoginData from "../../../model/data/LoginData";
+import LoginData from "model/data/LoginData";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetUserQuery, useLoginMutation } from "../../../service/localApi";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetUserQuery, useLoginMutation } from "service/localApi";
 
 const { Title } = Typography;
 

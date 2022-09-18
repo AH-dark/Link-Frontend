@@ -14,13 +14,13 @@ import {
 } from "@mui/material";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useSnackbar } from "notistack";
-import { useTheme } from "@mui/styles";
+import { useTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
 import { Link as LinkIcon, NumbersRounded as NumbersRoundedIcon, People as PeopleIcon } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetStatDataQuery } from "../../../service/rootApi";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetStatDataQuery } from "service/rootApi";
 
 type LineDataType = Array<{
     name: string;

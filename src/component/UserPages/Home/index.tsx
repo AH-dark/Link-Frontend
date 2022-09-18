@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState } from "react";
 import { Grid, Input, message, Typography } from "antd";
 import styles from "./home.module.scss";
-import { ShortLinkBasic } from "../../../model/data/ShortLink";
+import { ShortLinkBasic } from "model/data/ShortLink";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetSiteConfigQuery, useGetUserQuery, usePostShortLinkMutation } from "../../../service/localApi";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetSiteConfigQuery, useGetUserQuery, usePostShortLinkMutation } from "service/localApi";
 
 const { Title } = Typography;
 const { Search } = Input;

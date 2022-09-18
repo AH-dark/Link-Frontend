@@ -1,14 +1,14 @@
 import React, { MouseEventHandler } from "react";
-import ShortLink from "../../../model/data/ShortLink";
+import ShortLink from "model/data/ShortLink";
 import { Avatar, Box, IconButton, TableCell, TableRow, Typography } from "@mui/material";
-import { GetAvatar } from "../../../utils/avatar";
+import { GetAvatar } from "utils/avatar";
 import dayjs from "dayjs";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import { useHistory } from "react-router-dom";
-import TableSort from "../../../model/tableSort";
-import compare from "../../../utils/compare";
-import { useGetUserQuery } from "../../../service/rootApi";
+import TableSort from "model/tableSort";
+import compare from "utils/compare";
+import { useGetUserQuery } from "service/rootApi";
 
 const Row: React.FC<{ data: ShortLink; handleDeleteLink: (key: string) => MouseEventHandler<HTMLButtonElement> }> = (
     props

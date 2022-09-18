@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import User from "../model/data/User";
-import ApiResponse from "../model/ApiResponse";
-import SiteConfig from "../model/data/SiteConfig";
-import ShortLink, { ShortLinkBasic } from "../model/data/ShortLink";
-import LimitData from "../model/ApiResponse/LimitData";
-import StatData from "../model/data/StatData";
+import User from "model/data/User";
+import ApiResponse from "model/ApiResponse";
+import SiteConfig from "model/data/SiteConfig";
+import ShortLink, { ShortLinkBasic } from "model/data/ShortLink";
+import LimitData from "model/ApiResponse/LimitData";
+import StatData from "model/data/StatData";
 
 const baseUrl = "/";
 

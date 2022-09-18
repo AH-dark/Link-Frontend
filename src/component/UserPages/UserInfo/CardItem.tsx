@@ -3,7 +3,7 @@ import ClipboardJS from "clipboard";
 import { Button, List, message, Skeleton, Typography } from "antd";
 import { ArrowRightOutlined, CopyOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import styles from "./userInfo.module.scss";
-import ShortLink from "../../../model/data/ShortLink";
+import ShortLink from "model/data/ShortLink";
 import { useHistory } from "react-router-dom";
 
 const { Text } = Typography;

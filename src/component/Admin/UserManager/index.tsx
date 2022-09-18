@@ -13,43 +13,40 @@ import {
     TableHead,
     TableRow,
     TableSortLabel,
-    Theme,
 } from "@mui/material";
-import { createStyles, makeStyles } from "@mui/styles";
-import User from "../../../model/data/User";
+import User from "model/data/User";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import AddIcon from "@mui/icons-material/AddRounded";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
-import compare from "../../../utils/compare";
-import TableSort from "../../../model/tableSort";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetAllUserQuery } from "../../../service/rootApi";
+import compare from "utils/compare";
+import TableSort from "model/tableSort";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetAllUserQuery } from "service/rootApi";
+import { makeStyles } from "styles/hooks";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            padding: theme.spacing(2),
+const useStyles = makeStyles()((theme) => ({
+    root: {
+        padding: theme.spacing(2),
+    },
+    dataRow: {
+        "&:last-child td, &:last-child th": { border: 0 },
+        "& td.MuiTableCell-body": {
+            paddingTop: theme.spacing(1),
+            paddingBottom: theme.spacing(1),
         },
-        dataRow: {
-            "&:last-child td, &:last-child th": { border: 0 },
-            "& td.MuiTableCell-body": {
-                paddingTop: theme.spacing(1),
-                paddingBottom: theme.spacing(1),
-            },
-        },
-        pagination: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-        },
-    })
-);
+    },
+    pagination: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+}));
 
 const UserManager: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const { isLoading, data: data } = useGetAllUserQuery({ page: page, limit: limit });

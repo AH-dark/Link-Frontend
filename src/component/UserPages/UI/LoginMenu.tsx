@@ -1,11 +1,11 @@
 import React, { FC } from "react";
 import { Avatar, Button, Menu, message, Popover } from "antd";
-import { GetAvatar } from "../../../utils/avatar";
+import { GetAvatar } from "utils/avatar";
 import { LoginOutlined, LogoutOutlined, SettingOutlined, ToolOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./ui.module.scss";
 import "./LoginMenu.scss";
 import { useHistory } from "react-router-dom";
-import { useGetUserQuery, useLogoutMutation } from "../../../service/localApi";
+import { useGetUserQuery, useLogoutMutation } from "service/localApi";
 
 const MenuContent: FC = () => {
     const history = useHistory();

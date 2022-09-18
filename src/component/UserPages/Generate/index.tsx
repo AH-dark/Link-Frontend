@@ -2,12 +2,12 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "./generate.module.scss";
 import { Alert, Avatar, Button, Col, Form, Input, message, Row, Typography } from "antd";
 import { LinkOutlined, TagOutlined, UserOutlined } from "@ant-design/icons";
-import User from "../../../model/data/User";
-import { GetAvatar } from "../../../utils/avatar";
+import User from "model/data/User";
+import { GetAvatar } from "utils/avatar";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetUserQuery, usePostShortLinkMutation } from "../../../service/localApi";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetUserQuery, usePostShortLinkMutation } from "service/localApi";
 
 const { Title } = Typography;
 

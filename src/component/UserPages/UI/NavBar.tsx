@@ -4,8 +4,8 @@ import { Button, Typography } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import LoginMenu from "./LoginMenu";
 import { useHistory } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../../redux/hook";
-import { setSidebarOpen } from "../../../redux/viewUpdate";
+import { useAppDispatch, useAppSelector } from "redux/hook";
+import { setSidebarOpen } from "redux/viewUpdate";
 
 const { Title } = Typography;
 

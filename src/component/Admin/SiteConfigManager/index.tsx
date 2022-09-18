@@ -1,13 +1,13 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styles from "./siteConfigManager.module.scss";
 import { Box, FormControl, FormHelperText, Input, InputLabel, MenuItem, Select, Typography } from "@mui/material";
-import SiteConfig from "../../../model/data/SiteConfig";
+import SiteConfig from "model/data/SiteConfig";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useAppDispatch } from "../../../redux/hook";
-import { useGetSiteConfigQuery, usePutSiteConfigMutation } from "../../../service/rootApi";
-import { useGetSiteConfigQuery as useUserGetSiteConfigQuery } from "../../../service/localApi";
+import { setTitle } from "redux/viewUpdate";
+import { useAppDispatch } from "redux/hook";
+import { useGetSiteConfigQuery, usePutSiteConfigMutation } from "service/rootApi";
+import { useGetSiteConfigQuery as useUserGetSiteConfigQuery } from "service/localApi";
 
 const FormItem: React.FC<{
     name: string;

@@ -4,8 +4,8 @@ import styles from "./ui.module.scss";
 import { GlobalOutlined, HomeOutlined, LinkOutlined, LoginOutlined, ToolOutlined } from "@ant-design/icons";
 import type { MenuInfo } from "rc-menu/lib/interface";
 import { useHistory, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../../redux/hook";
-import { useGetUserQuery } from "../../../service/localApi";
+import { useAppSelector } from "redux/hook";
+import { useGetUserQuery } from "service/localApi";
 
 const { Sider } = Layout;
 const { Item } = Menu;

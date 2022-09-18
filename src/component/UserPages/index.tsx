@@ -3,7 +3,7 @@ import zhCN from "antd/lib/locale/zh_CN";
 import "antd/dist/antd.min.css";
 import { ConfigProvider } from "antd";
 import UI from "./UI";
-import { AuthRoute, CommonRoute, NoAuthRoute } from "../../middleware/Route";
+import { AuthRoute, CommonRoute, NoAuthRoute } from "middleware/Route";
 import { Switch } from "react-router-dom";
 
 const Home = React.lazy(() => import("./Home"));

@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 import viewUpdate from "./viewUpdate";
-import localApi from "../service/localApi";
-import rootApi from "../service/rootApi";
+import localApi from "service/localApi";
+import rootApi from "service/rootApi";
 
 const store = configureStore({
     reducer: {

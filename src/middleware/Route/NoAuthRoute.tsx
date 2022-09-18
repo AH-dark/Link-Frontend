@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { useGetUserQuery } from "../../service/localApi";
+import { useGetUserQuery } from "service/localApi";
 
 const NoAuthRoute: React.FC<RouteProps> = (props) => {
     const data = useGetUserQuery().data;

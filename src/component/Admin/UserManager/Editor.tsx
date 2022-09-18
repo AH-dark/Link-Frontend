@@ -13,12 +13,12 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import User from "../../../model/data/User";
+import User from "model/data/User";
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { useSnackbar } from "notistack";
 import { useHistory, useParams } from "react-router-dom";
-import { useCreateUserMutation, useGetUserQuery, usePutUserMutation } from "../../../service/rootApi";
-import { useGetUserQuery as useGetUserQueryOnUserPermission } from "../../../service/localApi";
+import { useCreateUserMutation, useGetUserQuery, usePutUserMutation } from "service/rootApi";
+import { useGetUserQuery as useGetUserQueryOnUserPermission } from "service/localApi";
 
 const Editor: React.FC = () => {
     const { data: currentUser, refetch, isLoading: isGettingCurrentUser } = useGetUserQueryOnUserPermission();

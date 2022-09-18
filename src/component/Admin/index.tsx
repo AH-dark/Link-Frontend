@@ -2,10 +2,10 @@ import React, { FC } from "react";
 import Layout from "./Layout";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 import { SnackbarProvider } from "notistack";
-import { AuthRoute } from "../../middleware/Route";
+import { AuthRoute } from "middleware/Route";
 import { Redirect, Switch } from "react-router-dom";
 import SiteConfigManager from "./SiteConfigManager";
 

@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
 import styles from "./explorer.module.scss";
 import { List, Spin } from "antd";
-import { useGetLatestShortLinkQuery } from "../../../service/localApi";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
+import { useGetLatestShortLinkQuery } from "service/localApi";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
 
 const LinkCard = React.lazy(() => import("./LinkCard"));
 

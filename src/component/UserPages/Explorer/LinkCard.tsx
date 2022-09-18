@@ -3,7 +3,7 @@ import styles from "./explorer.module.scss";
 import { Badge, Button, Card, List, Typography } from "antd";
 import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
-import { useGetUserQuery } from "../../../service/localApi";
+import { useGetUserQuery } from "service/localApi";
 
 const { Text } = Typography;
 

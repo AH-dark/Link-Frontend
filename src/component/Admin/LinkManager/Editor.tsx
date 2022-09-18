@@ -4,12 +4,12 @@ import { Box, Button, CircularProgress, Paper, TextField, Typography } from "@mu
 import { DesktopDateTimePicker } from "@mui/x-date-pickers";
 import { useSnackbar } from "notistack";
 import { useHistory, useParams } from "react-router-dom";
-import ShortLink, { ShortLinkBasic } from "../../../model/data/ShortLink";
-import { useAppDispatch } from "../../../redux/hook";
-import { setTitle } from "../../../redux/viewUpdate";
-import { useGetShortLinkQuery, usePostShortLinkMutation, usePutShortLinkMutation } from "../../../service/rootApi";
-import User from "../../../model/data/User";
-import { useGetUserQuery } from "../../../service/localApi";
+import ShortLink, { ShortLinkBasic } from "model/data/ShortLink";
+import { useAppDispatch } from "redux/hook";
+import { setTitle } from "redux/viewUpdate";
+import { useGetShortLinkQuery, usePostShortLinkMutation, usePutShortLinkMutation } from "service/rootApi";
+import User from "model/data/User";
+import { useGetUserQuery } from "service/localApi";
 
 const Editor: React.FC = () => {
     const currentUser = useGetUserQuery().data as User;

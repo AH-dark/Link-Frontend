@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import User, { UserPutData } from "../model/data/User";
-import ApiResponse from "../model/ApiResponse";
-import SiteConfig from "../model/data/SiteConfig";
-import ShortLink from "../model/data/ShortLink";
 import { message } from "antd";
-import LoginData from "../model/data/LoginData";
+import User, { UserPutData } from "model/data/User";
+import ApiResponse from "model/ApiResponse";
+import SiteConfig from "model/data/SiteConfig";
+import ShortLink from "model/data/ShortLink";
+import LoginData from "model/data/LoginData";
 
 const baseUrl = "/";
 
